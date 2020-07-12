@@ -1,0 +1,30 @@
+<root>
+    <windowclass name="massbattle_host">
+		<frame>ctbox</frame>
+		<placement>
+			<size width="400" height="500" />
+		</placement>
+		<sizelimits>
+			<minimum width="400" height="400" />
+			<dynamic />
+		</sizelimits>
+		<softclose />
+		<nodelete />
+        <sheetdata>
+			<windowtitlebar name="title">
+				<resource>massbattle_window_title</resource>
+			</windowtitlebar>
+			<anchor_title_ctbox name="contentanchor" />
+
+			<anchor_ctbox_host_header />
+
+			<label_ct_host_rounds />
+			<number_ct_host_rounds />
+			<button_ct_nextround />
+
+			<resize_ctbox />
+			<helper_ct />
+			<close_ctbox />
+        </sheetdata>
+    </windowclass>
+</root>

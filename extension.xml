@@ -1,0 +1,17 @@
+<root version="3.0">
+	<properties>
+	<name>Mass Battles</name>
+	<version>0.00</version>
+	
+	<author>Wilhelm Neubert</author>
+	<description>Basic Mass Battles for Savage Worlds</description>
+	<ruleset>SavageWorlds</ruleset>
+	</properties>
+	<base>
+		<includefile source="MassBattles/strings.xml" />
+		<includefile source="MassBattles/MassBattleWindow_host.xml" />
+		<includefile source="MassBattles/MassBattleWindow_client.xml" />
+        <includefile source="MassBattles/MassBattleWindowTemplates.xml" />
+		<script name="MassBattles" file="MassBattles/main.lua" />
+	</base>
+</root>

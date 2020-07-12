@@ -1,0 +1,27 @@
+<root>
+    <windowclass name="massbattle_client">
+		<frame>ctbox</frame>
+		<placement>
+			<size width="400" height="500" />
+		</placement>
+		<sizelimits>
+			<minimum width="400" height="400" />
+			<dynamic />
+		</sizelimits>
+		<softclose />
+		<nodelete />
+        <sheetdata>
+			<windowtitlebar name="title">
+				<resource>massbattle_window_title</resource>
+			</windowtitlebar>
+			<anchor_title_ctbox name="contentanchor" />
+
+			<label_ct_client_rounds />
+			<number_ct_client_rounds />
+
+			<resize_ctbox />
+			<helper_ct />
+			<close_ctbox />
+        </sheetdata>
+    </windowclass>
+</root>

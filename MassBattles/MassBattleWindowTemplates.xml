@@ -1,0 +1,25 @@
+<root>
+    <template name="massbattle_leader">
+        <frame>ctentrybox</frame>
+		<sheetdata>
+            <static textres="sidebar_tooltip_mb">
+            </static>
+		</sheetdata>
+    </template>
+
+    <template name="mbFactionSection">
+        <script>
+            function onInit()
+                Debug.chat("Loaded faction section")
+            end
+        </script>
+        <sheetdata>
+            <massbattle_leader name="mbl">
+                <anchored width="200" height="200">
+                    <left  anchor="left" offset="2"/>
+                    <top  anchor="top" offset="2"/>
+                </anchored>
+            </massbattle_leader>
+        </sheetdata>
+    </template>
+</root>
