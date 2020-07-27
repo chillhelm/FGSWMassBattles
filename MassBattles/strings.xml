@@ -1,4 +1,11 @@
 <root>
     <string name="sidebar_tooltip_mb">Mass Battle</string>
     <string name="massbattle_window_title">Mass Battle</string>
+    <string name="massbattle_forcetokens_label">Force Tokens</string>
+    <string name="mb_commander_label">Commander</string>
+    <string name="mb_participation_label">Participate?</string>
+    <string name="mb_participation_roll_prefix">Battle Participation</string>
+    <string name="mb_participation_result_label">Result</string>
+    <string name="mb_raisechoice_or">or</string>
+
 </root>

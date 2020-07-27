@@ -1,25 +1,317 @@
 <root>
-    <template name="massbattle_leader">
-        <frame>ctentrybox</frame>
-		<sheetdata>
-            <static textres="sidebar_tooltip_mb">
-            </static>
-		</sheetdata>
+
+    <template name="mbFactionSectionA">
+          <list_sw name="champions">
+            <datasource>.ArmyA.champions</datasource>
+            <frame name="groupbox"/>
+            <anchored>
+              <left/>
+              <right/>
+            </anchored>
+            <class>mb_champion</class>
+            <acceptdrop>
+              <class>npc</class>
+              <callback>addNpc</callback>
+            </acceptdrop>
+            <acceptdrop>
+              <class>charsheet</class>
+              <class>charsheet_mini</class>
+              <callback>addPc</callback>
+            </acceptdrop>
+            <script file="charsheet/scripts/charsheet_localref.lua"/>
+            <script file="MassBattles/scripts/mb_championlist.lua"/>
+            <script file="MassBattles/scripts/template_championlist.lua"/>
+            <empty font="list-empty" textres="mb_emptylist" />
+            <sortby>
+              <control>name</control>
+            </sortby>
+          </list_sw>
     </template>
 
-    <template name="mbFactionSection">
+  <windowclass name="mb_champion">
+    <frame name="ctentrybox"/>
+    <sizelimits>
+      <minimum height="90" />
+    </sizelimits>
+    <script file="MassBattles/scripts/mb_champion.lua" />
+    <sheetdata>
+      <ct_type name="type" />
+      <hn name="wildcard" />
+      <hs name="tokenrefid" />
+      <hs name="tokenrefnode" />
+      <hn name="tokenscale">
+        <default>1</default>
         <script>
-            function onInit()
-                Debug.chat("Loaded faction section")
-            end
+          function onValueChanged()
+          window.token.onScaleChanged()
+          end
         </script>
-        <sheetdata>
-            <massbattle_leader name="mbl">
-                <anchored width="200" height="200">
-                    <left  anchor="left" offset="2"/>
-                    <top  anchor="top" offset="2"/>
-                </anchored>
-            </massbattle_leader>
-        </sheetdata>
-    </template>
+      </hn>
+
+      <tokenfield name="token">
+        <bounds>74,6,25,25</bounds>
+        <empty>indicator_emptytoken</empty>
+        <script file="MassBattles/scripts/mb_token.lua" />
+      </tokenfield>
+
+      <ct_inc_indicator name="inc">
+        <anchored width="25" height="25">
+          <top offset="7" />
+          <right offset="-52" />
+        </anchored>
+      </ct_inc_indicator>
+
+      <ct_damagetypes name="damages">
+        <anchored width="0">
+          <top offset="2" />
+          <right parent="inc" anchor="left" offset="-2" />
+        </anchored>
+      </ct_damagetypes>
+      <button_idelete>
+        <anchored width="20" height="20">
+          <top offset="8" />
+          <right parent="damages" anchor="left" offset="-2" relation="relative" />
+        </anchored>
+        <script>
+          function onInit()
+          DB.getChild(window.getDatabaseNode(), "inc").onUpdate = onUpdate
+          onUpdate()
+          end
+          function onUpdate()
+          setValue(0)
+          setVisible(DB.getValue(window.getDatabaseNode(), "inc", 0) == 1)
+          end
+        </script>
+      </button_idelete>
+      <genericcontrol name="wildcard_icon">
+        <bounds>106,8,25,25</bounds>
+        <icon>wildcard</icon>
+        <script>
+          function updateMenuOptions()
+          resetMenuItems()
+          if window.type.isNot("pc") then
+          registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
+          end
+          end
+          function onMenuSelection(...)
+          return window.name.onMenuSelection(...)
+          end
+        </script>
+      </genericcontrol>
+      <ct_name_host name="name">
+        <anchored>
+          <right parent="damages"/>
+        </anchored>
+      </ct_name_host>
+
+      <windowreferencefield name="link">
+        <anchored width="20" height="20">
+          <top offset="7" />
+          <right offset="-6" />
+        </anchored>
+        <icon normal="button_link" />
+        <noreset />
+        <script file="ct/scripts/ct_link.lua"/>
+      </windowreferencefield>
+
+      <minibennyfield name="bennies">
+        <anchored width="20" height="21">
+          <top parent="link" />
+          <right parent="link" anchor="left" offset="-5" />
+        </anchored>
+      </minibennyfield>
+
+      <!-- Effects -->
+      <ct_section name="effecticon">
+        <anchored>
+          <top offset="12" />
+        </anchored>
+        <icon>indicator_effect</icon>
+        <script>
+          function setSectionVisible(bVisible)
+          bVisible = true
+          window.effects.setVisible(bVisible)
+          window.effects_label.setVisible(bVisible)
+          setVisible(bVisible)
+          end
+        </script>
+      </ct_section>
+      <windowlist name="effects">
+        <anchored>
+          <left parent="effecticon" anchor="right" offset="52" />
+          <top parent="damages" anchor="bottom" relation="relative" offset="-24" />
+          <right offset="-10" />
+        </anchored>
+        <class>ct_effect</class>
+        <datasource>.effects</datasource>
+        <script file="ct/scripts/ct_effects.lua"/>
+      </windowlist>
+      <ct_section_label name="effects_label">
+        <anchored to="effects" position="lefthigh" offset="4,6" />
+        <static textres="ct_label_effects" />
+      </ct_section_label>
+      <string_ctentry_effects name="effect_summary">
+        <anchored merge="replace">
+          <left parent="wildcard_icon" offset="35" />
+          <top parent="damages" anchor="bottom" relation="relative" offset="5" />
+          <right offset="-17" />
+        </anchored>
+      </string_ctentry_effects>
+
+      
+      <label name="mb_participation_label">
+        <anchored>
+          <top parent="damages" anchor="bottom" relation="relative"/>
+          <left parent="effecticon" anchor="left"/>
+        </anchored>
+        <static textres="mb_participation_label"/>
+      </label>
+      <comboboxc name="participation_skill">
+        <anchored to="mb_participation_label" position="right" offset="15" width="120">
+        </anchored>
+        <script file="MassBattles/scripts/participation_combobox.lua"/>
+        <default>--</default>
+        <listdirection mergerule="replace">down</listdirection>
+      </comboboxc>
+      <button_text name="participateButton" merge="replace">
+        <script>
+          function onButtonPress()
+            local sActorType, sActorLink = window.link.getValue()
+            local sSkill = window.participation_skill.getValue()
+            local nodeActor = DB.findNode(sActorLink)
+            ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battleparticipation")
+            local sDescPrefix = Interface.getString("mb_participation_roll_prefix")
+            local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
+            TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battleparticipation", {["mb_entry"]=window.getDatabaseNode().getPath()})
+          end
+        </script>
+        <anchored to="participation_skill" position="right" offset="10" width="80"/>
+        <text>Participate!</text>
+      </button_text>
+    <vspace name="spacer">
+        <anchored height="20">
+          <top parent="damages" anchor="bottom" relation="relative" />
+          <left />
+          <right />
+        </anchored>
+      </vspace>
+</sheetdata>
+  </windowclass>
+  <template name="massbattle_left_anchor">
+    <genericcontrol>
+      <anchored height="0">
+        <top parent="title" anchor="bottom" offset="20" />
+        <left parent="" anchor="left" offset="30" />
+        <right parent="" anchor="right" offset="-50" />
+      </anchored>
+      <disabled/>
+    </genericcontrol>
+  </template>
+  <template name="massbattle_right_anchor">
+    <genericcontrol>
+      <anchored height="0">
+        <top parent="title" anchor="bottom" offset="20" />
+        <left parent="mb_left_anchor" anchor="right" />
+        <right parent="" anchor="right" offset="-30" />
+      </anchored>
+      <disabled/>
+    </genericcontrol>
+  </template>
+  <template name="participationResultBox">
+    <subwindow name="participationResultBox_subwindow">
+      <class>participationResultBox_Window</class>
+      <anchored>
+        <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
+        <left parent="mb_participation_label" />
+        <right parent="effects"/>
+      </anchored>
+    </subwindow>
+  </template>
+    <windowclass name="participationResultBox_Window">
+      <script file="MassBattles/scripts/participation_result_box.lua"/>
+      <frame name="groupbox"/>
+      <sheetdata>
+        <label name="mb_participation_result_label">
+          <anchored>
+            <top offset="10"/>
+            <left offset="10"/>
+          </anchored>
+          <static textres="mb_participation_result_label" />
+        </label>
+        <number name="total">
+          <anchored to="mb_participation_result_label" position="right" offset="15"/>
+        </number>
+        <genericcontrol name="success_indicator">
+          <icon>adjust1</icon>
+          <anchored to="total" position="right" offset="15" width="15" />
+          <invisible/>
+        </genericcontrol>
+        <genericcontrol name="raise_indicator">
+          <icon>adjust2</icon>
+          <anchored to="total" position="right" offset="15" width="15" />
+          <invisible/>
+        </genericcontrol>
+        <genericcontrol name="fail_indicator">
+          <icon>adjust-1</icon>
+          <anchored to="total" position="right" offset="15" width="15" />
+          <invisible/>
+        </genericcontrol>
+        <genericcontrol name="critfail_indicator">
+          <icon>adjust-2</icon>
+          <anchored to="total" position="right" offset="15" width="15" />
+          <invisible/>
+        </genericcontrol>
+        
+        <button_text name="raise_choice_1" merge="replace">
+        <script>
+          function onButtonPress()
+            Debug.chat("User chose +1")
+          end
+        </script>
+          <anchored width="40" height="16">
+            <left parent="total" relation="relative" anchor="right" offset="45"/>
+            <top parent="total" offset="2"/>
+          </anchored>
+        <text>+1</text>
+          <invisible/>
+      </button_text>
+        <label name="raise_choice_or">
+          <static textres="mb_raisechoice_or"/>
+          <anchored>
+            <left parent="total" relation="relative" anchor="right" offset="15"/>
+            <top parent="total"/>
+          </anchored>
+          <invisible/>
+        </label>
+        <button_text name="raise_choice_battleeffect" merge="replace">
+        <script>
+          function onButtonPress()
+            Debug.chat("User chose battle effect")
+          end
+        </script>
+          <anchored width="40" height="16">
+            <left parent="total" relation="relative" anchor="right" offset="15"/>
+            <top parent="total" offset="2"/>
+          </anchored>
+          <invisible/>
+      </button_text>
+
+        <genericcontrol name="tinyspacer">
+          <anchored height="10">
+            <top parent="mb_participation_result_label" anchor="bottom" position="relative"/>
+            <left />
+            <right />
+          </anchored>
+        </genericcontrol>
+      </sheetdata>
+    </windowclass>
+  <template name="vspace">
+    <genericcontrol name="spacer">
+        <anchored height="20">
+          <top parent="damages" anchor="bottom" relation="relative" />
+          <left />
+          <right />
+        </anchored>
+      </genericcontrol>
+  </template>
 </root>

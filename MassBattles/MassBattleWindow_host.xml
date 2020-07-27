@@ -10,21 +10,64 @@
 		</sizelimits>
 		<softclose />
 		<nodelete />
+    <script file="MassBattles/scripts/MassBattleWindow_host.lua"/>
         <sheetdata>
-			<windowtitlebar name="title">
-				<resource>massbattle_window_title</resource>
-			</windowtitlebar>
-			<anchor_title_ctbox name="contentanchor" />
+          <windowtitlebar name="title">
+            <resource>massbattle_window_title</resource>
+          </windowtitlebar>
+          <anchor_title_ctbox name="contentanchor" />
 
-			<anchor_ctbox_host_header />
-
-			<label_ct_host_rounds />
-			<number_ct_host_rounds />
-			<button_ct_nextround />
-
-			<resize_ctbox />
-			<helper_ct />
-			<close_ctbox />
+          <anchor_ctbox_host_header />
+          <massbattle_left_anchor name="mb_left_anchor"/>
+          <massbattle_right_anchor name="mb_right_anchor"/>
+              <label name="ForceTokensALabel">
+                <anchored>
+                  <top parent="mb_left_anchor" anchor="bottom" relation="relative"/>
+                  <left parent="mb_left_anchor" anchor="left"/>
+                </anchored>
+                <static textres="massbattle_forcetokens_label"/>
+              </label>
+              <number name="ForceTokensA">
+                <anchored>
+                  <top parent="ForceTokensALabel" anchor="top" relation="absolute" offset="3"/>
+                  <left parent="ForceTokensALabel" anchor="right" relation="absolute" offset="15"/>
+                </anchored>
+              </number>
+              <number name="ForceTokensB">
+                <anchored>
+                  <top parent="mb_right_anchor" anchor="bottom" relation="relative"/>
+                  <right parent="mb_right_anchor" anchor="right"/>
+                </anchored>
+              </number>
+              <label name="ForceTokensBLabel">
+                <anchored>
+                  <top parent="ForceTokensB" anchor="top" relation="absolute" offset="-3"/>
+                  <right parent="ForceTokensB" anchor="right" relation="absolute" offset="-15"/>
+                </anchored>
+                <static textres="massbattle_forcetokens_label"/>
+              </label>
+              <mbFactionSectionA name="ArmyA">
+                <anchored>
+                  <top parent="mb_left_anchor" anchor="bottom" relation="relative"/>
+                   <bottom parent="" anchor="bottom" offset="10"/>
+                  <left parent="mb_left_anchor" anchor="left"/>
+                </anchored>
+              </mbFactionSectionA>
+          <!--
+          <mbFactionSection name="ArmyB">
+                 <anchored width="200">
+                  <top parent="mb_right_anchor" anchor="bottom" relation="relative"/>
+                   <bottom parent="" anchor="bottom" offset="-10"/>
+                  <right parent="mb_right_anchor" anchor="right"/>
+                </anchored>
+              </mbFactionSection>
+-->
+          <label_ct_host_rounds name="round_label"/>
+          <number_ct_host_rounds name="round"/>
+          <button_ct_nextround name="nextround_button"/>
+          <resize_ctbox />
+          <helper_ct />
+          <close_ctbox />
         </sheetdata>
     </windowclass>
 </root>
