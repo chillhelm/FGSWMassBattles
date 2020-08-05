@@ -358,8 +358,13 @@ function createParticipationResultBox()
 	if not participation_result_box then
 		createControl("participationResultBox", "participation_result_box",".participation_result")
 		cl,va = participation_result_box.getValue()
+        participation_result_node = DB.findNode(getDatabaseNode().getPath()..".participation_result")
 		participation_result_box.setValue(cl,getDatabaseNode().getPath()..".participation_result")
 		participation_result_box.setVisible(true)
+        bSuccess = participation_result_node.getChild("success") and participation_result_node.getChild("success").getValue()==1
+        bFail = participation_result_node.getChild("fail") and participation_result_node.getChild("fail").getValue()==1
+        bCritFail = participation_result_node.getChild("critfail") and participation_result_node.getChild("critfail").getValue()==1
+        bRaise = participation_result_node.getChild("raise") and participation_result_node.getChild("raise").getValue()==1
 		spacer.setAnchoredHeight("10")
 		createControl("vspace","spacer2")
 	end

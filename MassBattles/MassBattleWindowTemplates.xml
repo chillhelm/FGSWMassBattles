@@ -176,6 +176,7 @@
       <button_text name="participateButton" merge="replace">
         <script>
           function onButtonPress()
+            MassBattles.deleteBEChildNodes(window.getDatabaseNode().getChild("participation_result"))
             local sActorType, sActorLink = window.link.getValue()
             local sSkill = window.participation_skill.getValue()
             local nodeActor = DB.findNode(sActorLink)
@@ -283,8 +284,11 @@
           </anchored>
           <invisible/>
         </label>
-        <button_text name="raise_choice_battleeffect" merge="replace">
+        <button_text name="raise_choice_battleeffect_button" merge="replace">
         <script>
+          function onInit()
+            Debug.chat("Raise choice BE onInit:", self)
+          end 
           function onButtonPress()
             Debug.chat("User chose battle effect")
           end

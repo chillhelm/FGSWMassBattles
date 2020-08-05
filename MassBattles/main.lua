@@ -126,8 +126,26 @@ function getMassbattleFromParticipant(participant)
     local table_result = TableManager.getResults(nodeTable, rRollResult.nTotalScore)
     local result_keyword = string.sub(table_result[1].sText, 0, table_result[1].sText:find(":")-1)
     local part_result = mb_entry.getChild("participation_result")
-    part_result.createChild("battleeffect","string").setValue(result_keyword)
+    part_result.createChild("raise_choice_battleeffect","string").setValue(result_keyword)
 
+    local active_massbattle = getMassbattleFromParticipant(mb_entry)
+    local massbattle_window = nil
+    if User.isHost() or User.isLocal() then
+		massbattle_window = Interface.findWindow("massbattle_host", active_massbattle)
+	else
+		massbattle_window = Interface.findWindow("massbattle_client", active_massbattle)
+	end
+    if(massbattle_window)then
+        massbattle_window.update()
+    end
     --get participation result window
  end
 
+ function deleteBEChildNodes(node) 
+     if not node then
+         return
+     end
+     if node.getChild("raise_choice_battleeffect") then
+         node.getChild("raise_choice_battleeffect").delete()
+     end
+ end
