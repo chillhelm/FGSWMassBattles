@@ -11,7 +11,8 @@
 		<includefile source="MassBattles/strings.xml" />
 		<includefile source="MassBattles/MassBattleWindow_host.xml" />
 		<includefile source="MassBattles/MassBattleWindow_client.xml" />
-        <includefile source="MassBattles/MassBattleWindowTemplates.xml" />
+    <includefile source="Massbattles/MassBattleSettingsWindow.xml" />
+    <includefile source="MassBattles/MassBattleWindowTemplates.xml" />
 		<script name="MassBattles" file="MassBattles/main.lua" />
 	</base>
 </root>

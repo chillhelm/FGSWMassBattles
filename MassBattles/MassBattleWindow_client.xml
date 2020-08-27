@@ -2,26 +2,238 @@
     <windowclass name="massbattle_client">
 		<frame>ctbox</frame>
 		<placement>
-			<size width="400" height="500" />
+			<size width="800" height="500" />
 		</placement>
 		<sizelimits>
-			<minimum width="400" height="400" />
+			<minimum width="900" height="400" />
 			<dynamic />
 		</sizelimits>
 		<softclose />
 		<nodelete />
-        <sheetdata>
-			<windowtitlebar name="title">
-				<resource>massbattle_window_title</resource>
-			</windowtitlebar>
-			<anchor_title_ctbox name="contentanchor" />
+    <script file="MassBattles/scripts/MassBattleWindow_cl.lua"/>
+      <sheetdata>
+        <label_ct_host_rounds name="round_label"/>
+        <number_ct_host_rounds name="round"/>
+        <resize_ctbox />
+        <helper_ct >
+          <urlres>help_tool_mb</urlres>
+        </helper_ct>
+        <close_ctbox />
+        <hs name="leaderAtype" />
+        <windowreferencefield name="leadera">
+          <script>
+            function onValueChanged()
+              window.update()
+            end
+          </script>
+          <bounds>0,0,0,0</bounds>
+          <invisible />
+        </windowreferencefield>
+        <hs name="leaderBtype" />
+        <windowreferencefield name="leaderb">
+          <script>
+            function onValueChanged()
+              window.update()
+            end
+          </script>
+          <bounds>0,0,0,0</bounds>
+          <invisible />
+        </windowreferencefield>
+        <windowtitlebar name="title">
+          <resource>massbattle_window_title</resource>
+        </windowtitlebar>
+        <anchor_title_ctbox name="contentanchor" />
 
-			<label_ct_client_rounds />
-			<number_ct_client_rounds />
-
-			<resize_ctbox />
-			<helper_ct />
-			<close_ctbox />
-        </sheetdata>
+        <anchor_ctbox_host_header />
+        <massbattle_left_anchor name="mb_left_anchor"/>
+        <massbattle_right_anchor name="mb_right_anchor"/>
+        <massbattle_center_anchor name="mb_center_anchor"/>
+        <label name="ForceTokensLabel">
+          <anchored>
+            <bottom anchor="top" offset="80"/>
+            <left parent="mb_center_anchor" anchor="left" offset="-41"/>
+            <right parent="mb_center_anchor" anchor="right" offset="41"/>
+          </anchored>
+          <center/>
+          <static textres="massbattle_forcetokens_label"/>
+        </label>
+        <number name="ForceTokensA">
+          <readonly/>
+          <anchored width="40" height="40">
+            <top parent="ForceTokensLabel" anchor="top" offset="-10"/>
+            <right parent="ForceTokensLabel" anchor="left" relation="absolute" offset="-5"/>
+          </anchored>
+          <frame>bonus</frame>
+          <font>force_token_font</font>
+        </number>
+        <number name="ForceTokensB">
+          <readonly/>
+          <anchored width="40" height="40">
+            <top parent="ForceTokensLabel" anchor="top"offset="-10"/>
+            <left parent="ForceTokensLabel" anchor="right" relation="absolute" offset="5"/>
+          </anchored>
+          <font>force_token_font</font>
+          <frame>bonus</frame>
+        </number>
+        <mbFactionSectionA_cl name="ArmyA">
+          <anchored>
+            <top parent="mb_left_anchor" anchor="bottom" relation="relative" offset="45"/>
+            <bottom parent="round_label" anchor="top" offset="-180"/>
+            <left parent="mb_left_anchor" anchor="left"/>
+            <right parent="mb_center_anchor" anchor="left" offset="-10"/>
+          </anchored>
+        </mbFactionSectionA_cl>
+        <scrollbar>
+          <anchored to="ArmyA"/>
+          <target>ArmyA</target>
+        </scrollbar>
+        <mbLeaderASlot_cl name="leaderASlot">
+          <anchored height="150">
+            <left parent="ArmyA" anchor="left"/>
+            <right parent="ArmyA" anchor="right"/>
+            <bottom parent="round_label" anchor="top" offset="-10"/>
+          </anchored>
+        </mbLeaderASlot_cl>
+        <mbFactionSectionB_cl name="ArmyB">
+          <anchored>
+            <top parent="ArmyA" anchor="top" />
+            <bottom parent="ArmyA" anchor="bottom" offset="0" />
+            <right parent="mb_right_anchor" anchor="right"/>
+            <left parent="mb_center_anchor" anchor="right" offset="10"/>
+          </anchored>
+        </mbFactionSectionB_cl>
+        <scrollbar>
+          <anchored to="ArmyB"/>
+          <target>ArmyB</target>
+        </scrollbar>
+        <mbLeaderBSlot_cl name="leaderBSlot">
+          <anchored height="150">
+            <left parent="ArmyB" anchor="left"/>
+            <right parent="ArmyB" anchor="right"/>
+            <bottom parent="round_label" anchor="top" offset="-10"/>
+          </anchored>
+        </mbLeaderBSlot_cl>
+        <subwindow name="resolutionbox">
+          <class>mbResolutionWindow</class>
+          <invisible/>
+          <fastinit />
+          <anchored height="80">
+            <left parent="mb_center_anchor" anchor="left" offset="-100" />
+            <right parent="mb_center_anchor" anchor="right" offset="100" />
+            <bottom parent="round_label" anchor="top" offset="-10" />
+          </anchored>
+        </subwindow>
+        <subwindow name="moralebox">
+          <class>mbMoraleBox</class>
+          <invisible/>
+          <fastinit />
+          <anchored height="35">
+            <left parent="mb_center_anchor" anchor="left" offset="-100" />
+            <right parent="mb_center_anchor" anchor="right" offset="100" />
+            <bottom parent="round_label" anchor="top" offset="-10" />
+          </anchored>
+        </subwindow>
+        <label name="FtgLabelA">
+          <static textres="mb_fatigue_short_label"/>
+          <anchored>
+            <bottom parent="ArmyA" anchor="top"/>
+            <right parent="ArmyA" anchor="right" offset="-84"/>
+          </anchored>
+        </label>
+        <label name="WndLabelA">
+          <static textres="mb_wound_short_label"/>
+          <anchored>
+            <bottom parent="ArmyA" anchor="top"/>
+            <right parent="ArmyA" anchor="right" offset="-109"/>
+          </anchored>
+        </label>
+        <label name="FtgLabelB">
+          <static textres="mb_fatigue_short_label"/>
+          <anchored>
+            <bottom parent="ArmyB" anchor="top"/>
+            <right parent="ArmyB" anchor="right" offset="-84"/>
+          </anchored>
+        </label>
+        <label name="WndLabelB">
+          <static textres="mb_wound_short_label"/>
+          <anchored>
+            <bottom parent="ArmyB" anchor="top"/>
+            <right parent="ArmyB" anchor="right" offset="-109"/>
+          </anchored>
+        </label>
+        <label name="NamesLabelA">
+          <static textres="mb_name_short_label"/>
+          <anchored>
+            <bottom parent="ArmyA" anchor="top"/>
+            <left parent="ArmyA" anchor="left" offset="110"/>
+          </anchored>
+        </label>
+        <label name="SupportLabelA">
+          <static textres="mb_bonus_short_label"/>
+          <anchored>
+            <bottom parent="ArmyA" anchor="top"/>
+            <left parent="ArmyA" anchor="left" offset="25"/>
+          </anchored>
+        </label>
+        <label name="NamesLabelB">
+          <static textres="mb_name_short_label"/>
+          <anchored>
+            <bottom parent="ArmyB" anchor="top"/>
+            <left parent="ArmyB" anchor="left" offset="110"/>
+          </anchored>
+        </label>
+        <label name="SupportLabelB">
+          <static textres="mb_bonus_short_label"/>
+          <anchored>
+            <bottom parent="ArmyB" anchor="top"/>
+            <left parent="ArmyB" anchor="left" offset="25"/>
+          </anchored>
+        </label>
+        <stringfield name="ArmyAName">
+          <anchored>
+            <top offset="25"/>
+            <left/>
+            <right parent="mb_center_anchor"/>
+          </anchored>
+          <font>armynamefont</font>
+          <default>Left Army</default>
+          <center></center>
+        </stringfield>
+        <stringfield name="ArmyBName">
+          <anchored>
+            <top offset="25"/>
+            <left parent="mb_center_anchor"/>
+            <right />
+          </anchored>
+          <font>armynamefont</font>
+          <default>Right Army</default>
+          <center></center>
+        </stringfield>
+        <subwindow name="HintWindowBox">
+          <anchored>
+            <bottom offset="-10"/>
+            <left offset="10"/>
+            <right parent="mb_center_anchor" anchor="left" offset="-10"/>
+            <top anchor="bottom" offset="-50"/>
+          </anchored>
+          <class>HintWindowCL</class>
+          <activate/>
+          <fastinit/>
+        </subwindow>
+        <label name="commanderALabel">
+          <anchored>
+            <left parent="leaderASlot"/>
+            <bottom anchor="top" parent="leaderASlot"/>
+          </anchored>
+          <static textres="mb_commander_label"/>
+        </label>
+        <label name="commanderBLabel">
+          <anchored>
+            <left parent="leaderBSlot"/>
+            <bottom anchor="top" parent="leaderBSlot"/>
+          </anchored>
+          <static textres="mb_commander_label"/>
+        </label>
+      </sheetdata>
     </windowclass>
 </root>

@@ -2,27 +2,23 @@
 -- Please see the license.html file included with this distribution for
 -- attribution and copyright information.
 --
-
+local isOwner=false
 function onInit()
-
-
-	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
-	onWildcardChanged()
-
-	type.getDatabaseNode().onUpdate = onTypeChanged
-	onTypeChanged()
 	updateDisplay()
-
-	effecticon.initialize()
 
 	updateMenuOptions()
 
-	DB.createChild(getDatabaseNode(), "inc", "number").onUpdate = updateIncapacitated
 	updateBackground()
 
 	tokenrefnode.getDatabaseNode().onUpdate = token.onTokenUpdate
 	tokenrefid.getDatabaseNode().onUpdate = token.onTokenUpdate
+	DB.addHandler(getDatabaseNode().getPath(),"onChildUpdate",update)
 	update()
+end
+
+function updateOwnership()
+	champion_type, champion_record = link.getValue()
+	isOwner = DB.isOwner(champion_record)
 end
 
 function getActorShortcut()
@@ -57,41 +53,8 @@ end
 -- UPDATE AND EVENT HANDLERS
 --
 
-function onMenuSelection(nOption, nSubOption)
-	if nOption == 6 and nSubOption == 7 then
-		if windowlist and windowlist.applyFilter then
-			windowlist.applyFilter()
-		end
-		if Input.isAltPressed() then
-			for _,w in pairs(windowlist.window.getCombatants()) do
-				w.delete()
-			end
-		else
-			delete()
-		end
-	end
-end
-
-function onWildcardChanged()
-	local bWildCard = wildcard.getValue() == 1
-	wildcard_icon.setIcon(bWildCard and "wildcard" or "nowildcard")
-	if bennies then
-		bennies.setVisible(bWildCard)
-	end
-end
-
 function onVisibilityChanged()
 	TokenManager.updateVisibility(getDatabaseNode())
-end
-
-function onTypeChanged()
-	if type.is("pc") then
-		self.linkPcFields()
-	elseif type.is("npc") then
-		self.linkNpcFields()
-	end
-	wildcard_icon.updateMenuOptions()
-	name.updateMenuOptions()
 end
 
 function onIDChanged()
@@ -162,104 +125,6 @@ function updateActive()
 	updateBackground()
 end
 
-function sendNotification()
-	local displayData = function(sName)
-		local nodeActor = link.getTargetDatabaseNode()
-		if CharacterManager.isPCAlly(nodeActor) then
-			local nodeChar = CharacterManager.getCharsheetNodeRoot(nodeActor)
-			sName = "[" .. DB.getValue(nodeChar, "name", "") .. "] " .. sName
-		end
-		if inc.getState() then
-			if type.is("vehicle") then
-				return sName .. " (" .. Interface.getString("common_destroyed") .. ")", "state_inc"
-			else
-				return sName .. " (" .. Interface.getString("common_incapacitated") .. ")", "state_inc"
-			end
-		elseif shaken.getState() then
-			return sName .. " (" .. Interface.getString("common_shaken") .. ")", "state_shaken"
-		end
-		return sName, "turn_flag"
-	end
-
-	local sName, sIcon = displayData(getVisibleName())
-	local rMessage = { text = sName, font = "narratorfont", icon = sIcon }
-
-	-- Always show real name to host
-	Comm.addChatMessage(rMessage)
-
-	-- Chase notification
-	local rChaseNotificationInfo = getChaseNotification()
-	local rChaseNotificationHeader = nil
-	local rChaseNotification = nil
-	if rChaseNotificationInfo then
-		if rChaseNotificationInfo.bComplication then
-			rChaseNotificationHeader = { 
-				font = "narratorfont", 
-				icon = "indicator_star_off", 
-				text = Interface.getString("ct_chase_complication")
-			}
-			if rChaseNotificationInfo.nMod then
-				rChaseNotificationHeader.dice = {}
-				rChaseNotificationHeader.diemodifier = rChaseNotificationInfo.nMod
-			end
-		end
-		rChaseNotification = { 
-			font = "systemfont", 
-			text = rChaseNotificationInfo.sText or ""
-		}
-
-		Comm.addChatMessage(rChaseNotificationHeader)
-		Comm.addChatMessage(rChaseNotification)
-	end
-
-	if isVisibleEntry() then
-		local aIdentities = User.getAllActiveIdentities()
-		local aPlayers = {}
-		for _,sIdentity in ipairs(aIdentities) do
-			table.insert(aPlayers, User.getIdentityOwner(sIdentity))
-		end
-		if #aPlayers > 0 then
-			local sName, sIcon = displayData(getVisibleName())
-			rMessage.text = sName
-			rMessage.icon = sIcon
-			Comm.deliverChatMessage(rMessage, aPlayers)
-			if rChaseNotificationHeader and rChaseNotification then
-				Comm.deliverChatMessage(rChaseNotificationHeader, aPlayers)
-				Comm.deliverChatMessage(rChaseNotification, aPlayers)
-			end
-		end
-	end
-end
-
-function linkPcFields()
-	local nodeSource = link.getTargetDatabaseNode()
-	if nodeSource then
-		name.setLink(nodeSource.getChild("name"))
-		for _,w in pairs(damages.getDamageTypeControls()) do
-			w.setLink(nodeSource.getChild(w.getName()))
-		end
-		inc.setLink(nodeSource.getChild("inc"))
-		if bennies then
-			bennies.setLink(nodeSource.getChild("main.bennies"))
-		end
-	end
-end
-
-function linkNpcFields()
-	local nodeSource = link.getTargetDatabaseNode()
-	if nodeSource then
-		local bWildCard = wildcard.getValue() == 1 or DB.getValue(nodeSource, "wildcard", 0) == 1
-		wildcard.setValue(bWildCard and 1 or 0)
-		if bennies then
-			bennies.setLink(DB.createChild(getDatabaseNode(), "bennies", "number"))
-		end
-	end
-end
-
-function delete()
-	getDatabaseNode().delete()
-end
-
 --
 -- ACCESSOR METHODS
 --
@@ -276,41 +141,7 @@ function onFactionChanged()
 	updateBackgroundColor()
 end
 
-function toggleTargetedBy(nodeTargeterCombatant)
-	if nodeTargeterCombatant then
-		setTargeted(not isTargetedBy(nodeTargeterCombatant), nodeTargeterCombatant)
-	end
-end
-
-function setTargeted(bStatus, nodeTargeterCT)
-	local tokenTargeter = CombatManager.getTokenFromCT(nodeTargeterCT)
-	local tokenTarget = CombatManager.getTokenFromCT(getDatabaseNode())
-	if tokenTargeter and tokenTarget then
-		if bStatus then
-			tokenTargeter.setTarget(true, tokenTarget)
-		else
-			local aTargetNodes = {}
-			for _,node in pairs(DB.getChildren(nodeTargeterCT, "targets")) do
-				if DB.getValue(node, "noderef") == getDatabaseNode().getNodeName() then
-					table.insert(aTargetNodes, node)
-				end
-			end
-			for _,node in pairs(aTargetNodes) do
-				if node then
-					node.delete()
-				end
-			end
-			if #aTargetNodes > 0 then
-				tokenTargeter.setTarget(false, tokenTarget)
-			end
-		end
-	elseif nodeTargeterCT then
-		TargetingManager.updateTargeting(bStatus, nodeTargeterCT, getDatabaseNode())
-	end
-end
-
 function updateBackground()
-	effecticon.setSectionVisible()
 	updateBackgroundColor()
 end
 
@@ -352,6 +183,12 @@ function update()
 	else
 		participateButton.setEnabled(true)
 		participateButton.setVisible(true)
+	end
+	
+	if not isOwner then
+		participateButton.setVisible(false)
+		participation_skill.setVisible(false)
+		mb_participation_label.setVisible(false)
 	end
 end
 
@@ -399,15 +236,4 @@ function makeParticipationRoll(bReroll)
 		CustomData["reroll"]=true
 	end
 	TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battleparticipation", CustomData)
-end
-
-function updateOwnership()
-	if (User.isHost() or User.isLocal()) then
-		if(link.getTargetDatabaseNode()) then
-			local sNodeOwner = link.getTargetDatabaseNode().getOwner()
-			if sNodeOwner and sNodeOwner ~= "" then
-				DB.setOwner(getDatabaseNode(),sNodeOwner)
-			end
-		end
-	end
 end

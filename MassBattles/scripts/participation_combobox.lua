@@ -19,7 +19,7 @@ function onInit()
 	if bReadOnly then
 		setComboBoxReadOnly(true)
 	end
-	local participationSkill = nodeSrc.getChild("participation_skill")
+	local participationSkill = nodeSrc.getChild(getName())
 	if participationSkill then
 		if participationSkill.getValue()==nil then
 			participationSkill.setValue("--")
@@ -45,7 +45,7 @@ function initializeItems()
 end
 
 function onValueChanged()
-	if bInit and not isComboBoxReadOnly() then
+	if bInit and not isComboBoxReadOnly() and nodeSrc.isOwner() then
 		DB.setValue(nodeSrc, getName(), "string", getValue())
 	end
 end

@@ -4,18 +4,11 @@
 --
 
 function onInit()
-
-
 	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
 	onWildcardChanged()
-
 	type.getDatabaseNode().onUpdate = onTypeChanged
 	onTypeChanged()
 	updateDisplay()
-
-	effecticon.initialize()
-
-	updateMenuOptions()
 
 	DB.createChild(getDatabaseNode(), "inc", "number").onUpdate = updateIncapacitated
 	updateBackground()
@@ -53,21 +46,22 @@ function isFirstCombatant()
 	return NodeManager.equals(self, getGroupWindow().firstCombatant())
 end
 
+
+function onDrop (x,y,draginfo)
+	
+	Debug.chat("onDrop", self, draginfo)
+end
 --
 -- UPDATE AND EVENT HANDLERS
 --
 
 function onMenuSelection(nOption, nSubOption)
 	if nOption == 6 and nSubOption == 7 then
-		if windowlist and windowlist.applyFilter then
-			windowlist.applyFilter()
-		end
-		if Input.isAltPressed() then
-			for _,w in pairs(windowlist.window.getCombatants()) do
-				w.delete()
-			end
-		else
-			delete()
+		armyID = MassBattles.getArmyIDFromCommanderNode(getDatabaseNode())
+		if(armyID=="a") then
+			MassBattles.removeLeaderA()
+		elseif(armyID=="b") then
+			MassBattles.removeLeaderB()
 		end
 	end
 end
@@ -85,11 +79,6 @@ function onVisibilityChanged()
 end
 
 function onTypeChanged()
-	if type.is("pc") then
-		self.linkPcFields()
-	elseif type.is("npc") then
-		self.linkNpcFields()
-	end
 	wildcard_icon.updateMenuOptions()
 	name.updateMenuOptions()
 end
@@ -231,35 +220,6 @@ function sendNotification()
 	end
 end
 
-function linkPcFields()
-	local nodeSource = link.getTargetDatabaseNode()
-	if nodeSource then
-		name.setLink(nodeSource.getChild("name"))
-		for _,w in pairs(damages.getDamageTypeControls()) do
-			w.setLink(nodeSource.getChild(w.getName()))
-		end
-		inc.setLink(nodeSource.getChild("inc"))
-		if bennies then
-			bennies.setLink(nodeSource.getChild("main.bennies"))
-		end
-	end
-end
-
-function linkNpcFields()
-	local nodeSource = link.getTargetDatabaseNode()
-	if nodeSource then
-		local bWildCard = wildcard.getValue() == 1 or DB.getValue(nodeSource, "wildcard", 0) == 1
-		wildcard.setValue(bWildCard and 1 or 0)
-		if bennies then
-			bennies.setLink(DB.createChild(getDatabaseNode(), "bennies", "number"))
-		end
-	end
-end
-
-function delete()
-	getDatabaseNode().delete()
-end
-
 --
 -- ACCESSOR METHODS
 --
@@ -310,7 +270,6 @@ function setTargeted(bStatus, nodeTargeterCT)
 end
 
 function updateBackground()
-	effecticon.setSectionVisible()
 	updateBackgroundColor()
 end
 
@@ -338,76 +297,6 @@ function isIncapacitated()
 end
 
 function update()
-	updateOwnership()
-	local participatedNode = getDatabaseNode().getChild("participated")
-	if(participatedNode and participatedNode.getValue()==1)then
-		createParticipationResultBox()
-	else
-		destroyParticipationResultBox()
-	end
-	local bAlreadyApplied = getDatabaseNode().getChild("pendingResultsActivated") and getDatabaseNode().getChild("pendingResultsActivated").getValue()==1 or false
-	if bAlreadyApplied then
-		participateButton.setEnabled(false)
-		participateButton.setVisible(false)
-	else
-		participateButton.setEnabled(true)
-		participateButton.setVisible(true)
-	end
+	command_skill.update()
 end
 
-function createParticipationResultBox()
-	if participation_result_box and participation_result_box.subwindow then
-		participation_result_box.subwindow.update()
-	elseif participation_result_box then
-		destroyParticipationResultBox()
-	end
-	if not participation_result_box then
-		createControl("participationResultBox", "participation_result_box",".participation_result")
-		cl,va = participation_result_box.getValue()
-        participation_result_node = DB.findNode(getDatabaseNode().getPath()..".participation_result")
-		participation_result_box.setValue(cl,getDatabaseNode().getPath()..".participation_result")
-		participation_result_box.setVisible(true)
-        bSuccess = participation_result_node.getChild("success") and participation_result_node.getChild("success").getValue()==1
-        bFail = participation_result_node.getChild("fail") and participation_result_node.getChild("fail").getValue()==1
-        bCritFail = participation_result_node.getChild("critfail") and participation_result_node.getChild("critfail").getValue()==1
-        bRaise = participation_result_node.getChild("raise") and participation_result_node.getChild("raise").getValue()==1
-		spacer.setAnchoredHeight("10")
-		createControl("vspace","spacer2")
-	end
-end
-
-function destroyParticipationResultBox()
-	if(participation_result_box)then
-		participation_result_box.destroy()
-	end
-	if(spacer2)then
-		spacer2.destroy()
-	end
-	spacer.setAnchoredHeight("20")
-end
-
-function makeParticipationRoll(bReroll)
-	MassBattles.deleteBEChildNodes(getDatabaseNode())
-	local sActorType, sActorLink = link.getValue()
-	local sSkill = participation_skill.getValue()
-	local nodeActor = DB.findNode(sActorLink)
-	ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battleparticipation")
-	local sDescPrefix = Interface.getString("mb_participation_roll_prefix")
-	local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
-	local CustomData = {["mb_entry"]=getDatabaseNode().getPath()}
-	if bReroll then
-		CustomData["reroll"]=true
-	end
-	TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battleparticipation", CustomData)
-end
-
-function updateOwnership()
-	if (User.isHost() or User.isLocal()) then
-		if(link.getTargetDatabaseNode()) then
-			local sNodeOwner = link.getTargetDatabaseNode().getOwner()
-			if sNodeOwner and sNodeOwner ~= "" then
-				DB.setOwner(getDatabaseNode(),sNodeOwner)
-			end
-		end
-	end
-end

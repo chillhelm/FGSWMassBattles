@@ -1,11 +1,38 @@
 <root>
-    <string name="sidebar_tooltip_mb">Mass Battle</string>
-    <string name="massbattle_window_title">Mass Battle</string>
-    <string name="massbattle_forcetokens_label">Force Tokens</string>
-    <string name="mb_commander_label">Commander</string>
-    <string name="mb_participation_label">Participate?</string>
-    <string name="mb_participation_roll_prefix">Battle Participation</string>
-    <string name="mb_participation_result_label">Result</string>
-    <string name="mb_raisechoice_or">or</string>
-
+  <string name="sidebar_tooltip_mb">Mass Battle</string>
+  <string name="massbattle_window_title">Mass Battle</string>
+  <string name="massbattle_forcetokens_label">Force Tokens</string>
+  <string name="mb_commander_label">Commander</string>
+  <string name="mb_participation_label">Participate?</string>
+  <string name="mb_participation_roll_prefix">Battle Participation</string>
+  <string name="mb_participation_result_label">Result</string>
+  <string name="mb_raisechoice_or">or</string>
+  <string name="mb_wound_notification_string">%s suffered [1d4+1]=%d wounds in the battle</string>
+  <string name="mb_apply_part_result">Apply</string>
+  <string name="mb_battle_impact_bonus_tooltip">The bonus you give to your commanders roll</string>
+  <string name="mb_part_fatigues_label">Fatigue Levels</string>
+  <string name="mb_part_wounds_label">Wounds</string>
+  <string name="help_tool_mb">https://google.com</string>
+  <string name="mb_fatigue_short_label">Fatg</string>
+  <string name="mb_wound_short_label">Wnds</string>
+  <string name="mb_name_short_label">Name</string>
+  <string name="mb_bonus_short_label">Support</string>
+  <string name="mb_start_force_tokens_label">Starting Force Tokens</string>
+  <string name="mb_tactical_advantage_label">Tactical Advantage</string>
+  <string name="mb_battle_plan_label">Battle Plan</string>
+  <string name="mb_morale_bonus_label">Morale Bonus</string>
+  <string name="mb_armya_settings_window_label">Left Force Settings</string>
+  <string name="mb_armyb_settings_window_label">Right Force Settings</string>
+  <string name="mb_morale_check_button">Roll Morale</string>
+  <string name="mb_morale_success">%s fights on!</string>
+  <string name="mb_morale_fail">%s loses the battle but retreats in an orderly manner!</string>
+  <string name="mb_morale_critfail">%s loses the battle and flees in a reckless rout!</string>
+  <string name="mb_morale_roll_prefix">Morale</string>
+  <string name="mb_army_name_label">Army Name</string>
+  <string name="mb_hints_gm1">Set both armies up using the settings windows found by clicking the [+-] buttons in the top left and right corners. Then add Commanders and Champions to both armies.</string>
+  <string name="mb_hints_gm2">Have all heroes and villains (that want to get involved in this round) choose a skill and participate in this round of battle to support their commander. Then have the two commanders make their command rolls.</string>
+  <string name="mb_hints_gm3">Once both commanders are satisfied with their command results, click the accept button to calculate losses and apply them.</string>
+  <string name="mb_hints_gm4">Have both commanders roll for Morale and proceed to the next round, by clicking the [New Round] button.</string>
+  <string name="mb_commander_label">Commander</string>
+  <string name="mb_no_morale_check_required">No Morale Check</string>
 </root>

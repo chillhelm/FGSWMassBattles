@@ -44,33 +44,6 @@ function update()
 	end
 end
 
-function setLeaderA(sType, sClass, sRecord)
-	if DB.isOwner(getDatabaseNode()) and DB.findNode(sRecord) then
-		leaderAtype.setValue(sType)
-		leadera.setValue(sClass, sRecord)
-		local owner = DB.getOwner(sRecord)
-		if owner and owner~="" then
-			DB.setOwner(getDatabaseNode().getPath()..".leaderadetails", owner)
-			DB.setOwner(getDatabaseNode().getPath().."armyacommandresult",owner)
-			DB.setOwner(getDatabaseNode().getPath().."armyacommanded",owner)
-
-		end
-	end
-end
-
-function setLeaderB(sType, sClass, sRecord)
-	if DB.isOwner(getDatabaseNode()) and DB.findNode(sRecord) then
-		leaderBtype.setValue(sType)
-		leaderb.setValue(sClass, sRecord)
-		local owner = DB.getOwner(sRecord)
-		if owner and owner~="" then
-			DB.setOwner(getDatabaseNode().getPath()..".leaderbdetails", owner)
-			DB.setOwner(getDatabaseNode().getPath().."armybcommandresult",owner)
-			DB.setOwner(getDatabaseNode().getPath().."armybcommanded",owner)
-		end
-	end
-end
-
 function getLeaderAShortcut()
 	local sActorType = leaderAtype.getValue()
 	local nodeActor = leaderA.getTargetDatabaseNode()
@@ -86,50 +59,27 @@ end
 function createWidgetLeaderADisplay()
     local leaderAclass, leaderArecord = leadera.getValue()
     if leaderArecord and leaderArecord ~= "" then
-        if not getDatabaseNode().getChild("leaderadetails") then
-            getDatabaseNode().createChild("leaderadetails")
-        end
         if self.mbLeaderADisplayBox then
             self.mbLeaderADisplayBox.destroy()
         end
-		createControl("mbLeaderADisplayBox", "mbLeaderADisplayBox", ".leaderadetails")
+		createControl("mbLeaderADisplayBox_client", "mbLeaderADisplayBox", ".leaderadetails")
 		cl,va = mbLeaderADisplayBox.getValue()
 		mbLeaderADisplayBox.setValue(cl,getDatabaseNode().getPath()..".leaderadetails")
 		mbLeaderADisplayBox.setVisible(true)
-		if leaderAclass == "charsheet" then
-			mbLeaderADisplayBox.subwindow.loadPC(DB.findNode(leaderArecord))
-		else
-			mbLeaderADisplayBox.subwindow.loadNPC(leaderAclass, DB.findNode(leaderArecord))
-		end
 	end
 end
 
 function createWidgetLeaderBDisplay()
     local leaderBclass, leaderBrecord = leaderb.getValue()
     if leaderBrecord and leaderBrecord ~= "" then
-        if not getDatabaseNode().getChild("leaderbdetails") then
-            getDatabaseNode().createChild("leaderbdetails")
-        end
         if self.mbLeaderBDisplayBox then
             self.mbLeaderBDisplayBox.destroy()
         end
-		createControl("mbLeaderBDisplayBox", "mbLeaderBDisplayBox", ".leaderbdetails")
+		createControl("mbLeaderBDisplayBox_client", "mbLeaderBDisplayBox", ".leaderbdetails")
 		cl,va = mbLeaderBDisplayBox.getValue()
 		mbLeaderBDisplayBox.setValue(cl,getDatabaseNode().getPath()..".leaderbdetails")
 		mbLeaderBDisplayBox.setVisible(true)
-		if leaderBclass == "charsheet" then
-			mbLeaderBDisplayBox.subwindow.loadPC(DB.findNode(leaderBrecord))
-		else
-			mbLeaderBDisplayBox.subwindow.loadNPC(leaderBclass, DB.findNode(leaderBrecord))
-		end
 	end
 end
 
-function openArmyASettings()
-	Interface.openWindow("ArmyASettingsWindow","massbattle")
-end
-
-function openArmyBSettings()
-	Interface.openWindow("ArmyBSettingsWindow","massbattle")
-end
 

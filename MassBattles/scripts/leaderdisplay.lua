@@ -4,11 +4,8 @@
 --
 
 function onInit()
-
-
 	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
 	onWildcardChanged()
-
 	type.getDatabaseNode().onUpdate = onTypeChanged
 	onTypeChanged()
 	updateDisplay()
@@ -59,15 +56,11 @@ end
 
 function onMenuSelection(nOption, nSubOption)
 	if nOption == 6 and nSubOption == 7 then
-		if windowlist and windowlist.applyFilter then
-			windowlist.applyFilter()
-		end
-		if Input.isAltPressed() then
-			for _,w in pairs(windowlist.window.getCombatants()) do
-				w.delete()
-			end
-		else
-			delete()
+		armyID = MassBattles.getArmyIDFromCommanderNode(getDatabaseNode())
+		if(armyID=="a") then
+			MassBattles.removeLeaderA()
+		elseif(armyID=="b") then
+			MassBattles.removeLeaderB()
 		end
 	end
 end
@@ -111,6 +104,37 @@ end
 function updateDisplay()
 	if type.isNot("pc") then
 		name.setFrame("textline",0,0,0,0)
+	end
+end
+
+--
+-- DROP HANDLING
+--
+
+function onDrop(x, y, draginfo)
+	Debug.chat("onDrop",self, getDatabaseNode())
+	if draginfo.isType("shortcut") then
+	  armyID = MassBattles.getArmyIDFromCommanderNode(getDatabaseNode())
+	  local sClass, sRecord = draginfo.getShortcutData()
+	  if sClass == "charsheet" then
+		if armyID=="a" then
+			MassBattles.removeLeaderA()
+			parentcontrol.window.setLeaderA("pc", sClass, sRecord)
+		else
+			MassBattles.removeLeaderB()
+			parentcontrol.window.setLeaderB("pc", sClass, sRecord)
+		end
+		setPC(DB.findNode(sRecord),draginfo)
+	  elseif sClass == "npc" then
+		if armyID=="a" then
+			MassBattles.removeLeaderA()
+			parentcontrol.window.setLeaderA("npc", sClass, sRecord)
+		else
+			MassBattles.removeLeaderB()
+			parentcontrol.window.setLeaderB("npc", sClass, sRecord)
+		end
+		setNPC(DB.findNode(sRecord),draginfo)
+	  end
 	end
 end
 
@@ -250,7 +274,9 @@ function linkNpcFields()
 	if nodeSource then
 		local bWildCard = wildcard.getValue() == 1 or DB.getValue(nodeSource, "wildcard", 0) == 1
 		wildcard.setValue(bWildCard and 1 or 0)
-		if bennies then
+		if not bWildCard then
+			bennies.setVisible(false)
+		elseif bennies then
 			bennies.setLink(DB.createChild(getDatabaseNode(), "bennies", "number"))
 		end
 	end
@@ -338,76 +364,115 @@ function isIncapacitated()
 end
 
 function update()
-	updateOwnership()
-	local participatedNode = getDatabaseNode().getChild("participated")
-	if(participatedNode and participatedNode.getValue()==1)then
-		createParticipationResultBox()
-	else
-		destroyParticipationResultBox()
-	end
-	local bAlreadyApplied = getDatabaseNode().getChild("pendingResultsActivated") and getDatabaseNode().getChild("pendingResultsActivated").getValue()==1 or false
-	if bAlreadyApplied then
-		participateButton.setEnabled(false)
-		participateButton.setVisible(false)
-	else
-		participateButton.setEnabled(true)
-		participateButton.setVisible(true)
-	end
+	command_skill.update()
 end
 
-function createParticipationResultBox()
-	if participation_result_box and participation_result_box.subwindow then
-		participation_result_box.subwindow.update()
-	elseif participation_result_box then
-		destroyParticipationResultBox()
+function setPC(nodeSource, draginfo, vData)
+	local tokenData = draginfo.getTokenData()
+	type.setValue("pc")
+
+	wildcard.setValue(1)
+
+	-- Token
+	if tokenData then
+		token.setPrototype(tokenData)
 	end
-	if not participation_result_box then
-		createControl("participationResultBox", "participation_result_box",".participation_result")
-		cl,va = participation_result_box.getValue()
-        participation_result_node = DB.findNode(getDatabaseNode().getPath()..".participation_result")
-		participation_result_box.setValue(cl,getDatabaseNode().getPath()..".participation_result")
-		participation_result_box.setVisible(true)
-        bSuccess = participation_result_node.getChild("success") and participation_result_node.getChild("success").getValue()==1
-        bFail = participation_result_node.getChild("fail") and participation_result_node.getChild("fail").getValue()==1
-        bCritFail = participation_result_node.getChild("critfail") and participation_result_node.getChild("critfail").getValue()==1
-        bRaise = participation_result_node.getChild("raise") and participation_result_node.getChild("raise").getValue()==1
-		spacer.setAnchoredHeight("10")
-		createControl("vspace","spacer2")
-	end
+
+	-- Link
+	link.setValue("charsheet", nodeSource.getNodeName())
+	command_skill.update()
+
+	linkPcFields(nodeSource) -- this will have been skipped during onInit, as type / link were not set
 end
 
-function destroyParticipationResultBox()
-	if(participation_result_box)then
-		participation_result_box.destroy()
-	end
-	if(spacer2)then
-		spacer2.destroy()
-	end
-	spacer.setAnchoredHeight("20")
+function setNPC(nodeSource, draginfo, vData)
+	local sClass = draginfo.getShortcutData()
+	link.setValue(sClass, nodeSource.getNodeName())
+	command_skill.update()
+
+	initializeNpc(nodeSource, vData)
+
+	linkNpcFields()
 end
 
-function makeParticipationRoll(bReroll)
-	MassBattles.deleteBEChildNodes(getDatabaseNode())
-	local sActorType, sActorLink = link.getValue()
-	local sSkill = participation_skill.getValue()
-	local nodeActor = DB.findNode(sActorLink)
-	ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battleparticipation")
-	local sDescPrefix = Interface.getString("mb_participation_roll_prefix")
-	local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
-	local CustomData = {["mb_entry"]=getDatabaseNode().getPath()}
-	if bReroll then
-		CustomData["reroll"]=true
-	end
-	TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battleparticipation", CustomData)
-end
+function initializeNpc(nodeSource, vData)
+	local sBaseName = DB.getValue(nodeSource, "name")
+	type.setValue("npc")
+	DerivedStatManager.copyDerivedStatNodes(nodeSource, getDatabaseNode(), "ct")
 
-function updateOwnership()
-	if (User.isHost() or User.isLocal()) then
-		if(link.getTargetDatabaseNode()) then
-			local sNodeOwner = link.getTargetDatabaseNode().getOwner()
-			if sNodeOwner and sNodeOwner ~= "" then
-				DB.setOwner(getDatabaseNode(),sNodeOwner)
+	initializeChampion(nodeSource, sBaseName, vData)
+
+	if CharacterManager.isWildCard(nodeSource) then
+		DB.setValue(getDatabaseNode(), "bennies", "number", BennyManager.getMaxNPCBennies(nodeSource))
+	end
+
+	local sGear = DB.getValue(nodeSource, "gear", "")
+	if StringManager.isNotBlank(sGear) then
+		local rActor = ActorManager.getActor("ct", getDatabaseNode())
+		if rActor then
+			local sGearRe = "%[[^%]]+%]"
+			while sGear:find(sGearRe) do
+				local nStart, nEnd = sGear:find(sGearRe)
+				local sEffect = StringManager.trim(sGear:sub(nStart, nEnd))
+				local sItem = StringManager.trim(sGear:sub(0, nStart-1):match("([^%.,;]+)$"))
+				if StringManager.isNotBlank(sItem) then
+					local rEffect = ActionEffect.createStateEffect(sItem .. " " .. sEffect)
+					ActionEffect.applyEffect(rActor, rActor, rEffect)
+				end
+				sGear = sGear:sub(nEnd+1)
 			end
 		end
 	end
+end
+
+function initializeChampion(nodeSource, sBaseName, vData)
+	local rData = (vData and MassBattles.typeOf(vData) == "table") and vData
+	local nodeCT = getDatabaseNode()
+	local sType = type.getValue()
+
+	-- Name
+	local sName = (rData and rData.name) or sBaseName
+	name.setValue(sName)
+
+	-- Token
+	if rData and StringManager.isNotBlank(rData.token) then
+		token.setPrototype(rData.token)
+	else
+		local sToken = DB.getValue(nodeSource, "token", "")
+		if StringManager.isNotBlank(sToken) then
+			token.setPrototype(sToken)
+		else
+			DB.setValue(nodeCT, "token", "token", CharacterManager.getTokenPrototype(nodeCT))
+		end
+	end
+
+end
+
+
+function loadPC(nodeSource)
+	local tokenData = CharacterManager.getTokenPrototype(nodeSource)
+	type.setValue("pc")
+
+	wildcard.setValue(1)
+
+	-- Token
+	if tokenData then
+		token.setPrototype(tokenData)
+	end
+
+	-- Link
+	link.setValue("charsheet", nodeSource.getNodeName())
+	command_skill.update()
+
+	linkPcFields(nodeSource) -- this will have been skipped during onInit, as type / link were not set
+end
+
+function loadNPC(class, nodeSource)
+	local sClass = class
+	link.setValue(sClass, nodeSource.getNodeName())
+	command_skill.update()
+
+	initializeNpc(nodeSource)
+
+	linkNpcFields()
 end

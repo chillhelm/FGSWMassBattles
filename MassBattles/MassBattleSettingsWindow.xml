@@ -1,0 +1,236 @@
+<root>
+  <windowclass name="ArmyASettingsWindow">
+		<frame>recordsheet</frame>
+		<placement>
+			<size width="250" height="200" />
+		</placement>
+		<sizelimits>
+			<minimum width="250" height="200" />
+      <maximum width="250" height="200" />
+			<dynamic />
+		</sizelimits>
+		<softclose />
+		<nodelete />
+    <sheetdata>
+      <genericcontrol name="left_anchor">
+        <anchored width="0" height="0">
+          <top offset="10"/>
+          <left offset="10"/>
+        </anchored>
+      </genericcontrol>
+      <label name="title">
+        <static textres="mb_armya_settings_window_label"/>
+        <center/>
+        <font>settings_title_font</font>
+        <anchored>
+          <left/>
+          <right/>
+          <top parent="left_anchor" anchor="bottom" relation="relative"/>
+        </anchored>
+      </label>
+      <label name="army_name_label">
+        <static textres="mb_army_name_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <stringfield name="ArmyAName">
+        <frame offset="8,4,8,4">bonus</frame>
+        <anchored>
+          <left anchor="right" parent="army_name_label" offset="10"/>
+          <top parent="army_name_label"/>
+        </anchored>
+      </stringfield>
+      <label name="start_force_tokens_label">
+        <static textres="mb_start_force_tokens_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="StartForceTokensA">
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left anchor="right" parent="start_force_tokens_label" offset="10"/>
+          <top parent="start_force_tokens_label"/>
+          <bottom parent="start_force_tokens_label"/>
+        </anchored>
+        <default>10</default>
+        <min>0</min>
+        <max>10</max>
+      </numberfield>
+      <label name="tactical_advantage_label">
+        <static textres="mb_tactical_advantage_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="tacticalAdvantageA">
+        <displaysign/>
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left  anchor="right" parent="tactical_advantage_label" offset="10"/>
+          <top parent="tactical_advantage_label"/>
+          <bottom parent="tactical_advantage_label"/>
+        </anchored>
+        <min>0</min>
+        <max>4</max>
+      </numberfield>
+      <label name="battle_plan_label">
+        <static textres="mb_battle_plan_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="battlePlanA">
+        <displaysign/>
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left  anchor="right" parent="battle_plan_label" offset="10"/>
+          <top parent="battle_plan_label"/>
+          <bottom parent="battle_plan_label"/>
+        </anchored>
+        <min>0</min>
+        <max>4</max>
+      </numberfield>
+      <label name="morale_bonus_label">
+        <static textres="mb_morale_bonus_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="moraleBonusA">
+        <displaysign/>
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left  anchor="right" parent="morale_bonus_label" offset="10"/>
+          <top parent="morale_bonus_label"/>
+          <bottom parent="morale_bonus_label"/>
+        </anchored>
+      </numberfield>
+      <resize_recordsheet />
+      <close_recordsheet /> 
+    </sheetdata>
+  </windowclass>
+  <windowclass name="ArmyBSettingsWindow">
+		<frame>recordsheet</frame>
+		<placement>
+			<size width="250" height="200" />
+		</placement>
+		<sizelimits>
+			<minimum width="250" height="200" />
+      <maximum width="250" height="200" />
+			<dynamic />
+		</sizelimits>
+		<softclose />
+		<nodelete />
+    <sheetdata>
+      <genericcontrol name="left_anchor">
+        <anchored width="0" height="0">
+          <top offset="10"/>
+          <left offset="10"/>
+        </anchored>
+      </genericcontrol>
+      <label name="title">
+        <static textres="mb_armyb_settings_window_label"/>
+        <center/>
+        <font>settings_title_font</font>
+        <anchored>
+          <left/>
+          <right/>
+          <top parent="left_anchor" anchor="bottom" relation="relative"/>
+        </anchored>
+      </label>
+      <label name="army_name_label">
+        <static textres="mb_army_name_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <stringfield name="ArmyBName">
+        <frame offset="8,4,10,4">bonus</frame>
+        <anchored>
+          <left anchor="right" parent="army_name_label" offset="10"/>
+          <top parent="army_name_label"/>
+        </anchored>
+      </stringfield>
+      <label name="start_force_tokens_label">
+        <static textres="mb_start_force_tokens_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="StartForceTokensB">
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left anchor="right" parent="start_force_tokens_label" offset="10"/>
+          <top parent="start_force_tokens_label"/>
+          <bottom parent="start_force_tokens_label"/>
+        </anchored>
+        <default>10</default>
+        <min>0</min>
+        <max>10</max>
+      </numberfield>
+      <label name="tactical_advantage_label">
+        <static textres="mb_tactical_advantage_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="tacticalAdvantageB">
+        <displaysign/>
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left  anchor="right" parent="tactical_advantage_label" offset="10"/>
+          <top parent="tactical_advantage_label"/>
+          <bottom parent="tactical_advantage_label"/>
+        </anchored>
+        <min>0</min>
+        <max>4</max>
+      </numberfield>
+      <label name="battle_plan_label">
+        <static textres="mb_battle_plan_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="battlePlanB">
+        <displaysign/>
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left  anchor="right" parent="battle_plan_label" offset="10"/>
+          <top parent="battle_plan_label"/>
+          <bottom parent="battle_plan_label"/>
+        </anchored>
+        <min>0</min>
+        <max>4</max>
+      </numberfield>
+      <label name="morale_bonus_label">
+        <static textres="mb_morale_bonus_label"/>
+        <anchored>
+          <left parent="left_anchor" offset="20"/>
+          <top parent="left_anchor" anchor="bottom" offset="5" relation="relative"/>
+        </anchored>
+      </label>
+      <numberfield name="moraleBonusB">
+        <displaysign/>
+        <frame>bonus</frame>
+        <anchored width="30">
+          <left  anchor="right" parent="morale_bonus_label" offset="10"/>
+          <top parent="morale_bonus_label"/>
+          <bottom parent="morale_bonus_label"/>
+        </anchored>
+      </numberfield>
+      <resize_recordsheet />
+      <close_recordsheet /> 
+    </sheetdata>
+  </windowclass>
+</root>
