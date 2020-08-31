@@ -246,9 +246,7 @@ function setBonus(participant,nValue)
 end
 
 function woundParticipant(participant, nWounds)
-	char_link = participant.getChild("link")
-	_,char_path = char_link.getValue()
-    ActionDamage.applyWounds("mb", participant, nWounds, false, false)
+    applyWounds("mb", participant, nWounds)
 end
 
 function makeBattleTableRoll(participant, cause)
@@ -289,8 +287,33 @@ end
  end
 
  
+ 
+function applyWounds(sTargetType, nodeTarget, nWounds)
+	if nodeTarget and DB.isOwner(nodeTarget) then
+		local rActor = CharacterManager.getActorShortcut(sTargetType, nodeTarget)
+		local nCurrentWounds = DB.getValue(nodeTarget, "main.wounds", 0)
+		local nNewWound = nCurrentWounds - nWounds
+		local nMaxWounds = DamageTypeManager.getDamageThreshold(rActor, "main.wounds") * -1
+		local bIncapacitated = nNewWound < nMaxWounds
+		if bIncapacitated then
+			local rMessage = RollsManager.createResultMessage(sTargetType, nodeTarget, true)
+			rMessage.icon = "state_inc"
+			if bNonLethal then
+				local rEffectActor = ActorManager.getActor(sTargetType, nodeTarget.getNodeName()) ActionEffect.applyEffect(rEffectActor, rEffectActor, ActionEffect.knockedOutEffect()) rMessage.text = Interface.getString("damage_x_knockedout"):format(rMessage.text)
+			else
+				rMessage.text = Interface.getString("damage_x_incapacitated"):format(rMessage.text)
+			end
+			Comm.deliverChatMessage(rMessage)
+			nNewWound = nMaxWounds
+		end
+		DB.setValue(nodeTarget, "main.wounds", "number", nNewWound)
+		if bIncapacitated then
+			DB.setValue(nodeTarget, "inc", "number", 1)
+		end
+	end
+end
 function applyFatigue(sTargetType, nodeTarget, nFatigues, bNonLethal)
-	if nodeTarget and User.isHost() then
+	if nodeTarget and DB.isOwner(nodeTarget) then
 		local rActor = CharacterManager.getActorShortcut(sTargetType, nodeTarget)
 		local nCurrentFatigues = DB.getValue(nodeTarget, "main.fatigue", 0)
 		local nNewFatigue = nCurrentFatigues - nFatigues
@@ -579,6 +602,7 @@ function activatePendingEffects(participant)
         local nPendingFatigues = DB.getValue(nodeParticipationResults,"pending_fatigues",0)
         local nPendingWounds = DB.getValue(nodeParticipationResults,"pending_wounds",0)
         local nPendingBonus = DB.getValue(nodeParticipationResults,"pending_battle_impact_bonus",0)
+        Debug.chat("Wounding paricipant ", participant, " for ", nPendingFatigues, " Fatigues and ", nPendingWounds, " Wounds.")
         fatigueParticipant(participant, nPendingFatigues)
         woundParticipant(participant, nPendingWounds)
         setBonus(participant, nPendingBonus)
