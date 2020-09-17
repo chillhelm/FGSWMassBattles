@@ -7,6 +7,8 @@ end
 
 function update()
 
+	local bIsOwner = getDatabaseNode().isOwner()
+
 	local node = getDatabaseNode()
 	bSuccess = node.getChild("success") and node.getChild("success").getValue()==1
 	bFail = node.getChild("fail") and node.getChild("fail").getValue()==1
@@ -17,7 +19,7 @@ function update()
 	success_indicator.setVisible(false)
 	raise_indicator.setVisible(false)
 	fail_indicator.setVisible(false)
-	apply_result_button.setVisible(true)
+	apply_result_button.setVisible(bIsOwner)
 
 	if bCritFail then
 		critfail_indicator.setVisible(true)
@@ -29,19 +31,27 @@ function update()
 		apply_result_button.setVisible(false)
 		raise_indicator.setVisible(true)
         raise_choice_battleeffect_button.setText(node.getChild("raise_choice_battleeffect") and node.getChild("raise_choice_battleeffect").getValue() or "")
-		showRaiseChoice()
+		if isOwner() then
+			showRaiseChoice()
+		end
 	elseif bSuccess then
 		success_indicator.setVisible(true)
 		hideRaiseChoice()
 	end
 	local alreadyApplied = node.getParent().getChild("pendingResultsActivated") and node.getParent().getChild("pendingResultsActivated").getValue()==1 or false
-	if alreadyApplied or bRaise then
+	if bIsOwner and (alreadyApplied or bRaise) then
 		apply_result_button.setEnabled(false)
 		apply_result_button.setVisible(false)
-	else
+	elseif bIsOwner then
 		apply_result_button.setEnabled(true)
 		apply_result_button.setVisible(true)
+	else
+		apply_result_button.setEnabled(false)
+		apply_result_button.setVisible(false)
+		clear_result_button.setVisible(false)
+		clear_result_button.setEnabled(false)
 	end
+
 
 	if alreadyApplied then
 		hideRaiseChoice()
