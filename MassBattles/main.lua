@@ -24,6 +24,10 @@ function onInit()
     RollsManager.registerTraitRollModHandler(applyCommandBonus)
     RollsManager.registerTraitRollModHandler(applyMoraleBonus)
     OOBManager.registerOOBMsgHandler("MassBattleWindowUpdate", onOOBMBWUpdate)
+    if User.isHost() or User.isLocal() then
+        Debug.chat("onOOBMBApplyCommandResult registered")
+		OOBManager.registerOOBMsgHandler("MassBattleApplyCommandResult", onOOBMBApplyCommandResult)
+    end
     ChatManager.registerRollHandler("massbattleCritFailInjury", processMassbattleCritFailInjury)
     if User.isHost() or User.isLocal() then
 		local mbNode = DB.createNode("massbattle")
@@ -82,15 +86,12 @@ end
 
 function resolveBattleCommandRoll(rRoll, rRollResult, rSource, vTargets, rContext)
     local participant = DB.findNode(extractMBEntryFromUserdata(rRoll.rCustom.userdata))
-    armyid = getArmyIDFromCommanderNode(participant)
-    nodeMassbattle = DB.findNode("massbattle")
-    nodeMassbattle.createChild("army"..armyid.."commandresult","number").setValue(rRollResult.nTotalScore)
-    DB.setValue(nodeMassbattle,"army"..armyid.."commanded","number",1)
-    if nodeMassbattle.getChild("armyacommandresult") and nodeMassbattle.getChild("armybcommandresult") then
-        -- show round resolution button
-        windowMassbattle = getMassbattleWindow()
-        windowMassbattle.update()
-    end
+    local commandResultsNode = DB.createChild(participant,"command_results")
+    local commandResultNode = DB.createChild(commandResultsNode)
+    Debug.chat(rRollResult)
+    DB.setValue(commandResultNode,"total", "number",rRollResult.nTotalScore)
+	local windowMassbattle = getMassbattleWindow()
+	windowMassbattle.update()
     updateClientsMassBattleWindows()
 end
 
@@ -168,6 +169,18 @@ end
 
 function applyParticipationResult(participationResultNode)
     activatePendingEffects(participationResultNode)
+    local windowMassbattle = getMassbattleWindow()
+    if windowMassbattle then
+        windowMassbattle.update()
+	end
+	MassBattles.updateClientsMassBattleWindows()
+end
+
+function applyCommandResult(participationResultNode)
+    if true then
+        Debug.chat(participationResultNode)
+		Comm.deliverOOBMessage({type="MassBattleApplyCommandResult",node=participationResultNode.getPath()})
+    end
     local windowMassbattle = getMassbattleWindow()
     if windowMassbattle then
         windowMassbattle.update()
@@ -531,8 +544,11 @@ function acceptCommandResults()
 	nodeArmyAForceTokens.setValue(math.max(nArmyAForceTokens-nArmyALosses,0))
 	nodeArmyBForceTokens.setValue(math.max(nArmyBForceTokens-nArmyBLosses,0))
     nodeMassbattle.createChild("commandResultsApplied","number").setValue(1)
+    DB.deleteChildren(nodeMassbattle, "leaderadetails.command_results")
+    DB.deleteChildren(nodeMassbattle, "leaderbdetails.command_results")
     local windowMassbattle = getMassbattleWindow()
     windowMassbattle.update()
+    updateClientsMassBattleWindows()
 end
 
 function startNextRound()
@@ -544,6 +560,8 @@ function startNextRound()
     DB.deleteChild(nodeMassbattle, "armyacommanded")
     DB.deleteChild(nodeMassbattle, "armybcommanded")
     DB.deleteChild(nodeMassbattle, "commandResultsApplied")
+    DB.deleteChildren(nodeMassbattle, "leaderadetails.command_results")
+    DB.deleteChildren(nodeMassbattle, "leaderbdetails.command_results")
     DB.setValue(nodeMassbattle, "armyalosses","number",0)
     DB.setValue(nodeMassbattle, "armyblosses","number",0)
     DB.deleteChild(nodeMassbattle, "requireMoraleCheckA")
@@ -701,5 +719,19 @@ function onOOBMBWUpdate(data)
     windowMassbattle = getMassbattleWindow()
     if windowMassbattle then
 		windowMassbattle.update()
+    end
+end
+
+function onOOBMBApplyCommandResult(data)
+    Debug.chat("onOOBMBApplyCommandResult",data.node)
+    local commandResultNode = DB.findNode(data.node)
+    Debug.chat("onOOBMBApplyCommandResult data:",data, commandResultNode)
+    if(commandResultNode)then
+		local nResult = DB.getValue(commandResultNode, "total", 0)
+		local massbattleNode = DB.findNode("massbattle")
+		local armyid = getArmyIDFromCommanderNode(commandResultNode.getParent().getParent())
+        Debug.chat(armyid,"has been commmanded")
+		DB.setValue(massbattleNode,"army"..armyid.."commandresult","number",nResult)
+		DB.setValue(massbattleNode,"army"..armyid.."commanded","number",1)
     end
 end

@@ -527,6 +527,56 @@
       <anchored position="insidetop" height="0"/>
     </genericcontrol>
   </template>
+  <windowclass name="commandResultBox_Window">
+    <script file="MassBattles/scripts/command_result_box.lua"/>
+    <frame name="groupbox"/>
+    <sheetdata>
+      <label name="mb_participation_result_label">
+        <anchored>
+          <top offset="10"/>
+          <left offset="10"/>
+        </anchored>
+        <static textres="mb_participation_result_label" />
+      </label>
+      <number name="total">
+        <anchored to="mb_participation_result_label" position="right" offset="15"/>
+      </number>
+      <buttoncontrol name="clear_result_button">
+        <tooltipres>mb_clear_result</tooltipres>
+        <script>
+          function onButtonPress()
+          window.deleteParticipationResult()
+          end
+        </script>
+        <anchored width="15">
+          <right offset="-15"/>
+          <top parent="mb_participation_result_label"/>
+          <bottom parent="mb_participation_result_label"/>
+        </anchored>
+        <icon normal="button_clear" pressed="button_clear_down" />
+      </buttoncontrol>
+      <button_text name="apply_result_button">
+        <script>
+          function onButtonPress()
+          window.applyParticipationResult()
+          end
+        </script>
+        <anchored width="50" >
+          <right offset="-20" parent="clear_result_button"/>
+          <top parent="mb_participation_result_label"/>
+          <bottom parent="mb_participation_result_label"/>
+        </anchored>
+        <textres>mb_apply_part_result</textres>
+      </button_text>
+      <genericcontrol name="tinyspacer">
+        <anchored height="10">
+          <top parent="mb_participation_result_label" anchor="bottom" position="relative"/>
+          <left />
+          <right />
+        </anchored>
+      </genericcontrol>
+    </sheetdata>
+  </windowclass>
     <windowclass name="participationResultBox_Window">
       <script file="MassBattles/scripts/participation_result_box.lua"/>
       <frame name="groupbox"/>
@@ -915,7 +965,17 @@
         <anchored to="command_skill" position="right" offset="10" width="80"/>
         <text>Command!</text>
       </button_text>
-      
+      <list_sw name="commandResultList">
+        <anchored>
+          <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
+          <left parent="mb_command_label" />
+          <right parent="damages" anchor="left"/>
+        </anchored>
+        <datasource>.command_results</datasource>
+        <script file="MassBattles/scripts/template_resultlist.lua"/>
+        <script file="MassBattles/scripts/mb_commandresultlist.lua"/>
+        <class>commandResultBox_Window</class>
+      </list_sw>
       <vspace name="spacer">
         <anchored height="20">
           <top parent="damages" anchor="bottom" relation="relative" />
@@ -1081,7 +1141,17 @@
         <anchored to="command_skill" position="right" offset="10" width="80"/>
         <text>Command!</text>
       </button_text>
-      
+      <list_sw name="commandResultList">
+        <anchored>
+          <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
+          <left parent="mb_command_label" />
+          <right parent="damages" anchor="left"/>
+        </anchored>
+        <datasource>.command_results</datasource>
+        <script file="MassBattles/scripts/template_resultlist.lua"/>
+        <script file="MassBattles/scripts/mb_commandresultlist.lua"/>
+        <class>commandResultBox_Window</class>
+      </list_sw>
       <vspace name="spacer">
         <anchored height="20">
           <top parent="damages" anchor="bottom" relation="relative" />

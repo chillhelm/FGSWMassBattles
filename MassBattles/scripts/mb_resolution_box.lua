@@ -1,5 +1,12 @@
 
 function update()
+	if not (User.isHost() or User.isLocal()) then
+		accept_round_results.setVisible(false)
+		accept_round_results.setEnabled(false)
+	else
+		accept_round_results.setVisible(true)
+		accept_round_results.setEnabled(true)
+	end
 	nACommandResult = DB.getValue(getDatabaseNode(),"armyacommandresult",0)
 	nBCommandResult = DB.getValue(getDatabaseNode(),"armybcommandresult",0)
 	if (nACommandResult-nBCommandResult>=4) then
