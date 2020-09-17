@@ -99,7 +99,7 @@ function getArmyIDFromCommanderNode(commander)
 end
 
 function resetParticipationResult(participant)
-    local nodeParticipationResult = participant.getChild("participation_result")
+    local nodeParticipationResult = DB.deleteChildren(participant,"participation_results")
     DB.setValue(nodeParticipationResult,"pending_wounds","number",0)
     DB.setValue(nodeParticipationResult,"pending_fatigues","number",0)
     DB.setValue(nodeParticipationResult,"pending_bouns","number",0)
@@ -118,9 +118,6 @@ function updateParticipationResultData(participant, total_score, bCritFail)
 		end 
     end
     bFail = bCriticalFailure or total_score<4
-    if participant.getChild("participation_result") then
-        resetParticipationResult(participant)
-    end
     local participation_results_node = DB.createChild(participant,"participation_results")
     local participation_result_node = DB.createChild(participation_results_node)
     participation_result_node.createChild("total","number").setValue(total_score)
@@ -555,7 +552,7 @@ function startNextRound()
     DB.setValue(nodeMassbattle,"AoOLossesThisRoundB","number",0)
     for _,participant in pairs(DB.getChildren(nodeMassbattle,"ArmyA.champions")) do
         DB.setValue(participant,"participated","number",0)
-		DB.deleteChild(participant,"participation_result")
+		DB.deleteChildren(participant,"participation_results")
         DB.setValue(participant,"results_activated","number",0)
         DB.setValue(participant,"battle_effect","string","")
         DB.setValue(participant,"battle_impact_bonus","number",0)
@@ -563,7 +560,7 @@ function startNextRound()
     end
     for _,participant in pairs(DB.getChildren(nodeMassbattle,"ArmyB.champions")) do
         DB.setValue(participant,"participated","number",0)
-		DB.deleteChild(participant,"participation_result")
+		DB.deleteChildren(participant,"participation_results")
         DB.setValue(participant,"results_activated","number",0)
         DB.setValue(participant,"battle_effect","string","")
         DB.setValue(participant,"battle_impact_bonus","number",0)
