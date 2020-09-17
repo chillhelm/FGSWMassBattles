@@ -171,11 +171,6 @@ end
 function update()
 	updateOwnership()
 	local participatedNode = getDatabaseNode().getChild("participated")
-	if(participatedNode and participatedNode.getValue()==1)then
-		createParticipationResultBox()
-	else
-		destroyParticipationResultBox()
-	end
 	local bAlreadyApplied = getDatabaseNode().getChild("pendingResultsActivated") and getDatabaseNode().getChild("pendingResultsActivated").getValue()==1 or false
 	if bAlreadyApplied then
 		participateButton.setEnabled(false)
@@ -190,37 +185,6 @@ function update()
 		participation_skill.setVisible(false)
 		mb_participation_label.setVisible(false)
 	end
-end
-
-function createParticipationResultBox()
-	if participation_result_box and participation_result_box.subwindow then
-		participation_result_box.subwindow.update()
-	elseif participation_result_box then
-		destroyParticipationResultBox()
-	end
-	if not participation_result_box then
-		createControl("participationResultBox", "participation_result_box",".participation_result")
-		cl,va = participation_result_box.getValue()
-        participation_result_node = DB.findNode(getDatabaseNode().getPath()..".participation_result")
-		participation_result_box.setValue(cl,getDatabaseNode().getPath()..".participation_result")
-		participation_result_box.setVisible(true)
-        bSuccess = participation_result_node.getChild("success") and participation_result_node.getChild("success").getValue()==1
-        bFail = participation_result_node.getChild("fail") and participation_result_node.getChild("fail").getValue()==1
-        bCritFail = participation_result_node.getChild("critfail") and participation_result_node.getChild("critfail").getValue()==1
-        bRaise = participation_result_node.getChild("raise") and participation_result_node.getChild("raise").getValue()==1
-		spacer.setAnchoredHeight("10")
-		createControl("vspace","spacer2")
-	end
-end
-
-function destroyParticipationResultBox()
-	if(participation_result_box)then
-		participation_result_box.destroy()
-	end
-	if(spacer2)then
-		spacer2.destroy()
-	end
-	spacer.setAnchoredHeight("20")
 end
 
 function makeParticipationRoll(bReroll)

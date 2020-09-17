@@ -464,6 +464,17 @@
         </empty>
         <font>battle_impact_effect_font</font>
       </stringfield>
+      <list_sw name="participationResultList">
+        <anchored>
+          <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
+          <left parent="mb_participation_label" />
+          <right parent="effects"/>
+        </anchored>
+        <datasource>.participation_results</datasource>
+        <script file="MassBattles/scripts/template_resultlist.lua"/>
+        <script file="MassBattles/scripts/mb_resultlist.lua"/>
+        <class>participationResultBox_Window</class>
+      </list_sw>
     <vspace name="spacer">
         <anchored height="20">
           <top parent="damages" anchor="bottom" relation="relative" />
