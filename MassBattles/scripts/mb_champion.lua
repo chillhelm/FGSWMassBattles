@@ -340,11 +340,11 @@ end
 function update()
 	updateOwnership()
 	local participatedNode = getDatabaseNode().getChild("participated")
-	if(participatedNode and participatedNode.getValue()==1)then
-		createParticipationResultBox()
+	--[[if(participatedNode and participatedNode.getValue()==1)then
+		self.participationResultList.setVisible(true)
 	else
-		destroyParticipationResultBox()
-	end
+		self.participationResultList.setVisible(false)
+	end]]--
 	local bAlreadyApplied = getDatabaseNode().getChild("pendingResultsActivated") and getDatabaseNode().getChild("pendingResultsActivated").getValue()==1 or false
 	if bAlreadyApplied then
 		participateButton.setEnabled(false)

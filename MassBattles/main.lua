@@ -121,7 +121,8 @@ function updateParticipationResultData(participant, total_score, bCritFail)
     if participant.getChild("participation_result") then
         resetParticipationResult(participant)
     end
-    local participation_result_node = participant.createChild("participation_result")
+    local participation_results_node = DB.createChild(participant,"participation_results")
+    local participation_result_node = DB.createChild(participation_results_node)
     participation_result_node.createChild("total","number").setValue(total_score)
 	participation_result_node.createChild("success","number").setValue(bSuccess and 1 or 0)
 	participation_result_node.createChild("raise","number").setValue(bRaise and 1 or 0)
@@ -129,17 +130,17 @@ function updateParticipationResultData(participant, total_score, bCritFail)
 	participation_result_node.createChild("critfail","number").setValue(bCritFail and 1 or 0)
     participant.createChild("participated","number").setValue(1)
     if(bRaise and bSuccess) then
-        makeBattleTableRoll(participant, "raise")
-        setPendingBonus(participant, 1)
+        makeBattleTableRoll(participant, participation_result_node, "raise")
+        setPendingBonus(participation_result_node, 1)
     elseif (bSuccess) then
-        setPendingBonus(participant, 1)
-        setPendingFatigue(participant, 1)
+        setPendingBonus(participation_result_node, 1)
+        setPendingFatigue(participation_result_node, 1)
     elseif bCritFail then
-		setPendingBonus(participant, 0)
-		makeCritFailRolls(participant)
+		setPendingBonus(participation_result_node, 0)
+		makeCritFailRolls(participant, participation_result_node)
     elseif bFail then
-        setPendingWoundsParticipant(participant,1)
-        setPendingBonus(participant,0)
+        setPendingWoundsParticipant(participation_result_node,1)
+        setPendingBonus(participation_result_node,0)
     end
     local active_massbattle = getMassbattleFromParticipant(participant)
     windowMassbattle = getMassbattleWindow()
@@ -168,8 +169,8 @@ function extractMBEntryFromUserdata(sUserdata)
 	end
 end
 
-function applyParticipationResult(participant)
-    activatePendingEffects(participant)
+function applyParticipationResult(participationResultNode)
+    activatePendingEffects(participationResultNode)
     local windowMassbattle = getMassbattleWindow()
     if windowMassbattle then
         windowMassbattle.update()
@@ -196,7 +197,7 @@ function getMassbattleFromParticipant(participant)
     local nodeTable = DB.findNode(rRoll.sNodeTable)
     local table_result = TableManager.getResults(nodeTable, rRollResult.nTotalScore)
     local result_keyword = string.sub(table_result[1].sText, 0, table_result[1].sText:find(":")-1)
-    local part_result = mb_entry.getChild("participation_result")
+    local part_result = DB.findNode(rRoll.participationResultNode)
     local cause = rRoll.cause
     if cause == "critfail" then
 		part_result.createChild("critfail_battleeffect","string").setValue(result_keyword)
@@ -219,8 +220,8 @@ function getMassbattleFromParticipant(participant)
     updateClientsMassBattleWindows()
  end
 
-function makeCritFailRolls(participant)
-	makeBattleTableRoll(participant, "critfail")
+function makeCritFailRolls(participant, participationResultNode)
+	makeBattleTableRoll(participant, participationResultNode, "critfail")
     makeCritFailInjuryRoll(participant)
 end
 
@@ -249,7 +250,7 @@ function woundParticipant(participant, nWounds)
     applyWounds("mb", participant, nWounds)
 end
 
-function makeBattleTableRoll(participant, cause)
+function makeBattleTableRoll(participant, participationResultNode, cause)
 	sActorClass, sLink = participant.getChild("link").getValue()
 	rActor = ActorManager.getActor("pc", sLink)
 	nodeTable = TableManager.findTable("Battle Effects")
@@ -262,6 +263,7 @@ function makeBattleTableRoll(participant, cause)
 	rRoll.bApplyModifiersStack = false
 	rRoll.sNodeTable = nodeTable.getNodeName()
 	rRoll.mb_entry = participant.getPath()
+    rRoll.participationResultNode = participationResultNode.getPath()
     rRoll.cause = cause
 	TableManager.prepareTableDice(rRoll)
 	--bHost = User.isHost() or User.isLocal()
@@ -584,47 +586,49 @@ function processMassbattleCritFailInjury(draginfo)
     Comm.addChatMessage(chat_message)
 end
 
-function setPendingBonus(participant, nBonus)
-	participant.createChild("participation_result").createChild("pending_battle_impact_bonus","number").setValue(nBonus)
+function setPendingBonus(participationResultNode, nBonus)
+	participationResultNode.createChild("pending_battle_impact_bonus","number").setValue(nBonus)
 end
 
-function setPendingFatigue(participant, nFatigues)
-	participant.createChild("participation_result").createChild("pending_fatigues","number").setValue(nFatigues)
+function setPendingFatigue(participationResultNode, nFatigues)
+	participationResultNode.createChild("pending_fatigues","number").setValue(nFatigues)
 end
 
-function setPendingWoundsParticipant(participant, nWounds)
-	participant.createChild("participation_result").createChild("pending_wounds","number").setValue(nWounds)
+function setPendingWoundsParticipant(participationResultNode, nWounds)
+	participationResultNode.createChild("pending_wounds","number").setValue(nWounds)
 end
 
-function activatePendingEffects(participant)
-    local nodeParticipationResults = participant.getChild("participation_result")
-    if nodeParticipationResults then
-        local nPendingFatigues = DB.getValue(nodeParticipationResults,"pending_fatigues",0)
-        local nPendingWounds = DB.getValue(nodeParticipationResults,"pending_wounds",0)
-        local nPendingBonus = DB.getValue(nodeParticipationResults,"pending_battle_impact_bonus",0)
-        Debug.chat("Wounding paricipant ", participant, " for ", nPendingFatigues, " Fatigues and ", nPendingWounds, " Wounds.")
-        fatigueParticipant(participant, nPendingFatigues)
-        woundParticipant(participant, nPendingWounds)
-        setBonus(participant, nPendingBonus)
+function activatePendingEffects(participationResultNode)
+    Debug.chat("activatePendingEffects, participationResultNode", participationResultNode)
+	local participantNode = participationResultNode.getParent().getParent()
+    if participationResultNode and participantNode then
+        local nPendingFatigues = DB.getValue(participationResultNode,"pending_fatigues",0)
+        local nPendingWounds = DB.getValue(participationResultNode,"pending_wounds",0)
+        local nPendingBonus = DB.getValue(participationResultNode,"pending_battle_impact_bonus",0)
 
-        local bCritFail = DB.getValue(nodeParticipationResults, "critfail", 0) == 1
-        local bFail = DB.getValue(nodeParticipationResults, "fail", 0) == 1
-        local bSuccess = DB.getValue(nodeParticipationResults, "success", 0) == 1
-        local bRaise = DB.getValue(nodeParticipationResults, "raise", 0) == 1
+        Debug.chat("Wounding paricipant ", participantNode, " for ", nPendingFatigues, " Fatigues and ", nPendingWounds, " Wounds.")
+        fatigueParticipant(participantNode, nPendingFatigues)
+        woundParticipant(participantNode, nPendingWounds)
+        setBonus(participantNode, nPendingBonus)
+
+        local bCritFail = DB.getValue(participationResultNode, "critfail", 0) == 1
+        local bFail = DB.getValue(participationResultNode, "fail", 0) == 1
+        local bSuccess = DB.getValue(participationResultNode, "success", 0) == 1
+        local bRaise = DB.getValue(participationResultNode, "raise", 0) == 1
         
-        local sCritFailEffect = (nodeParticipationResults.getChild("critfail_battleeffect") and nodeParticipationResults.getChild("critfail_battleeffect").getValue())
-        local sRaiseEffect = (nodeParticipationResults.getChild("battle_impact_effect") and nodeParticipationResults.getChild("battle_impact_effect").getValue())
+        local sCritFailEffect = (participationResultNode.getChild("critfail_battleeffect") and participationResultNode.getChild("critfail_battleeffect").getValue())
+        local sRaiseEffect = (participationResultNode.getChild("battle_impact_effect") and participationResultNode.getChild("battle_impact_effect").getValue())
         local sBattleEffect = (bCritFail and sCritFailEffect) or (bRaise and sRaiseEffect) or ""
         if sBattleEffect == "Inspire" then
-            recoverForceToken(getForceIDFromParticipant(participant))
+            recoverForceToken(getForceIDFromParticipant(participantNode))
         elseif sBattleEffect == "Terrorize" then
             -- nothing to do right now
         elseif sBattleEffect == "Valor" then
-            setBonus(participant, 2)
+            setBonus(participantNode, 2)
         elseif sBattleEffect == "Slaughter" then
             -- nothing to do right now
         elseif sBattleEffect == "An Army of One" then
-            local sForceID = getForceIDFromParticipant(participant)
+            local sForceID = getForceIDFromParticipant(participantNode)
             local sEnemyForceID = "A"
             if sForceID == "A" then
                 sEnemyForceID = "B"
@@ -632,10 +636,13 @@ function activatePendingEffects(participant)
             addAoOReduction(sEnemyForceID)
         end
         if sBattleEffect~="" then
-            setBattleEffect(participant, sBattleEffect)
+            setBattleEffect(participantNode, sBattleEffect)
         end
     end
-    participant.createChild("pendingResultsActivated","number").setValue(1)
+    participantNode.createChild("pendingResultsActivated","number").setValue(1)
+    local participation_results_list = DB.getChild(participantNode,"participation_results")
+    Debug.chat("participation_results_list:",participation_results_list)
+    DB.deleteChildren(participation_results_list,".")
 end
 
 function setBattleEffect(participant, sBattleEffect)

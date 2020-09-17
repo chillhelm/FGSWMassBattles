@@ -283,6 +283,17 @@
         </empty>
         <font>battle_impact_effect_font</font>
       </stringfield>
+      <list_sw name="participationResultList">
+        <anchored>
+          <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
+          <left parent="mb_participation_label" />
+          <right parent="effects"/>
+        </anchored>
+        <datasource>.participation_results</datasource>
+        <script file="MassBattles/scripts/template_resultlist.lua"/>
+        <script file="MassBattles/scripts/mb_resultlist.lua"/>
+        <class>participationResultBox_Window</class>
+      </list_sw>
     <vspace name="spacer">
         <anchored height="20">
           <top parent="damages" anchor="bottom" relation="relative" />
@@ -505,16 +516,6 @@
       <anchored position="insidetop" height="0"/>
     </genericcontrol>
   </template>
-  <template name="participationResultBox">
-    <subwindow name="participationResultBox_subwindow">
-      <class>participationResultBox_Window</class>
-      <anchored>
-        <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
-        <left parent="mb_participation_label" />
-        <right parent="effects"/>
-      </anchored>
-    </subwindow>
-  </template>
     <windowclass name="participationResultBox_Window">
       <script file="MassBattles/scripts/participation_result_box.lua"/>
       <frame name="groupbox"/>
@@ -583,6 +584,20 @@
           </anchored>
           <invisible/>
       </button_text>
+        <buttoncontrol name="clear_result_button">
+          <tooltipres>mb_clear_result</tooltipres>
+          <script>
+            function onButtonPress()
+              window.deleteParticipationResult()
+            end
+          </script>
+          <anchored width="15">
+            <right offset="-15"/>
+            <top parent="mb_participation_result_label"/>
+            <bottom parent="mb_participation_result_label"/>
+          </anchored>
+          <icon normal="button_clear" pressed="button_clear_down" />
+        </buttoncontrol>
         <button_text name="apply_result_button">
           <script>
             function onButtonPress()
@@ -590,7 +605,7 @@
             end
           </script>
           <anchored width="50" >
-            <right offset="-15"/>
+            <right offset="-20" parent="clear_result_button"/>
             <top parent="mb_participation_result_label"/>
             <bottom parent="mb_participation_result_label"/>
           </anchored>

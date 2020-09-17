@@ -139,7 +139,7 @@ function onWindowUpdate(source, listchanged)
 end
 
 function addNpc(source, win, draginfo, vData)
-	super.addNpc(source, wi5n, draginfo, vData)
+	super.addNpc(source, win, draginfo, vData)
 end
 
 -- 

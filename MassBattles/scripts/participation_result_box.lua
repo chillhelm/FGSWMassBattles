@@ -6,6 +6,7 @@ function onInit()
 end
 
 function update()
+
 	local node = getDatabaseNode()
 	bSuccess = node.getChild("success") and node.getChild("success").getValue()==1
 	bFail = node.getChild("fail") and node.getChild("fail").getValue()==1
@@ -79,13 +80,13 @@ function hideRaiseChoice()
 end
 
 function activateRaiseChoicep1()
-	MassBattles.setPendingBonus(getDatabaseNode().getChild(".."),2)
+	MassBattles.setPendingBonus(getDatabaseNode(),2)
 	hideRaiseChoice()
 	applyParticipationResult()
 end
 
 function activateRaiseChoiceBE()
-	MassBattles.setPendingBonus(getDatabaseNode().getChild(".."),1)
+	MassBattles.setPendingBonus(getDatabaseNode(),1)
 	hideRaiseChoice()
 	getDatabaseNode().createChild("battle_impact_effect","string").setValue(getDatabaseNode().getChild("raise_choice_battleeffect").getValue())
 	applyParticipationResult()
@@ -97,5 +98,9 @@ function removeBattleImpactEffect()
 end
 
 function applyParticipationResult()
-	MassBattles.applyParticipationResult(getDatabaseNode().getParent())
+	MassBattles.applyParticipationResult(getDatabaseNode())
+end
+
+function deleteParticipationResult()
+	getDatabaseNode().delete()
 end

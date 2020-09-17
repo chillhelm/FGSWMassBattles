@@ -35,4 +35,5 @@
   <string name="mb_hints_gm4">Have both commanders roll for Morale and proceed to the next round, by clicking the [New Round] button.</string>
   <string name="mb_commander_label">Commander</string>
   <string name="mb_no_morale_check_required">No Morale Check</string>
+  <string name="mb_clear_result">Clear</string>
 </root>
