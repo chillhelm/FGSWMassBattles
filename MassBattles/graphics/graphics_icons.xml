@@ -1,0 +1,4 @@
+<root>
+    <icon name="button_mb" file="MassBattles/graphics/sidebar/button_mb.png" />
+    <icon name="button_mb_down" file="MassBattles/graphics/sidebar/button_mb_down.png" />
+</root>

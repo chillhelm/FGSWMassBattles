@@ -31,7 +31,7 @@ function update()
 		apply_result_button.setVisible(false)
 		raise_indicator.setVisible(true)
         raise_choice_battleeffect_button.setText(node.getChild("raise_choice_battleeffect") and node.getChild("raise_choice_battleeffect").getValue() or "")
-		if isOwner() then
+		if bIsOwner then
 			showRaiseChoice()
 		end
 	elseif bSuccess then

@@ -2,10 +2,10 @@
     <windowclass name="massbattle_host">
 		<frame>ctbox</frame>
 		<placement>
-			<size width="800" height="500" />
+			<size width="950" height="500" />
 		</placement>
 		<sizelimits>
-			<minimum width="900" height="400" />
+			<minimum width="950" height="400" />
 			<dynamic />
 		</sizelimits>
 		<softclose />
@@ -86,10 +86,10 @@
           <target>ArmyA</target>
         </scrollbar>
         <mbLeaderASlot name="leaderASlot">
-          <anchored height="150">
+          <anchored height="140">
             <left parent="ArmyA" anchor="left"/>
             <right parent="ArmyA" anchor="right"/>
-            <bottom parent="round_label" anchor="top" offset="-10"/>
+            <bottom parent="round_label" anchor="top" offset="-20"/>
           </anchored>
         </mbLeaderASlot>
         <mbFactionSectionB name="ArmyB">
@@ -105,10 +105,10 @@
           <target>ArmyB</target>
         </scrollbar>
         <mbLeaderBSlot name="leaderBSlot">
-          <anchored height="150">
+          <anchored height="140">
             <left parent="ArmyB" anchor="left"/>
             <right parent="ArmyB" anchor="right"/>
-            <bottom parent="round_label" anchor="top" offset="-10"/>
+            <bottom parent="round_label" anchor="top" offset="-20"/>
           </anchored>
         </mbLeaderBSlot>
         <subwindow name="resolutionbox">
@@ -121,29 +121,32 @@
             <bottom parent="round_label" anchor="top" offset="-10" />
           </anchored>
         </subwindow>
-        <subwindow name="moralebox">
-          <class>mbMoraleBox</class>
-          <invisible/>
-          <fastinit />
-          <anchored height="35">
-            <left parent="mb_center_anchor" anchor="left" offset="-100" />
-            <right parent="mb_center_anchor" anchor="right" offset="100" />
-            <bottom parent="round_label" anchor="top" offset="-10" />
-          </anchored>
-        </subwindow>
         <button_text name="new_round_button">
           <anchored height="20">
             <left parent="mb_center_anchor" anchor="left" offset="-50"/>
             <right parent="mb_center_anchor" anchor="right" offset="50"/>
             <bottom offset="-20"/>
           </anchored>
-          <text>New Round</text>
+	  <state>
+		  <textres>mb_new_round_label</textres>
+	  </state>
           <script>
             function onButtonPress()
             MassBattles.startNextRound()
             end
           </script>
         </button_text>
+        <subwindow name="moralebox">
+          <class>mbMoraleBox</class>
+
+	  <fastinit />
+	  <invisible />
+	  <anchored height="80">
+            <left parent="mb_center_anchor" anchor="left" offset="-100" />
+            <right parent="mb_center_anchor" anchor="right" offset="100" />
+            <bottom parent="round_label" anchor="top" offset="-10" />
+	    </anchored>
+        </subwindow>
         <label name="FtgLabelA">
           <static textres="mb_fatigue_short_label"/>
           <anchored>
@@ -200,30 +203,7 @@
             <left parent="ArmyB" anchor="left" offset="25"/>
           </anchored>
         </label>
-        <buttoncontrol name="ArmyASettingsButton">
-          <anchored width="30" height="30">
-            <left parent="ArmyA" offset="-10"/>
-            <bottom parent="ArmyA" anchor="top" offset="5"/>
-          </anchored>
-          <icon normal="button_action_modifier" pressed="button_action_modifier_down" />
-          <script>
-            function onButtonPress(x, y)
-              return window.openArmyASettings();
-            end
-          </script>
-        </buttoncontrol>
-        <buttoncontrol name="ArmyBSettingsButton">
-          <anchored width="30" height="30">
-            <right parent="ArmyB" offset="10"/>
-            <bottom parent="ArmyB" anchor="top" offset="5"/>
-          </anchored>
-          <icon normal="button_action_modifier" pressed="button_action_modifier_down" />
-          <script>
-            function onButtonPress(x, y)
-              return window.openArmyBSettings();
-            end
-          </script>
-        </buttoncontrol>
+        
         <stringfield name="ArmyAName">
           <anchored>
             <top offset="25"/>
@@ -244,6 +224,30 @@
           <default>Right Army</default>
           <center></center>
         </stringfield>
+        <buttoncontrol name="ArmyASettingsButton">
+          <anchored width="30" height="30">
+            <left parent="ArmyA" offset="-10"/>
+            <bottom parent="ArmyA" anchor="top" offset="5"/>
+          </anchored>
+          <icon normal="button_link"/>
+          <script>
+            function onButtonPress(x, y)
+            return window.openArmyASettings();
+            end
+          </script>
+        </buttoncontrol>
+        <buttoncontrol name="ArmyBSettingsButton">
+          <anchored width="30" height="30">
+            <right parent="ArmyB" offset="10"/>
+            <bottom parent="ArmyB" anchor="top" offset="5"/>
+          </anchored>
+          <icon normal="button_link"/>
+          <script>
+            function onButtonPress(x, y)
+            return window.openArmyBSettings();
+            end
+          </script>
+        </buttoncontrol>
         <subwindow name="HintWindowBox">
           <anchored>
             <bottom offset="-10"/>

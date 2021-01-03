@@ -9,6 +9,7 @@ function onInit()
 	if super and super.onInit then
 		super.onInit()
 	end
+	update()
 end
 
 --
@@ -17,32 +18,6 @@ end
 
 function onFilter(win)
 	return bExpanded or win.getDatabaseNode() == getFirstChildNode() or win.isTargetedByActiveCombatant() or win.hasPendingResults()
-end
-
--- click events don't seem to pass through ?
---[[function onClickRelease(button, x, y )
-	local base_x, base_y = window.groupcount.getPosition()
-	local size_x, size_y = window.groupcount.getSize()
-	if base_x <= x and x <= base_x + size_x and base_y <= y and y <= base_y + size_y then
-		return window.groupcount.onClickRelease(button, x - base_x, y - base_y)
-	end
-end
-
-function onDoubleClick(x, y)
-	local base_x, base_y = window.initcontrol.getPosition()
-	local size_x, size_y = window.initcontrol.getSize()
-	if base_x <= x and x <= base_x + size_x and base_y <= y and y <= base_y + size_y then
-		return window.initcontrol.onDoubleClick(x - base_x, y - base_y)
-	end
-end]]--
-
--- Change expansion when the active flag is set or unset
-function updateGroupActive()
-	setExpanded(window.groupactive.getValue() ~= 0)
-end
-
-function onSectionToggle()
-	window.windowlist.onSectionToggle()
 end
 
 --
@@ -96,40 +71,11 @@ function duplicateActor()
 	end
 end
 
--- Toggle the list expansion
-function toggleDisplay()
-	setExpanded(not bExpanded)
-end
-
--- set the list expansion state
-function setExpanded(bState)
-	bExpanded = bState
-	applyFilter()
-	window.groupcount.setExpanded(bExpanded)
-end
-
--- return all the nodes by passing the call up to the combatant group windowlist
-function getCombatantNodeCTs()
-	return window.windowlist.getCombatantNodeCTs()
-end
-
 --
 -- DROP FUNCTION OVERRIDES
 --
 
-function onDrop(x, y, draginfo)
-	return super.onDrop(x, y, draginfo)
-end
-
-function onGroupDrop(x, y, draginfo)
-	local rCustomData = draginfo.getCustomData() or {}
-	rCustomData.bGroupDrop = true
-	draginfo.setCustomData(rCustomData)
-	return super.onDrop(x, y, draginfo)
-end
-
 function onWindowAdded(source, child)
-	DB.setValue(child, "tokenvis", "number", 1)
 end
 
 function onWindowUpdate(source, listchanged)

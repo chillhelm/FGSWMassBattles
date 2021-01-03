@@ -1,3 +1,13 @@
+function onInit()
+    local nodeArmyACommandResult = DB.getChild(getDatabaseNode(),"armyacommandresult")
+    if(nodeArmyACommandResult)then
+        nodeArmyACommandResult.onUpdate = update
+    end
+    local nodeArmyBCommandResult = DB.getChild(getDatabaseNode(),"armybcommandresult")
+    if(nodeArmyBCommandResult)then
+        nodeArmyBCommandResult.onUpdate = update
+    end
+end
 
 function update()
 	if not (User.isHost() or User.isLocal()) then

@@ -20,6 +20,8 @@ function update()
 		if resolutionbox.subwindow then
 			resolutionbox.subwindow.update()
 		end
+    else
+        resolutionbox.setVisible(false)
 	end
 	local bMoraleBoxVisible =  bCommandResultsApplied and not bResolutionboxVisible
 	moralebox.setVisible("bMoraleBoxVisible",bMoraleBoxVisible)
@@ -28,17 +30,47 @@ function update()
 		if moralebox.subwindow then
 			moralebox.subwindow.update()
 		end
+    else
+        moralebox.setVisible(false)
 	end
 	local windowHints = HintWindowBox.subwindow
 	if windowHints then
-		windowHints.setHintState(2)
-		if leadera.isEmpty() and leaderb.isEmpty() then
-			windowHints.setHintState(1)
-		elseif bArmyAHasCommanded or bArmyBHasCommanded then
-			windowHints.setHintState(3)
+		windowHints.setHintState(1)
+		local bIsParticipant = false
+		local bIsCommander = false
+		local mbNode = nil
+		local activeIdentities = User.getActiveIdentities()
+		for _, identity    in pairs(activeIdentities) do
+			local nodeCharacter = CharacterManager.getCharsheetNodeForIdentity(identity)
+			local nodeMBParticipant = MassBattles.getMBEntry(nodeCharacter)
+			if nodeMBParticipant then
+				bIsParticipant = true
+				mbNode = nodeMBParticipant
+			end
+			bIsCommander = MassBattles.isLeader(nodeCharacter)
 		end
-		if bMoraleBoxVisible then
-			windowHints.setHintState(4)
+		if bIsParticipant then
+			windowHints.setHintState(2)
+			if DB.getValue(mbNode,"participated",0)==1 then
+				windowHints.setHintState(3)
+			end
+			if DB.getValue(mbNode,"pendingResultsActivated", 0)==1 then
+				windowHints.setHintState(4)
+			end
+		end
+
+		if bIsCommander then
+			windowHints.setHintState(5)
+			local nodeMBCommander = DB.findNode("massbattle.leader"..bIsCommander.."details")
+			if nodeMBCommander then
+				local nodeCommandResultList = DB.getChild(nodeMBCommander,"command_results")
+				if (nodeCommandResultList.getChildCount()>0) then
+					windowHints.setHintState(6)
+				end
+				if (DB.getValue("massbattle.armyacommanded",0)==1) then
+					windowHints.setHintState(7)
+				end
+			end
 		end
 		windowHints.update()
 	end
@@ -57,7 +89,7 @@ function hasWidgetLeaderDisplay()
 end
 
 function createWidgetLeaderADisplay()
-    local leaderAclass, leaderArecord = leadera.getValue()
+	local leaderAclass, leaderArecord = leadera.getValue()
     if leaderArecord and leaderArecord ~= "" then
         if self.mbLeaderADisplayBox then
             self.mbLeaderADisplayBox.destroy()

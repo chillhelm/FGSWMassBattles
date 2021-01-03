@@ -20,17 +20,23 @@ function update()
 		if resolutionbox.subwindow then
 			resolutionbox.subwindow.update()
 		end
+    else
+        resolutionbox.setVisible(false)
 	end
 	local bMoraleBoxVisible =  bCommandResultsApplied and not bResolutionboxVisible
-	moralebox.setVisible("bMoraleBoxVisible",bMoraleBoxVisible)
+	moralebox.setVisible(bMoraleBoxVisible)
 	if bMoraleBoxVisible then
+		moralebox.setVisible(true)
 		moralebox.bringToFront()
 		if moralebox.subwindow then
 			moralebox.subwindow.update()
 		end
+    else
+        moralebox.setVisible(false)
 	end
 	local windowHints = HintWindowBox.subwindow
 	if windowHints then
+		HintWindowBox.setVisible(true)
 		windowHints.setHintState(2)
 		if leadera.isEmpty() and leaderb.isEmpty() then
 			windowHints.setHintState(1)
@@ -56,6 +62,7 @@ function setLeaderA(sType, sClass, sRecord)
 
 		end
 	end
+    MassBattles.updateClientsMassBattleWindows()
 end
 
 function setLeaderB(sType, sClass, sRecord)
@@ -69,6 +76,7 @@ function setLeaderB(sType, sClass, sRecord)
 			DB.setOwner(getDatabaseNode().getPath().."armybcommanded",owner)
 		end
 	end
+    MassBattles.updateClientsMassBattleWindows()
 end
 
 function getLeaderAShortcut()

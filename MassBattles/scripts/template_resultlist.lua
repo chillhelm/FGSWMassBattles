@@ -9,14 +9,7 @@ function onInit()
 	end
 end
 
-function onDrop(x, y, draginfo)
-	return super.onDrop(x, y, draginfo)
+function onDrop(x,y,draginfo)
+    window.onDrop(x,y,draginfo)
 end
 
-function moveEntry(node, win, draginfo)
-	if not draginfo or not draginfo.getCustomData then
-		return false
-	end
-
-	return false
-end

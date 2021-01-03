@@ -45,7 +45,6 @@ function update(bReadOnly)
 end
 
 function onDrop(x, y, draginfo)
-	Debug.chat("onDrop", self, draginfo)
 	if draginfo.isType("shortcut") then
 	  local sClass, sRecord = draginfo.getShortcutData()
 	  if sClass == "charsheet" then

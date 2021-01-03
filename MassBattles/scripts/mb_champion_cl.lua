@@ -4,16 +4,24 @@
 --
 local isOwner=false
 function onInit()
+
+	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
+	onWildcardChanged()
+	type.getDatabaseNode().onUpdate = onTypeChanged
+	onTypeChanged()
+
 	updateDisplay()
 
+	DB.createChild(getDatabaseNode(), "inc", "number").onUpdate = updateIncapacitated
 	updateMenuOptions()
 
 	updateBackground()
 
 	tokenrefnode.getDatabaseNode().onUpdate = token.onTokenUpdate
 	tokenrefid.getDatabaseNode().onUpdate = token.onTokenUpdate
-	DB.addHandler(getDatabaseNode().getPath(),"onChildUpdate",update)
 	update()
+	getDatabaseNode().onObserverUpdate = update
+	link.getDatabaseNode().onUpdate = update
 end
 
 function updateOwnership()
@@ -32,29 +40,19 @@ function updateMenuOptions()
 		registerMenuItem(Interface.getString("ct_menu_delete_combatants_confirm"), "delete", 6, 7)
 	end
 end
-
-function getGroupWindow()
-	return windowlist.window
-end
-
-function getCombatantGroupList()
-	return getGroupWindow().windowlist
-end
-
-function getCombatTrackerWindow()
-	return getCombatantGroupList().window
-end
-
-function isFirstCombatant()
-	return NodeManager.equals(self, getGroupWindow().firstCombatant())
-end
-
 --
 -- UPDATE AND EVENT HANDLERS
 --
 
-function onVisibilityChanged()
-	TokenManager.updateVisibility(getDatabaseNode())
+function onWildcardChanged()
+	local bWildCard = wildcard.getValue() == 1
+	wildcard_icon.setIcon(bWildCard and "wildcard" or "nowildcard")
+	if bennies then
+		bennies.setVisible(bWildCard)
+	end
+end
+
+function onTypeChanged()
 end
 
 function onIDChanged()
@@ -78,68 +76,8 @@ function updateDisplay()
 end
 
 --
--- UTILITY METHODS
---
-
-function isVisibleEntry()
-	return type.is("pc") or tokenvis.getState()
-end
-
-function setMain(bState)
-	newgroup.setEnabled(bState)
-	newgroup.setVisible(bState)
-	local nIndentOffset = bState and 31 or 74
-	token.setStaticBounds(nIndentOffset,6,25,25)
-
-	if bState then
-		isidentified.getDatabaseNode().onUpdate = windowlist.window.mainIdentifiedUpdated
-		if friendfoe.getSourceNode then
-			friendfoe.getSourceNode().onUpdate = windowlist.window.mainFriendFoeUpdated
-		end
-		if tokenvis.getSourceNode then
-			tokenvis.getSourceNode().onUpdate = windowlist.window.mainTokenVisibilityUpdated
-		end
-	end
-end
-
-function updateActive()
-	local nodeCT = getDatabaseNode()
-	if DB.getValue(nodeCT, "locked", 0) == 1 then
-		return
-	end
-	local bState = active.getState()
-	updateDisplay()
-	if bState then
-		getCombatantGroupList().scrollToWindow(self)
-		sendNotification()
-		if OptionsManager.isOption("RING", "on") then
-			local bOwned, nodeOwnerChar = CombatManager.isOwnedSource(nodeCT, true)
-			if bOwned and nodeOwnerChar then
-				local sOwnerIdentity = User.getIdentityOwner(nodeOwnerChar.getName())
-				if sOwnerIdentity then
-					User.ringBell(sOwnerIdentity)
-				end
-			end
-		end
-	end
-	updateBackground()
-end
-
---
 -- ACCESSOR METHODS
 --
-
-function hasAbility(sAbility)
-	return AbilityManager.hasAbility("ct", getDatabaseNode(), sAbility)
-end
-
-function getVisibleName()
-	return CombatManager.getVisibleName(getDatabaseNode(), true)
-end
-
-function onFactionChanged()
-	updateBackgroundColor()
-end
 
 function updateBackground()
 	updateBackgroundColor()
@@ -171,7 +109,7 @@ end
 function update()
 	updateOwnership()
 	local participatedNode = getDatabaseNode().getChild("participated")
-	local bAlreadyApplied = getDatabaseNode().getChild("pendingResultsActivated") and getDatabaseNode().getChild("pendingResultsActivated").getValue()==1 or false
+	local bAlreadyApplied = DB.getValue(getDatabaseNode(),"pendingResultsActivated",0)==1
 	if bAlreadyApplied then
 		participateButton.setEnabled(false)
 		participateButton.setVisible(false)
@@ -180,11 +118,20 @@ function update()
 		participateButton.setVisible(true)
 	end
 	
+	champion_type, champion_record = link.getValue()
+	isOwner = DB.isOwner(champion_record)
+
 	if not isOwner then
 		participateButton.setVisible(false)
-		participation_skill.setVisible(false)
+		participation_skill.setComboBoxVisible(false)
 		mb_participation_label.setVisible(false)
+	else
+		participateButton.setVisible(true)
+		participation_skill.setComboBoxVisible(true)
+		mb_participation_label.setVisible(true)
 	end
+
+	participation_skill.update()
 end
 
 function makeParticipationRoll(bReroll)
@@ -195,9 +142,13 @@ function makeParticipationRoll(bReroll)
 	ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battleparticipation")
 	local sDescPrefix = Interface.getString("mb_participation_roll_prefix")
 	local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
-	local CustomData = {["mb_entry"]=getDatabaseNode().getPath()}
+	local CustomData = {mb_entry=getDatabaseNode().getPath()}
 	if bReroll then
-		CustomData["reroll"]=true
+		CustomData.reroll=true
 	end
-	TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battleparticipation", CustomData)
+	local rActor = CharacterManager.getActorShortcut(sActorType,nodeActor)
+	if bReroll then
+		ModifierManager.applyTraitModifiers(sActorType, nodeActor, "reroll")
+	end
+	TraitManager.rollTrait(rActor, nodeTrait, CustomData, sDescPrefix, "battleparticipation")
 end

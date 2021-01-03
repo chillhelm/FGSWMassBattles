@@ -15,7 +15,14 @@ function onInit()
 
 	tokenrefnode.getDatabaseNode().onUpdate = token.onTokenUpdate
 	tokenrefid.getDatabaseNode().onUpdate = token.onTokenUpdate
+	getDatabaseNode().onObserverUpdate = update
+	link.getDatabaseNode().onUpdate = update
 	update()
+end
+
+function updateOwnership()
+	champion_type, champion_record = link.getValue()
+	isOwner = DB.isOwner(champion_record)
 end
 
 function getActorShortcut()
@@ -30,41 +37,10 @@ function updateMenuOptions()
 	end
 end
 
-function getGroupWindow()
-	return windowlist.window
-end
 
-function getCombatantGroupList()
-	return getGroupWindow().windowlist
-end
-
-function getCombatTrackerWindow()
-	return getCombatantGroupList().window
-end
-
-function isFirstCombatant()
-	return NodeManager.equals(self, getGroupWindow().firstCombatant())
-end
-
-
-function onDrop (x,y,draginfo)
-	
-	Debug.chat("onDrop", self, draginfo)
-end
 --
 -- UPDATE AND EVENT HANDLERS
 --
-
-function onMenuSelection(nOption, nSubOption)
-	if nOption == 6 and nSubOption == 7 then
-		armyID = MassBattles.getArmyIDFromCommanderNode(getDatabaseNode())
-		if(armyID=="a") then
-			MassBattles.removeLeaderA()
-		elseif(armyID=="b") then
-			MassBattles.removeLeaderB()
-		end
-	end
-end
 
 function onWildcardChanged()
 	local bWildCard = wildcard.getValue() == 1
@@ -72,10 +48,6 @@ function onWildcardChanged()
 	if bennies then
 		bennies.setVisible(bWildCard)
 	end
-end
-
-function onVisibilityChanged()
-	TokenManager.updateVisibility(getDatabaseNode())
 end
 
 function onTypeChanged()
@@ -104,170 +76,8 @@ function updateDisplay()
 end
 
 --
--- UTILITY METHODS
---
-
-function isVisibleEntry()
-	return type.is("pc") or tokenvis.getState()
-end
-
-function setMain(bState)
-	newgroup.setEnabled(bState)
-	newgroup.setVisible(bState)
-	local nIndentOffset = bState and 31 or 74
-	token.setStaticBounds(nIndentOffset,6,25,25)
-
-	if bState then
-		isidentified.getDatabaseNode().onUpdate = windowlist.window.mainIdentifiedUpdated
-		if friendfoe.getSourceNode then
-			friendfoe.getSourceNode().onUpdate = windowlist.window.mainFriendFoeUpdated
-		end
-		if tokenvis.getSourceNode then
-			tokenvis.getSourceNode().onUpdate = windowlist.window.mainTokenVisibilityUpdated
-		end
-	end
-end
-
-function updateActive()
-	local nodeCT = getDatabaseNode()
-	if DB.getValue(nodeCT, "locked", 0) == 1 then
-		return
-	end
-	local bState = active.getState()
-	updateDisplay()
-	if bState then
-		getCombatantGroupList().scrollToWindow(self)
-		sendNotification()
-		if OptionsManager.isOption("RING", "on") then
-			local bOwned, nodeOwnerChar = CombatManager.isOwnedSource(nodeCT, true)
-			if bOwned and nodeOwnerChar then
-				local sOwnerIdentity = User.getIdentityOwner(nodeOwnerChar.getName())
-				if sOwnerIdentity then
-					User.ringBell(sOwnerIdentity)
-				end
-			end
-		end
-	end
-	updateBackground()
-end
-
-function sendNotification()
-	local displayData = function(sName)
-		local nodeActor = link.getTargetDatabaseNode()
-		if CharacterManager.isPCAlly(nodeActor) then
-			local nodeChar = CharacterManager.getCharsheetNodeRoot(nodeActor)
-			sName = "[" .. DB.getValue(nodeChar, "name", "") .. "] " .. sName
-		end
-		if inc.getState() then
-			if type.is("vehicle") then
-				return sName .. " (" .. Interface.getString("common_destroyed") .. ")", "state_inc"
-			else
-				return sName .. " (" .. Interface.getString("common_incapacitated") .. ")", "state_inc"
-			end
-		elseif shaken.getState() then
-			return sName .. " (" .. Interface.getString("common_shaken") .. ")", "state_shaken"
-		end
-		return sName, "turn_flag"
-	end
-
-	local sName, sIcon = displayData(getVisibleName())
-	local rMessage = { text = sName, font = "narratorfont", icon = sIcon }
-
-	-- Always show real name to host
-	Comm.addChatMessage(rMessage)
-
-	-- Chase notification
-	local rChaseNotificationInfo = getChaseNotification()
-	local rChaseNotificationHeader = nil
-	local rChaseNotification = nil
-	if rChaseNotificationInfo then
-		if rChaseNotificationInfo.bComplication then
-			rChaseNotificationHeader = { 
-				font = "narratorfont", 
-				icon = "indicator_star_off", 
-				text = Interface.getString("ct_chase_complication")
-			}
-			if rChaseNotificationInfo.nMod then
-				rChaseNotificationHeader.dice = {}
-				rChaseNotificationHeader.diemodifier = rChaseNotificationInfo.nMod
-			end
-		end
-		rChaseNotification = { 
-			font = "systemfont", 
-			text = rChaseNotificationInfo.sText or ""
-		}
-
-		Comm.addChatMessage(rChaseNotificationHeader)
-		Comm.addChatMessage(rChaseNotification)
-	end
-
-	if isVisibleEntry() then
-		local aIdentities = User.getAllActiveIdentities()
-		local aPlayers = {}
-		for _,sIdentity in ipairs(aIdentities) do
-			table.insert(aPlayers, User.getIdentityOwner(sIdentity))
-		end
-		if #aPlayers > 0 then
-			local sName, sIcon = displayData(getVisibleName())
-			rMessage.text = sName
-			rMessage.icon = sIcon
-			Comm.deliverChatMessage(rMessage, aPlayers)
-			if rChaseNotificationHeader and rChaseNotification then
-				Comm.deliverChatMessage(rChaseNotificationHeader, aPlayers)
-				Comm.deliverChatMessage(rChaseNotification, aPlayers)
-			end
-		end
-	end
-end
-
---
 -- ACCESSOR METHODS
 --
-
-function hasAbility(sAbility)
-	return AbilityManager.hasAbility("ct", getDatabaseNode(), sAbility)
-end
-
-function getVisibleName()
-	return CombatManager.getVisibleName(getDatabaseNode(), true)
-end
-
-function onFactionChanged()
-	updateBackgroundColor()
-end
-
-function toggleTargetedBy(nodeTargeterCombatant)
-	if nodeTargeterCombatant then
-		setTargeted(not isTargetedBy(nodeTargeterCombatant), nodeTargeterCombatant)
-	end
-end
-
-function setTargeted(bStatus, nodeTargeterCT)
-	local tokenTargeter = CombatManager.getTokenFromCT(nodeTargeterCT)
-	local tokenTarget = CombatManager.getTokenFromCT(getDatabaseNode())
-	if tokenTargeter and tokenTarget then
-		if bStatus then
-			tokenTargeter.setTarget(true, tokenTarget)
-		else
-			local aTargetNodes = {}
-			for _,node in pairs(DB.getChildren(nodeTargeterCT, "targets")) do
-				if DB.getValue(node, "noderef") == getDatabaseNode().getNodeName() then
-					table.insert(aTargetNodes, node)
-				end
-			end
-			for _,node in pairs(aTargetNodes) do
-				if node then
-					node.delete()
-				end
-			end
-			if #aTargetNodes > 0 then
-				tokenTargeter.setTarget(false, tokenTarget)
-			end
-		end
-	elseif nodeTargeterCT then
-		TargetingManager.updateTargeting(bStatus, nodeTargeterCT, getDatabaseNode())
-	end
-end
 
 function updateBackground()
 	updateBackgroundColor()
@@ -297,6 +107,31 @@ function isIncapacitated()
 end
 
 function update()
-	command_skill.update()
+	champion_type, champion_record = link.getValue()
+	isOwner = DB.isOwner(champion_record)
+
+	if not isOwner then
+		commandButton.setVisible(false)
+		command_skill.setComboBoxVisible(false)
+		mb_command_label.setVisible(false)
+	else
+		commandButton.setVisible(true)
+		command_skill.setComboBoxVisible(true)
+		mb_command_label.setVisible(true)
+		command_skill.update()
+	end
+end
+
+function makeCommandRoll(bReroll)
+	local sActorType, sActorLink = link.getValue()
+	local sSkill = command_skill.getValue()
+	local nodeActor = DB.findNode(sActorLink)
+	ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battlecommand")
+	local sDescPrefix = Interface.getString("mb_command_roll_prefix")
+	local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
+	if bReroll then
+		ModifierManager.applyTraitModifiers(sActorType, nodeActor, "reroll")
+	end
+	TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battlecommand", {["mb_entry"]=getDatabaseNode().getPath()})
 end
 

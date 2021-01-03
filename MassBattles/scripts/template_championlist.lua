@@ -46,6 +46,7 @@ function addNpc(nodeSource, win, draginfo, vData)
 	end
 	win.linkNpcFields()
 	win.participation_skill.update()
+	win.update()
 end
 
 function initializeNpc(nodeSource, win, vData)
@@ -58,6 +59,9 @@ function initializeNpc(nodeSource, win, vData)
 
 	if CharacterManager.isWildCard(nodeSource) then
 		DB.setValue(win.getDatabaseNode(), "bennies", "number", BennyManager.getMaxNPCBennies(nodeSource))
+		DB.setValue(win.getDatabaseNode(), "wildcard", "number", 1)
+	else
+		DB.setValue(win.getDatabaseNode(), "wildcard", "number", 0)
 	end
 
 	local sGear = DB.getValue(nodeSource, "gear", "")
@@ -97,6 +101,7 @@ function addPc(nodeSource, win, draginfo, vData)
 
 	win.linkPcFields(nodeSource) -- this will have been skipped during onInit, as type / link were not set
 	win.participation_skill.update()
+	win.update()
 end
 
 function moveEntry(node, win, draginfo)

@@ -2,10 +2,10 @@
     <windowclass name="massbattle_client">
 		<frame>ctbox</frame>
 		<placement>
-			<size width="800" height="500" />
+			<size width="950" height="500" />
 		</placement>
 		<sizelimits>
-			<minimum width="900" height="400" />
+			<minimum width="950" height="400" />
 			<dynamic />
 		</sizelimits>
 		<softclose />
@@ -69,7 +69,7 @@
         <number name="ForceTokensB">
           <readonly/>
           <anchored width="40" height="40">
-            <top parent="ForceTokensLabel" anchor="top"offset="-10"/>
+            <top parent="ForceTokensLabel" anchor="top" offset="-10"/>
             <left parent="ForceTokensLabel" anchor="right" relation="absolute" offset="5"/>
           </anchored>
           <font>force_token_font</font>
@@ -127,7 +127,7 @@
           <class>mbMoraleBox</class>
           <invisible/>
           <fastinit />
-          <anchored height="35">
+          <anchored height="80">
             <left parent="mb_center_anchor" anchor="left" offset="-100" />
             <right parent="mb_center_anchor" anchor="right" offset="100" />
             <bottom parent="round_label" anchor="top" offset="-10" />
@@ -137,28 +137,28 @@
           <static textres="mb_fatigue_short_label"/>
           <anchored>
             <bottom parent="ArmyA" anchor="top"/>
-            <right parent="ArmyA" anchor="right" offset="-84"/>
+            <right parent="ArmyA" anchor="right" offset="-83"/>
           </anchored>
         </label>
         <label name="WndLabelA">
           <static textres="mb_wound_short_label"/>
           <anchored>
             <bottom parent="ArmyA" anchor="top"/>
-            <right parent="ArmyA" anchor="right" offset="-109"/>
+            <right parent="ArmyA" anchor="right" offset="-108"/>
           </anchored>
         </label>
         <label name="FtgLabelB">
           <static textres="mb_fatigue_short_label"/>
           <anchored>
             <bottom parent="ArmyB" anchor="top"/>
-            <right parent="ArmyB" anchor="right" offset="-84"/>
+            <right parent="ArmyB" anchor="right" offset="-83"/>
           </anchored>
         </label>
         <label name="WndLabelB">
           <static textres="mb_wound_short_label"/>
           <anchored>
             <bottom parent="ArmyB" anchor="top"/>
-            <right parent="ArmyB" anchor="right" offset="-109"/>
+            <right parent="ArmyB" anchor="right" offset="-108"/>
           </anchored>
         </label>
         <label name="NamesLabelA">

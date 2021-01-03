@@ -4,6 +4,7 @@
   <string name="massbattle_forcetokens_label">Force Tokens</string>
   <string name="mb_commander_label">Commander</string>
   <string name="mb_participation_label">Participate?</string>
+  <string name="mb_command_label">Command</string>
   <string name="mb_participation_roll_prefix">Battle Participation</string>
   <string name="mb_participation_result_label">Result</string>
   <string name="mb_raisechoice_or">or</string>
@@ -12,7 +13,7 @@
   <string name="mb_battle_impact_bonus_tooltip">The bonus you give to your commanders roll</string>
   <string name="mb_part_fatigues_label">Fatigue Levels</string>
   <string name="mb_part_wounds_label">Wounds</string>
-  <string name="help_tool_mb">https://google.com</string>
+  <string name="help_tool_mb">https://www.fantasygrounds.com/forums/showthread.php?64262-Extension-New-Extension-Mass-Battles</string>
   <string name="mb_fatigue_short_label">Fatg</string>
   <string name="mb_wound_short_label">Wnds</string>
   <string name="mb_name_short_label">Name</string>
@@ -29,11 +30,22 @@
   <string name="mb_morale_critfail">%s loses the battle and flees in a reckless rout!</string>
   <string name="mb_morale_roll_prefix">Morale</string>
   <string name="mb_army_name_label">Army Name</string>
-  <string name="mb_hints_gm1">Set both armies up using the settings windows found by clicking the [+-] buttons in the top left and right corners. Then add Commanders and Champions to both armies.</string>
+  <string name="mb_hints_gm1">Set both armies up using the settings windows found by clicking the link buttons in the top left and right corners and setting their initial Force Tokens. Then add Commanders and Champions to both armies.</string>
   <string name="mb_hints_gm2">Have all heroes and villains (that want to get involved in this round) choose a skill and participate in this round of battle to support their commander. Then have the two commanders make their command rolls.</string>
   <string name="mb_hints_gm3">Once both commanders are satisfied with their command results, click the accept button to calculate losses and apply them.</string>
   <string name="mb_hints_gm4">Have both commanders roll for Morale and proceed to the next round, by clicking the [New Round] button.</string>
+  <string name="mb_hints_cl1">Wait for the Game Master to set up the battle.</string>
+  <string name="mb_hints_cl2">Choose a skill from the selection box under your characters name and then click the [Participate!] button to take part in this round of battle.</string>
+  <string name="mb_hints_cl3">You can drop a benny on the [Participate!] button to reroll your Battle Participation roll or click on the [Participate!] button again. Once you got a result that you like (or are willing to accept), click on [Apply].</string>
+  <string name="mb_hints_cl4">Wait for the next round of battle.</string>
+  <string name="mb_hints_cl5">Wait for the other characters in this battle to make their support rolls. Then choose a skill from the selection box under your characters name and click the [Command!] button to make your Battle Command roll for this round of battle.</string>
+  <string name="mb_hints_cl6">You can drop a benny on the [Command!] button to reroll your Battle Command roll or click on the [Command!] button again. Once you got a result that you like (or are willing to accept), click on [Apply].</string>
+  <string name="mb_hints_cl7">Roll for morale by clicking on the [Roll Morale] button at the bottom. If your army didn't suffer any losses this round, you won't have to. Drop bennies on the button (or click it again) to reroll if necessary.</string>
   <string name="mb_commander_label">Commander</string>
   <string name="mb_no_morale_check_required">No Morale Check</string>
   <string name="mb_clear_result">Clear</string>
+  <string name="mb_new_round_label">New Round</string>
+  <string name="mb_participate_button_label">Participate!</string>
+  <string name="mb_command_button_label">Command!</string>
+  <string name="mb_accept_round_results_label">Accept</string>
 </root>

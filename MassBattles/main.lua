@@ -1,15 +1,15 @@
 
 aMassBattleShortcutHost = {
-    icon="button_ct",
-    icon_down="button_ct_down",
+    icon="button_mb",
+    icon_down="button_mb_down",
     tooltipres="sidebar_tooltip_mb",
     class="massbattle_host",
     path="massbattle",
 }
 
 aMassBattleShortcutClient = {
-    icon="button_ct",
-    icon_down="button_ct_down",
+    icon="button_mb",
+    icon_down="button_mb_down",
     tooltipres="sidebar_tooltip_mb",
     class="massbattle_client",
     path="massbattle",
@@ -25,7 +25,6 @@ function onInit()
     RollsManager.registerTraitRollModHandler(applyMoraleBonus)
     OOBManager.registerOOBMsgHandler("MassBattleWindowUpdate", onOOBMBWUpdate)
     if User.isHost() or User.isLocal() then
-        Debug.chat("onOOBMBApplyCommandResult registered")
 		OOBManager.registerOOBMsgHandler("MassBattleApplyCommandResult", onOOBMBApplyCommandResult)
     end
     ChatManager.registerRollHandler("massbattleCritFailInjury", processMassbattleCritFailInjury)
@@ -46,7 +45,12 @@ function onInit()
     else
         DesktopManager.registerStackShortcuts({aMassBattleShortcutClient})
     end
-	
+    if(User.isHost() or User.isLocal()) then
+		Module.setModulePermissions("SWADE Player Guide", true, true)
+    else
+        Module.activate("SWADE Player Guide")
+    end
+	--Module.activate()
     updateClientsMassBattleWindows()
 end
 
@@ -72,13 +76,10 @@ function resolveBattleMoraleRoll(rRoll, rRollResult, rSource, vTargets, rContext
     rMessage = {}
     if bSuccess then
         rMessage.text = string.format(Interface.getString("mb_morale_success"),armyName)
-        rMessage.icon = "turn_flag"
     elseif not bCritFail then
         rMessage.text = string.format(Interface.getString("mb_morale_fail"),armyName)
-        rMessage.icon = "indicator_act"
     else
         rMessage.text = string.format(Interface.getString("mb_morale_critfail"),armyName)
-        rMessage.icon = "damagetracker_wound"
     end
 	Comm.deliverChatMessage(rMessage)
     updateClientsMassBattleWindows()
@@ -88,7 +89,6 @@ function resolveBattleCommandRoll(rRoll, rRollResult, rSource, vTargets, rContex
     local participant = DB.findNode(extractMBEntryFromUserdata(rRoll.rCustom.userdata))
     local commandResultsNode = DB.createChild(participant,"command_results")
     local commandResultNode = DB.createChild(commandResultsNode)
-    Debug.chat(rRollResult)
     DB.setValue(commandResultNode,"total", "number",rRollResult.nTotalScore)
 	local windowMassbattle = getMassbattleWindow()
 	windowMassbattle.update()
@@ -130,6 +130,7 @@ function updateParticipationResultData(participant, total_score, bCritFail)
     if(bRaise and bSuccess) then
         makeBattleTableRoll(participant, participation_result_node, "raise")
         setPendingBonus(participation_result_node, 1)
+        setBonus(participant,1)
     elseif (bSuccess) then
         setPendingBonus(participation_result_node, 1)
         setPendingFatigue(participation_result_node, 1)
@@ -178,7 +179,6 @@ end
 
 function applyCommandResult(participationResultNode)
     if true then
-        Debug.chat(participationResultNode)
 		Comm.deliverOOBMessage({type="MassBattleApplyCommandResult",node=participationResultNode.getPath()})
     end
     local windowMassbattle = getMassbattleWindow()
@@ -232,19 +232,19 @@ function getMassbattleFromParticipant(participant)
 
 function makeCritFailRolls(participant, participationResultNode)
 	makeBattleTableRoll(participant, participationResultNode, "critfail")
-    makeCritFailInjuryRoll(participant)
+    makeCritFailInjuryRoll(participationResultNode)
 end
 
-function makeCritFailInjuryRoll(participant)
-	sActorClass, sLink = participant.getChild("link").getValue()
-	rActor = ActorManager.getActor("pc", sLink)
+function makeCritFailInjuryRoll(participationResultNode)
+	sActorClass, sLink = participationResultNode.getParent().getParent().getChild("link").getValue()
+	rActor = ActorManager.getActor(sActorClass, sLink)
 	rRoll = {};
 	rRoll.sType = "massbattleCritFailInjury";
 	rRoll.sDesc = "Critical Fail Injury";
 	rRoll.aDice = {"d4"};
 	rRoll.nMod = 1
 	rRoll.bApplyModifiersStack = false
-	rRoll.mb_entry = participant.getPath()
+	rRoll.mb_entry = participationResultNode.getPath()
 	ActionsManager.performAction(nil, rActor, rRoll)
 end
 
@@ -394,6 +394,13 @@ function applyMoraleBonus(rActor, sTrait, nodeTrait, sTraitType, vAttack)
 			end
         end
 	end
+    if armyA then
+        local nDefaultMoraleBonus = DB.getValue(nodeMassbattle,"moraleBonusA",0)
+        ModifierStack.addOrUpdateSlot("Morale Bonus", nDefaultMoraleBonus)
+    else
+        local nDefaultMoraleBonus = DB.getValue(nodeMassbattle,"moraleBonusB",0)
+        ModifierStack.addOrUpdateSlot("Morale Bonus", nDefaultMoraleBonus)
+    end
 end
 
 function applyCommandBonus(rActor, sTrait, nodeTrait, sTraitType, vAttack)
@@ -592,10 +599,11 @@ end
 
 function processMassbattleCritFailInjury(draginfo)
     local nWounds = draginfo.getDieList()[1].result + 1
-    local sParticipantPath = draginfo.getMetaData("mb_entry")
-    local nodeParticipant = DB.findNode(sParticipantPath)
+    local sParticipationResultNodePath = draginfo.getMetaData("mb_entry")
+    local nodeParticipationResult = DB.findNode(sParticipationResultNodePath)
+    local nodeParticipant = nodeParticipationResult.getParent().getParent()
     local sName = DB.getValue(nodeParticipant,"name")
-    nodeParticipant.createChild("participation_result.pending_wounds","number").setValue(nWounds)
+    nodeParticipationResult.createChild("pending_wounds","number").setValue(nWounds)
     sChatMessageText = string.format(Interface.getString("mb_wound_notification_string"),sName,nWounds)
     chat_message = {text = sChatMessageText, dice=draginfo.getDieList(),secret=false,icon="indicator_wounds",diemodifier=1, dicedisplay=1}
     Comm.addChatMessage(chat_message)
@@ -614,14 +622,12 @@ function setPendingWoundsParticipant(participationResultNode, nWounds)
 end
 
 function activatePendingEffects(participationResultNode)
-    Debug.chat("activatePendingEffects, participationResultNode", participationResultNode)
 	local participantNode = participationResultNode.getParent().getParent()
     if participationResultNode and participantNode then
         local nPendingFatigues = DB.getValue(participationResultNode,"pending_fatigues",0)
         local nPendingWounds = DB.getValue(participationResultNode,"pending_wounds",0)
         local nPendingBonus = DB.getValue(participationResultNode,"pending_battle_impact_bonus",0)
 
-        Debug.chat("Wounding paricipant ", participantNode, " for ", nPendingFatigues, " Fatigues and ", nPendingWounds, " Wounds.")
         fatigueParticipant(participantNode, nPendingFatigues)
         woundParticipant(participantNode, nPendingWounds)
         setBonus(participantNode, nPendingBonus)
@@ -656,7 +662,6 @@ function activatePendingEffects(participationResultNode)
     end
     participantNode.createChild("pendingResultsActivated","number").setValue(1)
     local participation_results_list = DB.getChild(participantNode,"participation_results")
-    Debug.chat("participation_results_list:",participation_results_list)
     DB.deleteChildren(participation_results_list,".")
 end
 
@@ -723,15 +728,60 @@ function onOOBMBWUpdate(data)
 end
 
 function onOOBMBApplyCommandResult(data)
-    Debug.chat("onOOBMBApplyCommandResult",data.node)
     local commandResultNode = DB.findNode(data.node)
-    Debug.chat("onOOBMBApplyCommandResult data:",data, commandResultNode)
     if(commandResultNode)then
 		local nResult = DB.getValue(commandResultNode, "total", 0)
 		local massbattleNode = DB.findNode("massbattle")
 		local armyid = getArmyIDFromCommanderNode(commandResultNode.getParent().getParent())
-        Debug.chat(armyid,"has been commmanded")
 		DB.setValue(massbattleNode,"army"..armyid.."commandresult","number",nResult)
 		DB.setValue(massbattleNode,"army"..armyid.."commanded","number",1)
     end
+end
+
+function getMBEntry(nodeChampion)
+    local nodeMassbattle = DB.findNode("massbattle")
+    local nodeArmyAChampions = DB.getChild(nodeMassbattle, "ArmyA.champions")
+    if nodeArmyAChampions then
+        for _, participant in pairs(nodeArmyAChampions.getChildren()) do
+            local link = participant.getChild("link")
+            if link then
+                local sLinkType, sLinkValue = link.getValue()
+                if sLinkValue == nodeChampion.getPath() then
+                    return participant
+                end
+            end
+        end
+    end
+    local nodeArmyBChampions = DB.getChild(nodeMassbattle, "ArmyB.champions")
+    if nodeArmyBChampions then
+        for _, participant in pairs(nodeArmyBChampions.getChildren()) do
+            local link = participant.getChild("link")
+            if link then
+                local sLinkType, sLinkValue = link.getValue()
+                if sLinkValue == nodeChampion.getPath() then
+                    return participant
+                end
+            end
+        end
+    end
+    return nil
+end
+
+function isLeader(nodeChampion)
+    local nodeMassbattle = DB.findNode("massbattle")
+    local nodeLeaderA = DB.getChild(nodeMassbattle,"leadera")
+    if nodeLeaderA then
+        local sLeaderAType, sLeaderALink = nodeLeaderA.getValue()
+        if sLeaderALink == nodeChampion.getPath() then
+            return "a"
+		end
+    end
+    local nodeLeaderB = DB.getChild(nodeMassbattle,"leaderb")
+    if nodeLeaderB then
+        local sLeaderBType, sLeaderBLink = nodeLeaderB.getValue()
+        if sLeaderBLink == nodeChampion.getPath() then
+            return "b"
+		end
+    end
+    return false
 end

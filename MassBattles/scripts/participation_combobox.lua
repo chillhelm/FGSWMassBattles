@@ -8,6 +8,10 @@ local nodeSrc = nil
 function onInit()
 	super.onInit()
 	
+	initialize()
+end
+
+function initialize()
 	nodeSrc = window.getDatabaseNode()
 	if(nodeSrc)then
 		bInit=self.initializeItems()
@@ -28,6 +32,7 @@ function onInit()
 end
 
 function initializeItems()
+	clear()
 	addItems({"--"})
 	local nodeSrc = window.getDatabaseNode()
 	bInit=false

@@ -63,7 +63,6 @@ function onDrop(x, y, draginfo)
 	if draginfo.isType("token") then
 		local sPrototype, tokenInstance = draginfo.getTokenData()
 		setPrototype(sPrototype)
-		replaceCombatantToken(tokenInstance)
 		return true
 	end
 end
@@ -143,7 +142,3 @@ function onScaleChanged()
 	end
 end
 
-function replaceCombatantToken(tokenInstance)
-	CombatManager.replaceCombatantToken(window.getDatabaseNode(), tokenInstance)
-	onTokenUpdate()
-end

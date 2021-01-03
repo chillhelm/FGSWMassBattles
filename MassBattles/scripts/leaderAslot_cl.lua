@@ -2,7 +2,7 @@ local widgetEmpty = nil
 local armyID = nil
 
 function onInit()
-  if(getName()=="leaderA")then
+  if(getName()=="leaderASlot")then
     armyID="A"
 	window.leadera.getDatabaseNode().onUpdate = updateWidget
   else
@@ -45,6 +45,5 @@ function update(bReadOnly)
 end
 
 function onDrop(x, y, draginfo)
-	Debug.chat("onDrop", self, draginfo)
 end
 

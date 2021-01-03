@@ -178,49 +178,10 @@
           <right parent="link" anchor="left" offset="-5" />
         </anchored>
       </minibennyfield>
-
-      <!-- Effects -->
-      <ct_section name="effecticon">
-        <anchored>
-          <top offset="12" />
-        </anchored>
-        <icon>indicator_effect</icon>
-        <script>
-          function setSectionVisible(bVisible)
-          bVisible = true
-          window.effects.setVisible(bVisible)
-          window.effects_label.setVisible(bVisible)
-          setVisible(bVisible)
-          end
-        </script>
-      </ct_section>
-      <windowlist name="effects">
-        <anchored>
-          <left parent="effecticon" anchor="right" offset="52" />
-          <top parent="damages" anchor="bottom" relation="relative" offset="-24" />
-          <right offset="-10" />
-        </anchored>
-        <class>ct_effect</class>
-        <datasource>.effects</datasource>
-        <script file="ct/scripts/ct_effects.lua"/>
-      </windowlist>
-      <ct_section_label name="effects_label">
-        <anchored to="effects" position="lefthigh" offset="4,6" />
-        <static textres="ct_label_effects" />
-      </ct_section_label>
-      <string_ctentry_effects name="effect_summary">
-        <anchored merge="replace">
-          <left parent="wildcard_icon" offset="35" />
-          <top parent="damages" anchor="bottom" relation="relative" offset="5" />
-          <right offset="-17" />
-        </anchored>
-      </string_ctentry_effects>
-
-      
       <label name="mb_participation_label">
         <anchored>
-          <top parent="damages" anchor="bottom" relation="relative"/>
-          <left parent="effecticon" anchor="left"/>
+          <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
+          <left parent="wildcard_icon" anchor="left"/>
         </anchored>
         <static textres="mb_participation_label"/>
       </label>
@@ -237,26 +198,24 @@
             window.makeParticipationRoll(false)
           end
           function onDrop(x,y,dragdata)
-            Debug.chat(dragdata)
             if dragdata.getType() == "benny" then
               local bennySource = dragdata.getStringData()
               local actor = dragdata.getDescription()
-              Debug.chat("actor",actor)
               rActor={}
               if actor == "GM" then
-                Debug.chat("GM")
                 rActor["recordname"]="GM"
               else
                 rActor["recordname"]=DB.findNode(bennySource).getParent().getParent().getPath()
               end
-              Debug.chat(rActor)
-              BennyManager.consumeBennyToReRoll(rActor, dragdata.getMetaData("string"), "deebuddleyang")
+              BennyManager.consumeBennyToReRoll(rActor, dragdata.getStringData())
               window.makeParticipationRoll(true)
             end
           end
         </script>
         <anchored to="participation_skill" position="right" offset="10" width="80"/>
-        <text>Participate!</text>
+	<state>
+		<textres>mb_participate_button_label</textres>
+	</state>
       </button_text>
       <number name="battle_impact_bonus">
         <anchored>
@@ -287,7 +246,7 @@
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
           <left parent="mb_participation_label" />
-          <right parent="effects"/>
+          <right offset="-10"/>
         </anchored>
         <datasource>.participation_results</datasource>
         <script file="MassBattles/scripts/template_resultlist.lua"/>
@@ -340,7 +299,7 @@
       <ct_client_damagetypes name="damages">
         <anchored width="0">
           <top offset="2" />
-          <right parent="state" anchor="left" offset="-2" />
+          <right offset="-77" />
         </anchored>
       </ct_client_damagetypes>
       <button_idelete>
@@ -360,7 +319,7 @@
         </script>
       </button_idelete>
       <genericcontrol name="wildcard_icon">
-        <bounds>105,16,25,25</bounds>
+        <bounds>105,8,25,25</bounds>
         <icon>wildcard</icon>
       </genericcontrol>
       <ct_name_client name="name">
@@ -376,31 +335,18 @@
         </anchored>
         <icon normal="button_link" />
         <noreset />
+        <invisible/>
         <script file="ct/scripts/ct_link.lua"/>
       </windowreferencefield>
 
-      <minibennyfield name="bennies">
-        <anchored width="20" height="21">
-          <top parent="link" />
-          <right parent="link" anchor="left" offset="-5" />
-        </anchored>
-      </minibennyfield>
+      
 
-      <windowlist name="effects">
-        <anchored>
-          <left parent="wildcard_icon" anchor="right" offset="10" />
-          <top parent="damages" anchor="bottom" relation="relative" offset="4" />
-          <right offset="-10" />
-        </anchored>
-        <class>client_ct_effect</class>
-        <datasource>.effects</datasource>
-        <script file="ct/scripts/client_ct_effectlist.lua"/>
-      </windowlist>
+      
 
       
       <label name="mb_participation_label">
         <anchored>
-          <top parent="damages" anchor="bottom" relation="relative" offset="4"/>
+          <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
           <left parent="wildcard_icon" anchor="left"/>
         </anchored>
         <static textres="mb_participation_label"/>
@@ -418,26 +364,25 @@
             window.makeParticipationRoll(false)
           end
           function onDrop(x,y,dragdata)
-            Debug.chat(dragdata)
             if dragdata.getType() == "benny" then
               local bennySource = dragdata.getStringData()
               local actor = dragdata.getDescription()
-              Debug.chat("actor",actor)
               rActor={}
               if actor == "GM" then
-                Debug.chat("GM")
                 rActor["recordname"]="GM"
               else
                 rActor["recordname"]=DB.findNode(bennySource).getParent().getParent().getPath()
               end
-              Debug.chat(rActor)
-              BennyManager.consumeBennyToReRoll(rActor, dragdata.getMetaData("string"), "deebuddleyang")
+              BennyManager.consumeBennyToReRoll(rActor, dragdata.getMetaData("string"))
               window.makeParticipationRoll(true)
             end
           end
         </script>
         <anchored to="participation_skill" position="right" offset="10" width="80"/>
-        <text>Participate!</text>
+	<state>
+		<textres>mb_participate_button_label</textres>
+	</state>
+        
       </button_text>
       <number name="battle_impact_bonus">
         <anchored>
@@ -468,7 +413,7 @@
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
           <left parent="mb_participation_label" />
-          <right parent="effects"/>
+          <right offset="-10"/>
         </anchored>
         <datasource>.participation_results</datasource>
         <script file="MassBattles/scripts/template_resultlist.lua"/>
@@ -528,8 +473,8 @@
     </genericcontrol>
   </template>
   <windowclass name="commandResultBox_Window">
-    <script file="MassBattles/scripts/command_result_box.lua"/>
     <frame name="groupbox"/>
+    <script file="MassBattles/scripts/command_result_box.lua"/>
     <sheetdata>
       <label name="mb_participation_result_label">
         <anchored>
@@ -540,6 +485,11 @@
       </label>
       <number name="total">
         <anchored to="mb_participation_result_label" position="right" offset="15"/>
+        <frame>
+          <name>bonus</name>
+          <offset>10,5,10,5</offset>
+        </frame>
+        <readonly/>
       </number>
       <buttoncontrol name="clear_result_button">
         <tooltipres>mb_clear_result</tooltipres>
@@ -561,12 +511,15 @@
           window.applyParticipationResult()
           end
         </script>
-        <anchored width="50" >
-          <right offset="-20" parent="clear_result_button"/>
+        <anchored >
+          <right offset="-25" parent="clear_result_button"/>
           <top parent="mb_participation_result_label"/>
           <bottom parent="mb_participation_result_label"/>
+          <left parent="total" anchor="right" offset="20"/>
         </anchored>
-        <textres>mb_apply_part_result</textres>
+	<state>
+		<textres>mb_apply_part_result</textres>
+	</state>
       </button_text>
       <genericcontrol name="tinyspacer">
         <anchored height="10">
@@ -590,6 +543,11 @@
         </label>
         <number name="total">
           <anchored to="mb_participation_result_label" position="right" offset="15"/>
+          <frame>
+            <name>bonus</name>
+            <offset>10,5,10,5</offset>
+          </frame>
+          <readonly/>
         </number>
         <genericcontrol name="success_indicator">
           <icon>adjust1</icon>
@@ -622,7 +580,9 @@
             <left parent="total" relation="relative" anchor="right" offset="45"/>
             <top parent="total" offset="2"/>
           </anchored>
-        <text>+1</text>
+	  <state>
+		<text>+1</text>
+	</state>
           <invisible/>
       </button_text>
         <label name="raise_choice_or">
@@ -666,11 +626,13 @@
             end
           </script>
           <anchored width="50" >
-            <right offset="-20" parent="clear_result_button"/>
+            <right offset="-25" parent="clear_result_button"/>
             <top parent="mb_participation_result_label"/>
             <bottom parent="mb_participation_result_label"/>
           </anchored>
-          <textres>mb_apply_part_result</textres>
+	  <state>
+		  <textres>mb_apply_part_result</textres>
+	  </state>
         </button_text>
         <label name="part_wounds">
           <anchored>
@@ -682,8 +644,8 @@
         <number name="pending_wounds">
           <anchored>
             <right parent="apply_result_button" anchor="left" relation="relative" offset="-5"/>
-            <top parent="apply_result_button" anchor="top" />
-            <bottom parent="apply_result_button"/>
+            <top parent="part_wounds" anchor="top" />
+            <bottom parent="part_wounds"/>
           </anchored>
         </number>
         <stringfield name="critfail_battleeffect">
@@ -723,9 +685,6 @@
   </template>
   <template name="mbLeaderBSlot_cl">
     <genericcontrol name="mbLeaderB">
-      <droptypes>
-        <type>shortcut</type>
-      </droptypes>
       <stateframe>
         <drophilight>
           <name>modstackfocus</name>
@@ -742,9 +701,6 @@
         <left />
         <right />
       </anchored>
-      <droptypes>
-        <type>shortcut</type>
-      </droptypes>
       <stateframe>
         <drophilight>
           <name>modstackfocus</name>
@@ -752,7 +708,7 @@
           <hidereadonly />
         </drophilight>
       </stateframe>
-      <script file="MassBattles/scripts/leaderAslot.lua"/>
+      <script file="MassBattles/scripts/leaderAslot_cl.lua"/>
     </genericcontrol>
   </template>
   <template name="mbLeaderBSlot">
@@ -798,10 +754,16 @@
         <bottom parent="leaderASlot"/>
         <right parent="leaderASlot"/>
       </anchored>
+      <fastinit/>
     </subwindow>
   </template>
   <template name="mbLeaderADisplayBox" >
     <subwindow name="mbLeaderDisplayBox_subwindow">
+        <script>
+            function onDrop(x,y,draginfo)
+                window.leaderASlot.onDrop(x,y,draginfo)
+            end
+        </script>
       <class>mbLeaderDisplay</class>
       <anchored>
         <left parent="leaderASlot"/>
@@ -825,6 +787,11 @@
   <template name="mbLeaderBDisplayBox" >
     <subwindow name="mbLeaderDisplayBox_subwindow">
       <class>mbLeaderDisplay</class>
+        <script>
+            function onDrop(x,y,draginfo)
+                window.leaderBSlot.onDrop(x,y,draginfo)
+            end
+        </script>
       <anchored>
         <left parent="leaderBSlot"/>
         <top parent="leaderBSlot"/>
@@ -866,7 +833,7 @@
       <ct_client_damagetypes name="damages">
         <anchored width="0">
           <top offset="2" />
-          <right parent="state" anchor="left" offset="-2" />
+          <right offset="-77" />
         </anchored>
       </ct_client_damagetypes>
       <button_idelete>
@@ -914,31 +881,11 @@
         <icon normal="button_link" />
         <noreset />
         <script file="ct/scripts/ct_link.lua"/>
+        <invisible/>
       </windowreferencefield>
-      
-      <minibennyfield name="bennies">
-        <anchored width="20" height="21">
-          <top parent="link" />
-          <right parent="link" anchor="left" offset="-5" />
-        </anchored>
-      </minibennyfield>
-      
-      <windowlist name="effects">
-        <anchored>
-          <left parent="wildcard_icon" anchor="right" offset="10" />
-          <top parent="damages" anchor="bottom" relation="relative" offset="4" />
-          <right offset="-10" />
-        </anchored>
-        <class>client_ct_effect</class>
-        <datasource>.effects</datasource>
-        <script file="ct/scripts/client_ct_effectlist.lua"/>
-      </windowlist>
-      
-      
-      
       <label name="mb_command_label">
         <anchored>
-          <top parent="damages" anchor="bottom" relation="relative" offset="4"/>
+          <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
           <left parent="wildcard_icon" anchor="left"/>
         </anchored>
         <static textres="mb_command_label"/>
@@ -953,29 +900,50 @@
       <button_text name="commandButton" merge="replace">
         <script>
           function onButtonPress()
-          local sActorType, sActorLink = window.link.getValue()
-          local sSkill = window.command_skill.getValue()
-          local nodeActor = DB.findNode(sActorLink)
-          ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battlecommand")
-          local sDescPrefix = Interface.getString("mb_command_roll_prefix")
-          local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
-          TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battlecommand", {["mb_entry"]=window.getDatabaseNode().getPath()})
+            window.makeCommandRoll(false)
+          end
+          function onDrop(x,y,dragdata)
+            if dragdata.getType() == "benny" then
+              local bennySource = dragdata.getStringData()
+              local actor = dragdata.getDescription()
+              rActor={}
+              if actor == "GM" then
+                rActor["recordname"]="GM"
+              else
+                rActor["recordname"]=DB.findNode(bennySource).getParent().getParent().getPath()
+              end
+              BennyManager.consumeBennyToReRoll(rActor, dragdata.getStringData())
+              window.makeCommandRoll(true)
+            end
           end
         </script>
+        
         <anchored to="command_skill" position="right" offset="10" width="80"/>
-        <text>Command!</text>
+	<state>
+		<textres>mb_command_button_label</textres>
+	</state>
       </button_text>
       <list_sw name="commandResultList">
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
           <left parent="mb_command_label" />
           <right parent="damages" anchor="left"/>
+          <bottom offset="-20"/>
         </anchored>
+        <noclickentries />
         <datasource>.command_results</datasource>
         <script file="MassBattles/scripts/template_resultlist.lua"/>
         <script file="MassBattles/scripts/mb_commandresultlist.lua"/>
         <class>commandResultBox_Window</class>
+        <columns>
+          <width>170</width>
+          <fillwidth/>
+        </columns>
       </list_sw>
+      <scrollbar>
+        <anchored to="commandResultList"/>
+        <target>commandResultList</target>
+      </scrollbar>
       <vspace name="spacer">
         <anchored height="20">
           <top parent="damages" anchor="bottom" relation="relative" />
@@ -988,6 +956,13 @@
   <windowclass name="mbLeaderDisplay">
     <frame name="groupbox"/>
     <script file="MassBattles/scripts/leaderdisplay.lua"/>
+    <anchored>
+      <sizelimits>
+        <maximum>
+          <height>30</height>
+        </maximum>
+      </sizelimits>
+    </anchored>
     <sheetdata>
       <ct_type name="type" />
       <hn name="wildcard" />
@@ -1001,6 +976,12 @@
           end
         </script>
       </hn>
+      <genericcontrol name="unitynecessarystretcher">
+          <anchored>
+              <left />
+              <top offset="140" />
+          </anchored>
+      </genericcontrol>
       
       <tokenfield name="token">
         <bounds>74,6,25,25</bounds>
@@ -1075,47 +1056,16 @@
         </anchored>
       </minibennyfield>
       
-      <!-- Effects -->
-      <ct_section name="effecticon">
-        <anchored>
-          <top offset="12" />
-        </anchored>
-        <icon>indicator_effect</icon>
-        <script>
-          function setSectionVisible(bVisible)
-          bVisible = true
-          window.effects.setVisible(bVisible)
-          window.effects_label.setVisible(bVisible)
-          setVisible(bVisible)
-          end
-        </script>
-      </ct_section>
-      <windowlist name="effects">
-        <anchored>
-          <left parent="effecticon" anchor="right" offset="52" />
-          <top parent="damages" anchor="bottom" relation="relative" offset="-24" />
-          <right offset="-10" />
-        </anchored>
-        <class>ct_effect</class>
-        <datasource>.effects</datasource>
-        <script file="ct/scripts/ct_effects.lua"/>
-      </windowlist>
-      <ct_section_label name="effects_label">
-        <anchored to="effects" position="lefthigh" offset="4,6" />
-        <static textres="ct_label_effects" />
-      </ct_section_label>
-      <string_ctentry_effects name="effect_summary">
-        <anchored merge="replace">
-          <left parent="wildcard_icon" offset="35" />
-          <top parent="damages" anchor="bottom" relation="relative" offset="5" />
-          <right offset="-17" />
-        </anchored>
-      </string_ctentry_effects>
+      
+      
+      
+      
+      
       
       <label name="mb_command_label">
         <anchored>
-          <top parent="damages" anchor="bottom" relation="relative"/>
-          <left parent="effecticon" anchor="left"/>
+          <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
+          <left parent="wildcard_icon" anchor="left"/>
         </anchored>
         <static textres="mb_command_label"/>
       </label>
@@ -1129,29 +1079,49 @@
       <button_text name="commandButton" merge="replace">
         <script>
           function onButtonPress()
-          local sActorType, sActorLink = window.link.getValue()
-          local sSkill = window.command_skill.getValue()
-          local nodeActor = DB.findNode(sActorLink)
-          ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battlecommand")
-          local sDescPrefix = Interface.getString("mb_command_roll_prefix")
-          local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
-          TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battlecommand", {["mb_entry"]=window.getDatabaseNode().getPath()})
+            window.makeCommandRoll(false)
+          end
+          function onDrop(x,y,dragdata)
+           if dragdata.getType() == "benny" then
+              local bennySource = dragdata.getStringData()
+              local actor = dragdata.getDescription()
+              rActor={}
+              if actor == "GM" then
+                rActor["recordname"]="GM"
+              else
+                rActor["recordname"]=DB.findNode(bennySource).getParent().getParent().getPath()
+              end
+              BennyManager.consumeBennyToReRoll(rActor, dragdata.getStringData())
+              window.makeCommandRoll(true)
+           end
           end
         </script>
         <anchored to="command_skill" position="right" offset="10" width="80"/>
-        <text>Command!</text>
+	<state>
+		<textres>mb_command_button_label</textres>
+	</state>
       </button_text>
       <list_sw name="commandResultList">
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="10"/>
+          <bottom offset="-20"/>
           <left parent="mb_command_label" />
           <right parent="damages" anchor="left"/>
         </anchored>
+        <noclickentries />
         <datasource>.command_results</datasource>
         <script file="MassBattles/scripts/template_resultlist.lua"/>
         <script file="MassBattles/scripts/mb_commandresultlist.lua"/>
         <class>commandResultBox_Window</class>
+        <columns>
+          <width>170</width>
+          <fillwidth/>
+        </columns>
       </list_sw>
+      <scrollbar>
+        <anchored to="commandResultList"/>
+        <target>commandResultList</target>
+      </scrollbar>
       <vspace name="spacer">
         <anchored height="20">
           <top parent="damages" anchor="bottom" relation="relative" />
@@ -1162,41 +1132,57 @@
     </sheetdata>
   </windowclass>
   <windowclass name="mbResolutionWindow">
-    <frame name="groupbox"/>
+    <frame name="groupbox" offset="-1,-1,-1,-1"/>
     <script file="MassBattles/scripts/mb_resolution_box.lua"/>
     <sheetdata>
       <massbattle_center_anchor name="resultWindowCenterAnchor"/>
       <label name="forceALabel">
-        <static>Result</static>
+        <static>Result:</static>
         <anchored position="insidetopleft" offset="10,5"/>
       </label>
       <number name="armyacommandresult">
         <anchored to="forceALabel" position="right" offset="10"/>
+        <frame>
+          <name>bonus</name>
+          <offset>10,5,10,5</offset>
+        </frame>
       </number>
       <number name="armybcommandresult">
-        <anchored position="insidetopright" offset="10,5"/>
+        <anchored>
+          <top parent="armyacommandresult"/>
+          <bottom parent="armyacommandresult"/>
+          <right offset="-15"/>
+        </anchored>
+        <frame>
+          <name>bonus</name>
+          <offset>10,5,10,5</offset>
+        </frame>
       </number>
       <label name="forceBLabel">
-        <static>Result</static>
+        <static>Result:</static>
         <anchored>
-          <left anchor="right" parent="armybcommandresult" offset="10"/>
+          <right anchor="left" parent="armybcommandresult" offset="-10"/>
           <top parent="armybcommandresult"/>
         </anchored>
       </label>
       <label name="armyalossesLabel">
         <static>Losses:</static>
-        <anchored position="insidetopleft" offset="10,15"/>
+        <anchored position="insidetopleft" offset="10,25"/>
       </label>
       <number name="armyalosses">
         <anchored to="armyalossesLabel" position="right" offset="10"/>
       </number>
       <number name="armyblosses">
-        <anchored position="insidetopright" offset="10,15"/>
+        <anchored>
+          <top parent="armyalosses"/>
+          <bottom parent="armyalosses"/>
+          <right offset="-15"/>
+        </anchored>
       </number>
       <label name="armyblossesLabel">
         <static>Losses:</static>
         <anchored>
-          <left anchor="right" parent="armyblosses" offset="10"/>
+          <right anchor="left" parent="armyblosses" offset="-10"/>
           <top parent="armyblosses"/>
         </anchored>
       </label>
@@ -1206,9 +1192,11 @@
             MassBattles.acceptCommandResults()
           end
         </script>
-        <text>Accept</text>
+	<state>
+		<textres>mb_accept_round_results_label</textres>
+	</state>
         <anchored width="80" height="15">
-          <top parent="resultWindowCenterAnchor" anchor="bottom" relation="relative" offset="35"/>
+          <top parent="resultWindowCenterAnchor" anchor="bottom" relation="relative" offset="50"/>
           <left anchor="left" parent="resultWindowCenterAnchor" offset="-40"/>
         </anchored>
       </button_text>
@@ -1216,82 +1204,90 @@
     
   </windowclass>
   <windowclass name="mbMoraleBox">
-    <frame name="groupbox"/>
+    <frame name="groupbox" offset="10,10,-10,-10"/>
     <script file="MassBattles/scripts/mb_morale_box.lua"/>
     <sheetdata>
-      <massbattle_center_anchor name="resultWindowCenterAnchor"/>
+	    <genericcontrol name="stretcher">
+			<anchored>
+				<top offset="80"/>
+				<left />
+				<right />
+			</anchored>
+	    </genericcontrol>
+	    <massbattle_center_anchor name="resultWindowCenterAnchor"/>
       <button_text name="armyAMoraleButton">
-        <textres>mb_morale_check_button</textres>
+      	<state>
+       		<textres>mb_morale_check_button</textres>
+	</state>
         <script>
            function onButtonPress()
-             local sActorType, sActorLink = MassBattles.getLeaderA()
-             local sAttribute = "Spirit"
-             local nodeActor = DB.findNode(sActorLink)
-             ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battlemorale")
-             local sDescPrefix = Interface.getString("mb_morale_roll_prefix")
-             local nodeAttribute = AttributeManager.getAttributeNode(nodeActor, sAttribute)
-             CustomData = {}
-             CustomData.mb_entry = MassBattles.getLeaderADetails().getPath()
-             Debug.chat("sActorType",sActorType, "nodeActor",nodeActor, "nodeTrait",nodeAttribute, "sDescPrefix",sDescPrefix, "battlemorale")
-             TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeAttribute, sDescPrefix, "battlemorale",CustomData)
+             window.makeMoraleRoll("A",false)
+           end
+           function onDrop(x,y,dragdata)
+              if dragdata.getType() == "benny" then
+                local bennySource = dragdata.getStringData()
+                local actor = dragdata.getDescription()
+                rActor={}
+                if actor == "GM" then
+                  rActor["recordname"]="GM"
+                else
+                  rActor["recordname"]=DB.findNode(bennySource).getParent().getParent().getPath()
+                end
+                BennyManager.consumeBennyToReRoll(rActor, dragdata.getStringData(), " battle participation")
+                window.makeMoraleRoll("A",true)
+              end
            end
         </script>
-        <anchored width="60" height="15">
-          <bottom offset="-10"/>
-          <left offset="10" />
+        <anchored width="70" height="15" to="stretcher" position="aboveleft" offset="10,40">
         </anchored>
       </button_text>
-      <label name="armyANoCheckRequiredLabel">
+      <stringcontrol name="armyANoCheckRequiredLabel">
         <static textres="mb_no_morale_check_required"/>
-        <anchored width="60">
-          <top />
-          <bottom offset="-10"/>
-          <left offset="10" />
-        </anchored>
+	<anchored width="80" to="stretcher" position="aboveleft" offset="10,40" />
         <multilinespacing>12</multilinespacing>
         <center/>
-      </label>
+      </stringcontrol>
       <button_text name="armyBMoraleButton">
         <script>
            function onButtonPress()
-             local sActorType, sActorLink = MassBattles.getLeaderB()
-             local sAttribute = "Spirit"
-             local nodeActor = DB.findNode(sActorLink)
-             ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battlemorale")
-             local sDescPrefix = Interface.getString("mb_morale_roll_prefix")
-             local nodeAttribute = AttributeManager.getAttributeNode(nodeActor, sAttribute)
-             CustomData = {}
-             CustomData.mb_entry = MassBattles.getLeaderBDetails().getPath()
-             Debug.chat("sActorType",sActorType, "nodeActor",nodeActor, "nodeTrait",nodeAttribute, "sDescPrefix",sDescPrefix, "battlemorale")
-             TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeAttribute, sDescPrefix, "battlemorale",CustomData)
+             window.makeMoraleRoll("B",false)
+           end
+           function onDrop(x,y,dragdata)
+             if dragdata.getType() == "benny" then
+               local bennySource = dragdata.getStringData()
+               local actor = dragdata.getDescription()
+               rActor={}
+               if actor == "GM" then
+                  rActor["recordname"]="GM"
+               else
+                  rActor["recordname"]=DB.findNode(bennySource).getParent().getParent().getPath()
+               end
+               BennyManager.consumeBennyToReRoll(rActor, dragdata.getStringData(), " battle participation")
+               window.makeMoraleRoll("B",true)
+             end
            end
         </script>
-        <textres>mb_morale_check_button</textres>
-        <anchored width="60" height="15">
-          <bottom offset="-10"/>
-          <right offset="-10" />
-        </anchored>
+	<state>
+		<textres>mb_morale_check_button</textres>
+	</state>
+	<anchored width="70" height="15" to="stretcher" position="aboveright" offset="10,40" />
       </button_text>
-      <label name="armyBNoCheckRequiredLabel">
+      <stringcontrol name="armyBNoCheckRequiredLabel">
         <static textres="mb_no_morale_check_required"/>
-        <anchored width="60">
-          <top />
-          <bottom offset="-10"/>
-          <right offset="-10" />
-        </anchored>
+	<anchored width="80" to="stretcher" position="aboveright" offset="10,40" />
         <multilinespacing>12</multilinespacing>
-      </label>
+	    </stringcontrol>
     </sheetdata>
   </windowclass>
   <template name="hint">
-    <stringfield>
+    <stringcontrol>
       <script>
         function onInit()
           window.registerHint(tonumber(self.index[1]),self.getName())
         end
       </script>
       <index>0</index>
-    </stringfield>
+    </stringcontrol>
   </template>
   <windowclass name="HintWindowGM">
     <script file="MassBattles/scripts/mb_hint_window.lua"/>
@@ -1330,30 +1326,51 @@
     <sheetdata>
       <hint name="Hint1">
         <anchored position="insideleft"/>
-        <static textres="mb_hints_gm1"/>
+        <static textres="mb_hints_cl1"/>
         <multilinespacing>12</multilinespacing>
         <index>1</index>
       </hint>
       <hint name="Hint2">
         <anchored position="insideleft"/>
-        <static textres="mb_hints_gm2"/>
+        <static textres="mb_hints_cl2"/>
         <invisible/>
         <multilinespacing>12</multilinespacing>
         <index>2</index>
       </hint>
       <hint name="Hint3">
         <anchored position="insideleft"/>
-        <static textres="mb_hints_gm3"/>
+        <static textres="mb_hints_cl3"/>
         <invisible/>
         <multilinespacing>12</multilinespacing>
         <index>3</index>
       </hint>
       <hint name="Hint4">
         <anchored position="insideleft"/>
-        <static textres="mb_hints_gm4"/>
+        <static textres="mb_hints_cl4"/>
         <invisible/>
         <multilinespacing>12</multilinespacing>
         <index>4</index>
+      </hint>
+      <hint name="Hint5">
+        <anchored position="insideleft"/>
+        <static textres="mb_hints_cl5"/>
+        <invisible/>
+        <multilinespacing>12</multilinespacing>
+        <index>5</index>
+      </hint>
+      <hint name="Hint6">
+        <anchored position="insideleft"/>
+        <static textres="mb_hints_cl6"/>
+        <invisible/>
+        <multilinespacing>12</multilinespacing>
+        <index>6</index>
+      </hint>
+      <hint name="Hint7">
+        <anchored position="insideleft"/>
+        <static textres="mb_hints_cl7"/>
+        <invisible/>
+        <multilinespacing>12</multilinespacing>
+        <index>7</index>
       </hint>
     </sheetdata>
   </windowclass>
