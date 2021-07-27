@@ -70,7 +70,6 @@ function onTypeChanged()
 		self.linkNpcFields()
 	end
 	wildcard_icon.updateMenuOptions()
-	name.updateMenuOptions()
 end
 
 function onIDChanged()

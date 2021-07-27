@@ -52,7 +52,6 @@ end
 
 function onTypeChanged()
 	wildcard_icon.updateMenuOptions()
-	name.updateMenuOptions()
 end
 
 function onIDChanged()

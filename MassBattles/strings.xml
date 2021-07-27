@@ -15,7 +15,7 @@
   <string name="mb_part_wounds_label">Wounds</string>
   <string name="help_tool_mb">https://www.fantasygrounds.com/forums/showthread.php?64262-Extension-New-Extension-Mass-Battles</string>
   <string name="mb_fatigue_short_label">Fatg</string>
-  <string name="mb_wound_short_label">Wnds</string>
+  <string name="mb_wound_short_label">Wnd</string>
   <string name="mb_name_short_label">Name</string>
   <string name="mb_bonus_short_label">Support</string>
   <string name="mb_start_force_tokens_label">Starting Force Tokens</string>

@@ -137,28 +137,28 @@
           <static textres="mb_fatigue_short_label"/>
           <anchored>
             <bottom parent="ArmyA" anchor="top"/>
-            <right parent="ArmyA" anchor="right" offset="-83"/>
+            <right parent="ArmyA" anchor="right" offset="-80"/>
           </anchored>
         </label>
         <label name="WndLabelA">
           <static textres="mb_wound_short_label"/>
           <anchored>
             <bottom parent="ArmyA" anchor="top"/>
-            <right parent="ArmyA" anchor="right" offset="-108"/>
+            <right parent="ArmyA" anchor="right" offset="-112"/>
           </anchored>
         </label>
         <label name="FtgLabelB">
           <static textres="mb_fatigue_short_label"/>
           <anchored>
             <bottom parent="ArmyB" anchor="top"/>
-            <right parent="ArmyB" anchor="right" offset="-83"/>
+            <right parent="ArmyB" anchor="right" offset="-80"/>
           </anchored>
         </label>
         <label name="WndLabelB">
           <static textres="mb_wound_short_label"/>
           <anchored>
             <bottom parent="ArmyB" anchor="top"/>
-            <right parent="ArmyB" anchor="right" offset="-108"/>
+            <right parent="ArmyB" anchor="right" offset="-112"/>
           </anchored>
         </label>
         <label name="NamesLabelA">

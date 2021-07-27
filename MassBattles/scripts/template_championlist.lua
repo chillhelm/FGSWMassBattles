@@ -9,10 +9,6 @@ function onInit()
 	end
 end
 
-function onDrop(x, y, draginfo)
-	return super.onDrop(x, y, draginfo)
-end
-
 function initializeChampion(nodeSource, win, sBaseName, vData)
 	local rData = (vData and type(vData) == "table") and vData
 	local nodeCT = win.getDatabaseNode()
