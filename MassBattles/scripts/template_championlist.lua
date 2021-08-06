@@ -49,7 +49,6 @@ function initializeNpc(nodeSource, win, vData)
 	local sBaseName = DB.getValue(nodeSource, "name")
 
 	win.type.setValue("npc")
-	DerivedStatManager.copyDerivedStatNodes(nodeSource, win.getDatabaseNode(), "ct")
 
 	initializeChampion(nodeSource, win, sBaseName, vData)
 
