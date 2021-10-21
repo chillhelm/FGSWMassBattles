@@ -1399,6 +1399,12 @@
       </script>
     </genericcontrol>
   </template>
+  <template name="mbLabel">
+    <cttitle_base>
+	  <label>
+	  </label>
+	</cttitle_base>
+  </template>
   <font name="battle_impact_font">
     <ttf file="graphics/fonts/Noto_Sans/NotoSans-Bold.ttf" name="Noto Sans Bold" size="24" />
     <color value="000000" />
