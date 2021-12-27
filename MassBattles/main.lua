@@ -41,9 +41,9 @@ function onInit()
         mbNode.createChild("ForceTokensA","number").setPublic(true)
         mbNode.createChild("ForceTokensB","number").setPublic(true)
 
-        DesktopManager.registerStackShortcuts({aMassBattleShortcutHost})
+        DesktopManager.registerSidebarStackButton(aMassBattleShortcutHost, true)
     else
-        DesktopManager.registerStackShortcuts({aMassBattleShortcutClient})
+        DesktopManager.registerSidebarStackButton(aMassBattleShortcutClient, true)
     end
     if(User.isHost() or User.isLocal()) then
 		Module.setModulePermissions("SWADE Player Guide", true, true)
