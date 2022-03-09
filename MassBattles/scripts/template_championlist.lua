@@ -61,7 +61,7 @@ function initializeNpc(nodeSource, win, vData)
 
 	local sGear = DB.getValue(nodeSource, "gear", "")
 	if StringManager.isNotBlank(sGear) then
-		local rActor = ActorManager.getActor("ct", win.getDatabaseNode())
+		local rActor = ActorManager.resolveActor(win.getDatabaseNode())
 		if rActor then
 			local sGearRe = "%[[^%]]+%]"
 			while sGear:find(sGearRe) do

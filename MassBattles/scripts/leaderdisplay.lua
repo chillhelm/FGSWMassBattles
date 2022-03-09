@@ -243,7 +243,7 @@ function initializeNpc(nodeSource, vData)
 
 	local sGear = DB.getValue(nodeSource, "gear", "")
 	if StringManager.isNotBlank(sGear) then
-		local rActor = ActorManager.getActor("ct", getDatabaseNode())
+		local rActor = ActorManager.resolveActor(getDatabaseNode())
 		if rActor then
 			local sGearRe = "%[[^%]]+%]"
 			while sGear:find(sGearRe) do
@@ -316,11 +316,11 @@ function makeCommandRoll(bReroll)
 	local sActorType, sActorLink = link.getValue()
 	local sSkill = command_skill.getValue()
 	local nodeActor = DB.findNode(sActorLink)
-	ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battlecommand")
+	ModifierManagerSW.applyEffectModifierOnEntity(sActorType, nodeActor, "battlecommand")
 	local sDescPrefix = Interface.getString("mb_command_roll_prefix")
 	local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
 	if bReroll then
-		ModifierManager.applyTraitModifiers(sActorType, nodeActor, "reroll")
+		ModifierManagerSW.applyTraitModifiers(sActorType, nodeActor, "reroll")
 	end
 	TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeTrait, sDescPrefix, "battlecommand", {["mb_entry"]=getDatabaseNode().getPath()})
 end

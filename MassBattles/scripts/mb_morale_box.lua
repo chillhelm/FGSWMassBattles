@@ -25,7 +25,7 @@ function makeMoraleRoll(armyID, bReroll)
 
 	local sAttribute = "Spirit"
 	local nodeActor = DB.findNode(sActorLink)
-	ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battlemorale")
+	ModifierManagerSW.applyEffectModifierOnEntity(sActorType, nodeActor, "battlemorale")
 	local sDescPrefix = Interface.getString("mb_morale_roll_prefix")
 	local nodeAttribute = AttributeManager.getAttributeNode(nodeActor, sAttribute)
 	CustomData = {}

@@ -1,5 +1,7 @@
 <root>
   <string name="sidebar_tooltip_mb">Mass Battle</string>
+  <string name="sidebar_tooltip_massbattle_host">Mass Battle</string>
+  <string name="sidebar_tooltip_massbattle_client">Mass Battle</string>
   <string name="massbattle_window_title">Mass Battle</string>
   <string name="massbattle_forcetokens_label">Force Tokens</string>
   <string name="mb_commander_label">Commander</string>
@@ -7,6 +9,8 @@
   <string name="mb_command_label">Command</string>
   <string name="mb_participation_roll_prefix">Battle Participation</string>
   <string name="mb_participation_result_label">Result</string>
+  <string name="mb_participation_result_soak_label">Soak</string>
+
   <string name="mb_raisechoice_or">or</string>
   <string name="mb_wound_notification_string">%s suffered [1d4+1]=%d wounds in the battle</string>
   <string name="mb_apply_part_result">Apply</string>

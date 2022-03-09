@@ -182,7 +182,7 @@ function makeParticipationRoll(bReroll)
 	local sActorType, sActorLink = link.getValue()
 	local sSkill = participation_skill.getValue()
 	local nodeActor = DB.findNode(sActorLink)
-	ModifierManager.applyEffectModifierOnEntity(sActorType, nodeActor, "battleparticipation")
+	ModifierManagerSW.applyEffectModifierOnEntity(sActorType, nodeActor, "battleparticipation")
 	local sDescPrefix = Interface.getString("mb_participation_roll_prefix")
 	local nodeTrait = SkillManager.getSkillNode(nodeActor, sSkill, true)
 	local CustomData = {mb_entry=getDatabaseNode().getPath()}
@@ -191,7 +191,7 @@ function makeParticipationRoll(bReroll)
 	end
 	local rActor = CharacterManager.getActorShortcut(sActorType,nodeActor)
 	if bReroll then
-		ModifierManager.applyTraitModifiers(sActorType, nodeActor, "reroll")
+		ModifierManagerSW.applyTraitModifiers(sActorType, nodeActor, "reroll")
 	end
 	TraitManager.rollTrait(rActor, nodeTrait, CustomData, sDescPrefix, "battleparticipation")
 end

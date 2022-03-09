@@ -547,7 +547,20 @@
             <name>bonus</name>
             <offset>10,5,10,5</offset>
           </frame>
-          <readonly/>
+        </number>
+        <label name="participation_result_soak_label">
+            <anchored parent="total" offset="15" >
+                <top parent="mb_participation_result_label" offset="0" anchor="top" />
+                <left parent="total" offset="15" anchor="right" />
+            </anchored>
+          <static textres="mb_participation_result_soak_label" />
+        </label>
+        <number name="soak">
+          <anchored to="participation_result_soak_label" position="right" offset="15"/>
+          <frame>
+            <name>bonus</name>
+            <offset>10,5,10,5</offset>
+          </frame>
         </number>
         <genericcontrol name="success_indicator">
           <icon>adjust1</icon>
@@ -641,7 +654,8 @@
           </anchored>
           <static textres="mb_part_wounds_label"/>
         </label>
-        <number name="pending_wounds">
+        <hn name="pending_wounds" />
+        <number name="result_wounds">
           <anchored>
             <right parent="apply_result_button" anchor="left" relation="relative" offset="-5"/>
             <top parent="part_wounds" anchor="top" />

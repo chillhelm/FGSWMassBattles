@@ -1,15 +1,15 @@
 
 aMassBattleShortcutHost = {
-    icon="button_mb",
-    icon_down="button_mb_down",
+    sIcon="button_mb",
+    sIcon_down="button_mb_down",
     tooltipres="sidebar_tooltip_mb",
     class="massbattle_host",
     path="massbattle",
 }
 
 aMassBattleShortcutClient = {
-    icon="button_mb",
-    icon_down="button_mb_down",
+    sIcon="button_mb",
+    sIcon_down="button_mb_down",
     tooltipres="sidebar_tooltip_mb",
     class="massbattle_client",
     path="massbattle",
@@ -41,9 +41,9 @@ function onInit()
         mbNode.createChild("ForceTokensA","number").setPublic(true)
         mbNode.createChild("ForceTokensB","number").setPublic(true)
 
-        DesktopManager.registerStackShortcuts({aMassBattleShortcutHost})
+        DesktopManager.registerSidebarToolButton(aMassBattleShortcutHost)
     else
-        DesktopManager.registerStackShortcuts({aMassBattleShortcutClient})
+        DesktopManager.registerSidebarToolButton(aMassBattleShortcutClient)
     end
     if(User.isHost() or User.isLocal()) then
 		Module.setModulePermissions("SWADE Player Guide", true, true)
@@ -237,7 +237,7 @@ end
 
 function makeCritFailInjuryRoll(participationResultNode)
 	sActorClass, sLink = participationResultNode.getParent().getParent().getChild("link").getValue()
-	rActor = ActorManager.getActor(sActorClass, sLink)
+	rActor = ActorManager.resolveActor(sLink)
 	rRoll = {};
 	rRoll.sType = "massbattleCritFailInjury";
 	rRoll.sDesc = "Critical Fail Injury";
@@ -262,7 +262,7 @@ end
 
 function makeBattleTableRoll(participant, participationResultNode, cause)
 	sActorClass, sLink = participant.getChild("link").getValue()
-	rActor = ActorManager.getActor("pc", sLink)
+	rActor = ActorManager.resolveActor(sLink)
 	nodeTable = TableManager.findTable("Battle Effects")
 	rRoll = {};
 	rRoll.sType = "table";
@@ -311,7 +311,7 @@ function applyWounds(sTargetType, nodeTarget, nWounds)
 			local rMessage = RollsManager.createResultMessage(sTargetType, nodeTarget, true)
 			rMessage.icon = "state_inc"
 			if bNonLethal then
-				local rEffectActor = ActorManager.getActor(sTargetType, nodeTarget.getNodeName()) ActionEffect.applyEffect(rEffectActor, rEffectActor, ActionEffect.knockedOutEffect()) rMessage.text = Interface.getString("damage_x_knockedout"):format(rMessage.text)
+				local rEffectActor = ActorManager.resolveActor(nodeTarget.getNodeName()) ActionEffect.applyEffect(rEffectActor, rEffectActor, ActionEffect.knockedOutEffect()) rMessage.text = Interface.getString("damage_x_knockedout"):format(rMessage.text)
 			else
 				rMessage.text = Interface.getString("damage_x_incapacitated"):format(rMessage.text)
 			end
@@ -335,7 +335,7 @@ function applyFatigue(sTargetType, nodeTarget, nFatigues, bNonLethal)
 			local rMessage = RollsManager.createResultMessage(sTargetType, nodeTarget, true)
 			rMessage.icon = "state_inc"
 			if bNonLethal then
-				local rEffectActor = ActorManager.getActor(sTargetType, nodeTarget.getNodeName()) ActionEffect.applyEffect(rEffectActor, rEffectActor, ActionEffect.knockedOutEffect()) rMessage.text = Interface.getString("damage_x_knockedout"):format(rMessage.text)
+				local rEffectActor = ActorManager.resolveActor(nodeTarget.getNodeName()) ActionEffect.applyEffect(rEffectActor, rEffectActor, ActionEffect.knockedOutEffect()) rMessage.text = Interface.getString("damage_x_knockedout"):format(rMessage.text)
 			else
 				rMessage.text = Interface.getString("damage_x_incapacitated"):format(rMessage.text)
 			end
@@ -625,7 +625,7 @@ function activatePendingEffects(participationResultNode)
 	local participantNode = participationResultNode.getParent().getParent()
     if participationResultNode and participantNode then
         local nPendingFatigues = DB.getValue(participationResultNode,"pending_fatigues",0)
-        local nPendingWounds = DB.getValue(participationResultNode,"pending_wounds",0)
+        local nPendingWounds = DB.getValue(participationResultNode,"result_wounds",0)
         local nPendingBonus = DB.getValue(participationResultNode,"pending_battle_impact_bonus",0)
 
         fatigueParticipant(participantNode, nPendingFatigues)
@@ -785,3 +785,4 @@ function isLeader(nodeChampion)
     end
     return false
 end
+

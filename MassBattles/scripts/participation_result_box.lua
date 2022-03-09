@@ -1,7 +1,17 @@
 local bSuccess, bFail, bCritFail, bRaise;
 function onInit()
 	DB.addHandler(getDatabaseNode().getPath(),"onUpdate",update)
-	DB.addHandler(getDatabaseNode().getPath(),"onChildUpdate",update)
+    DB.addHandler(getDatabaseNode().getChild("soak").getPath(),"onUpdate", update)
+    DB.addHandler(getDatabaseNode().getChild("total").getPath(),"onUpdate", update)
+    DB.addHandler(getDatabaseNode().getChild("pending_wounds").getPath(),"onUpdate", update)
+    local sRaiseChoiceEffect = DB.getValue(node, "raise_choice_battleeffect")
+    if User.isHost() or User.isLocal() then
+        if sRaiseChoiceEffect == nil then
+            DB.setValue(getDatabaseNode(),"raise_choice_battleeffect","string","")
+        end
+    end
+    DB.addHandler(getDatabaseNode().getPath()..".raise_choice_battleeffect","onUpdate", update)
+	--DB.addHandler(getDatabaseNode().getPath(),"onChildUpdate",update)
 	update()
 end
 
@@ -10,11 +20,54 @@ function update()
 	local bIsOwner = getDatabaseNode().isOwner()
 
 	local node = getDatabaseNode()
-	bSuccess = node.getChild("success") and node.getChild("success").getValue()==1
-	bFail = node.getChild("fail") and node.getChild("fail").getValue()==1
-	bCritFail = node.getChild("critfail") and node.getChild("critfail").getValue()==1
-	bRaise = node.getChild("raise") and node.getChild("raise").getValue()==1
 
+	local bCritFail = node.getChild("critfail") and node.getChild("critfail").getValue()==1
+    local nTotal = DB.getValue(node, "total", 0)
+    if User.isLocal() or User.isHost() then
+        if nTotal >= 8 and not bCritFail then
+            DB.setValue(node, "raise", "number", 1)
+            DB.setValue(node, "success", "number", 1)
+            DB.setValue(node, "fail", "number", 0)
+            DB.setValue(node, "pending_fatigues", "number", 0)
+            DB.setValue(node, "pending_wounds", "number", 0)
+        elseif nTotal >= 4 and not bCritFail then
+            DB.setValue(node, "raise", "number", 0)
+            DB.setValue(node, "success", "number", 1)
+            DB.setValue(node, "fail", "number", 0)
+            DB.setValue(node, "pending_fatigues", "number", 1)
+            DB.setValue(node, "pending_wounds", "number", 0)
+        elseif not bCritFail then
+            DB.setValue(node, "raise", "number", 0)
+            DB.setValue(node, "success", "number", 0)
+            DB.setValue(node, "fail", "number", 1)
+            DB.setValue(node, "pending_fatigues", "number", 0)
+            DB.setValue(node, "pending_wounds", "number", 1)
+        end
+    end
+	local bSuccess = node.getChild("success") and node.getChild("success").getValue()==1
+	local bFail = node.getChild("fail") and node.getChild("fail").getValue()==1
+	local bRaise = node.getChild("raise") and node.getChild("raise").getValue()==1
+
+	local nSoak = DB.getValue(getDatabaseNode(), "soak",0)
+    if User.isHost() or User.isLocal() then
+        DB.setValue(getDatabaseNode(), "soakcount", "number", math.max(math.ceil((nSoak-3)/4),0))
+    end
+    local nSoakResult = DB.getValue(getDatabaseNode(),"soakcount")
+	local nSoakCount = DB.getValue(getDatabaseNode(), "soakcount",0)
+    local bShowSoakResult = (nSoakResult ~= nil) and (bFail or bCritFail)
+    participation_result_soak_label.setVisible(bShowSoakResult)
+    soak.setVisible(bShowSoakResult)
+    if bShowSoakResult then
+         critfail_indicator.setAnchor("left","soak","right","absolute",15)
+         success_indicator.setAnchor("left","soak","right","absolute",15)
+         raise_indicator.setAnchor("left","soak","right","absolute",15)
+         fail_indicator.setAnchor("left","soak","right","absolute",15)
+    else
+         critfail_indicator.setAnchor("left","total","right","absolute",15)
+         success_indicator.setAnchor("left","total","right","absolute",15)
+         raise_indicator.setAnchor("left","total","right","absolute",15)
+         fail_indicator.setAnchor("left","total","right","absolute",15)
+    end
 	critfail_indicator.setVisible(false)
 	success_indicator.setVisible(false)
 	raise_indicator.setVisible(false)
@@ -57,8 +110,11 @@ function update()
 		hideRaiseChoice()
 	end
 
-	nPendingWounds = DB.getValue(getDatabaseNode(), "pending_wounds",0)
-	nPendingFatigues = DB.getValue(getDatabaseNode(), "pending_fatigues",0)
+	local nPendingWounds = DB.getValue(getDatabaseNode(), "pending_wounds",0)
+	local nPendingFatigues = DB.getValue(getDatabaseNode(), "pending_fatigues",0)
+    if User.isLocal() or User.isHost() then
+        DB.setValue(getDatabaseNode(), "result_wounds", "number", math.max(nPendingWounds - nSoakCount,0))
+    end
 	if nPendingWounds > 0 and not alreadyApplied then
 		part_wounds.setVisible(true)
 		pending_wounds.setVisible(true)
@@ -73,6 +129,11 @@ function update()
 		part_fatigues.setVisible(false)
 		pending_fatigues.setVisible(false)
 	end
+
+    if not (User.isHost() or User.isLocal()) then
+        total.setReadOnly(true)
+        soak.setReadOnly(true)
+    end
 end
 
 function showRaiseChoice()
@@ -114,3 +175,24 @@ end
 function deleteParticipationResult()
 	getDatabaseNode().delete()
 end
+
+function onDrop(x,y,dragdata)
+    if dragdata.getType() == "benny" then
+      if (DB.getValue(getDatabaseNode(), "pending_wounds", 0) > 0) then
+          local sBennySource = dragdata.getStringData()
+          local bennySource = DB.findNode(sBennySource)
+          local actor = dragdata.getDescription()
+          rActor={}
+          if actor == "GM" then
+            rActor["recordname"]="GM"
+          else
+            local sLinkClass, sLinkRecord = DB.getValue(getDatabaseNode().getParent().getParent(),"link")
+            rActor["recordname"]=sLinkRecord
+          end
+          rActor["class"] = "mb"
+          local rUserData = {nodePendingEntry = getDatabaseNode().getNodeName()}
+          BennyManager.consumeBennyToSoak(rActor, {nodeBenny = bennySource,sConsumerName=dragdata.getDescription()},rUserData)
+      end
+    end
+end
+

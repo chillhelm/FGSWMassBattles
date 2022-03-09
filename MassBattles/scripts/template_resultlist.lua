@@ -9,7 +9,3 @@ function onInit()
 	end
 end
 
-function onDrop(x,y,draginfo)
-    window.onDrop(x,y,draginfo)
-end
-

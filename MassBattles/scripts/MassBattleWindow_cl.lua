@@ -80,7 +80,7 @@ function getLeaderAShortcut()
 	local sActorType = leaderAtype.getValue()
 	local nodeActor = leaderA.getTargetDatabaseNode()
 	if StringManager.isNotBlank(sActorType) and nodeActor then
-		return CharacterManager.getActorShortcut(sActorType, nodeActor)
+		return CharacterManager.resolveActor(nodeActor)
 	end
 end
 
