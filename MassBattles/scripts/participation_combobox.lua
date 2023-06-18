@@ -39,12 +39,14 @@ function initializeItems()
 	if nodeSrc then
 		local linknode = nodeSrc.getChild("link")
 		local linktype, linktarget = linknode.getValue()
+        if linktarget == "" then
+            return bInit
+        end
 		skill_list = getCharSkillList(DB.findNode(linktarget))
 		for _,skill in pairs(skill_list) do
 			addItems({skill[1]})
 			bInit=true
 		end
-
 	end
 	return bInit;
 end

@@ -3,7 +3,6 @@ function onInit()
 	DB.addHandler(getDatabaseNode().getPath(),"onUpdate",update)
     DB.addHandler(getDatabaseNode().getChild("soak").getPath(),"onUpdate", update)
     DB.addHandler(getDatabaseNode().getChild("total").getPath(),"onUpdate", update)
-    DB.addHandler(getDatabaseNode().getChild("pending_wounds").getPath(),"onUpdate", update)
     local sRaiseChoiceEffect = DB.getValue(node, "raise_choice_battleeffect")
     if User.isHost() or User.isLocal() then
         if sRaiseChoiceEffect == nil then

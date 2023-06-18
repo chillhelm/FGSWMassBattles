@@ -49,15 +49,15 @@ function onDrop(x, y, draginfo)
 	  local sClass, sRecord = draginfo.getShortcutData()
 	  if sClass == "charsheet" then
 		if armyID and armyID=="A" then
-			window.setLeaderA("pc", sClass, sRecord)
+			window.setLeaderA("pc", sClass, sRecord, draginfo)
 		elseif armyID and armyID=="B" then
-			window.setLeaderB("pc", sClass, sRecord)
+			window.setLeaderB("pc", sClass, sRecord, draginfo)
 		end
 	  elseif sClass == "npc" then
 		if armyID and armyID=="A" then
-			window.setLeaderA("npc", sClass, sRecord)
+			window.setLeaderA("npc", sClass, sRecord, draginfo)
 		elseif armyID and armyID=="B" then
-			window.setLeaderB("npc", sClass, sRecord)
+			window.setLeaderB("npc", sClass, sRecord, draginfo)
 		end
 	  end
 	end

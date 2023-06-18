@@ -26,7 +26,7 @@ end
 
 function duplicateActor()
 	local winSource = window.firstCombatant()
-	if winSource and winSource.type.is("npc", "vehicle") then
+	if winSource and winSource.kind.is("npc", "vehicle") then
 
 		local nodeSource = winSource.link.getTargetDatabaseNode()
 		local sClass = winSource.link.getValue()
@@ -61,10 +61,10 @@ function duplicateActor()
 		rData.weaponSource = winSource.getDatabaseNode()
 		rData.powerSource = winSource.getDatabaseNode()
 
-		if winSource.type.is("npc") then
+		if winSource.kind.is("npc") then
 			initializeNpc(nodeSource, win, rData)
 			win.linkNpcFields()
-		elseif winSource.type.is("vehicle") then
+		elseif winSource.kind.is("vehicle") then
 			initializeVehicle(nodeSource, win, rData)
 			win.linkVehicleFields()
 		end

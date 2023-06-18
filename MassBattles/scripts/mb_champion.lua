@@ -9,7 +9,7 @@ function onInit()
 	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
 	onWildcardChanged()
 
-	type.getDatabaseNode().onUpdate = onTypeChanged
+	kind.getDatabaseNode().onUpdate = onTypeChanged
 	onTypeChanged()
 	updateDisplay()
 
@@ -65,9 +65,9 @@ function onWildcardChanged()
 end
 
 function onTypeChanged()
-	if type.is("pc") then
+	if kind.is("pc") then
 		self.linkPcFields()
-	elseif type.is("npc") then
+	elseif kind.is("npc") then
 		self.linkNpcFields()
 	end
 	wildcard_icon.updateMenuOptions()
@@ -88,7 +88,7 @@ function onIDChanged()
 end
 
 function updateDisplay()
-	if type.isNot("pc") then
+	if kind.isNot("pc") then
 		name.setFrame("textline",0,0,0,0)
 	end
 end

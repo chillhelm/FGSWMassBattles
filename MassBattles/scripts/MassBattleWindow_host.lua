@@ -50,7 +50,7 @@ function update()
 	end
 end
 
-function setLeaderA(sType, sClass, sRecord)
+function setLeaderA(sType, sClass, sRecord, draginfo)
 	if DB.isOwner(getDatabaseNode()) and DB.findNode(sRecord) then
 		leaderAtype.setValue(sType)
 		leadera.setValue(sClass, sRecord)
@@ -59,13 +59,12 @@ function setLeaderA(sType, sClass, sRecord)
 			DB.setOwner(getDatabaseNode().getPath()..".leaderadetails", owner)
 			DB.setOwner(getDatabaseNode().getPath().."armyacommandresult",owner)
 			DB.setOwner(getDatabaseNode().getPath().."armyacommanded",owner)
-
 		end
 	end
     MassBattles.updateClientsMassBattleWindows()
 end
 
-function setLeaderB(sType, sClass, sRecord)
+function setLeaderB(sType, sClass, sRecord, draginfo)
 	if DB.isOwner(getDatabaseNode()) and DB.findNode(sRecord) then
 		leaderBtype.setValue(sType)
 		leaderb.setValue(sClass, sRecord)

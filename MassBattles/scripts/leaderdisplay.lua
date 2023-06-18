@@ -6,7 +6,7 @@
 function onInit()
 	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
 	onWildcardChanged()
-	type.getDatabaseNode().onUpdate = onTypeChanged
+	kind.getDatabaseNode().onUpdate = onTypeChanged
 	onTypeChanged()
 	updateDisplay()
 
@@ -64,9 +64,9 @@ function onWildcardChanged()
 end
 
 function onTypeChanged()
-	if type.is("pc") then
+	if kind.is("pc") then
 		self.linkPcFields()
-	elseif type.is("npc") then
+	elseif kind.is("npc") then
 		self.linkNpcFields()
 	end
 	wildcard_icon.updateMenuOptions()
@@ -87,7 +87,7 @@ function onIDChanged()
 end
 
 function updateDisplay()
-	if type.isNot("pc") then
+	if kind.isNot("pc") then
 		name.setFrame("textline",0,0,0,0)
 	end
 end
@@ -115,24 +115,7 @@ end
 --
 
 function isVisibleEntry()
-	return type.is("pc") or tokenvis.getState()
-end
-
-function setMain(bState)
-	newgroup.setEnabled(bState)
-	newgroup.setVisible(bState)
-	local nIndentOffset = bState and 31 or 74
-	token.setStaticBounds(nIndentOffset,6,25,25)
-
-	if bState then
-		isidentified.getDatabaseNode().onUpdate = windowlist.window.mainIdentifiedUpdated
-		if friendfoe.getSourceNode then
-			friendfoe.getSourceNode().onUpdate = windowlist.window.mainFriendFoeUpdated
-		end
-		if tokenvis.getSourceNode then
-			tokenvis.getSourceNode().onUpdate = windowlist.window.mainTokenVisibilityUpdated
-		end
-	end
+	return kind.is("pc") or tokenvis.getState()
 end
 
 function linkPcFields()
@@ -285,21 +268,21 @@ end
 
 
 function loadPC(nodeSource)
-	local tokenData = CharacterManager.getTokenPrototype(nodeSource)
 	type.setValue("pc")
-
-	wildcard.setValue(1)
-
-	-- Token
-	if tokenData then
-		token.setPrototype(tokenData)
-	end
-
 	-- Link
 	link.setValue("charsheet", nodeSource.getNodeName())
 	command_skill.update()
 
 	linkPcFields(nodeSource) -- this will have been skipped during onInit, as type / link were not set
+
+	wildcard.setValue(1)
+
+	-- Token
+	local tokenData = CharacterManager.getTokenPrototype(nodeSource)
+	if tokenData then
+		token.setPrototype(tokenData)
+	end
+
 end
 
 function loadNPC(class, nodeSource)

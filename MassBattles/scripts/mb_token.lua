@@ -16,15 +16,9 @@ end
 
 function onDeleted(token)
 	setFrame(nil)
-	clearTargeting(token)
 end
 
 function onContainerChanging(target)
-	clearTargeting(target)
-end
-
-function clearTargeting(token)
-	window.getCombatTrackerWindow().removeTargetingOnEntry(window.getDatabaseNode())
 end
 
 function onTokenUpdate()
@@ -86,42 +80,13 @@ function onClickDown(nButton, x, y)
 end
 
 function onClickRelease(nButton, x, y)
-	if nButton == 1 then
-		if Input.isControlPressed() then
-			local nodeActive = CombatManager.getActiveCT()
-			if nodeActive then
-				local nodeTarget = window.getDatabaseNode()
-				if nodeTarget then
-					TargetingManager.toggleCTTarget(nodeActive, nodeTarget)
-				end
-			end
-		else
-			local tokenInstance = CombatManager.getTokenFromCT(window.getDatabaseNode())
-			if tokenInstance and tokenInstance.isActivable() then
-				tokenInstance.setActive(not tokenInstance.isActive())
-			end
-		end
-	else
-		local tokenInstance = CombatManager.getTokenFromCT(window.getDatabaseNode())
-		if tokenInstance then
-			tokenInstance.setScale(1.0)
-		end
-	end
-
 	return true
 end
 
 function onDoubleClick(x, y)
-	local nodeCT = window.getDatabaseNode()
-	if Input.isAltPressed() then
-		CombatManager.openRecord(nodeCT)
-	elseif not Input.isControlPressed() then
-		CombatManager.openMap(nodeCT)
-	end
 end
 
 function onWheel(nNotches)
-	TokenManager.onWheelCT(window.getDatabaseNode(), nNotches)
 	return true
 end
 

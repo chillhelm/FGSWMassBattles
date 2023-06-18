@@ -91,7 +91,7 @@ function addPc(nodeSource, win, draginfo, vData)
 		end
 
 		-- Link
-		win.link.setValue("charsheet", nodeSource.getNodeName())
+		win.link.setValue("charsheet", nodeSource.getPath())
 	end
 
 	win.linkPcFields(nodeSource) -- this will have been skipped during onInit, as type / link were not set

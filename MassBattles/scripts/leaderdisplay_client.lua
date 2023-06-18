@@ -6,7 +6,7 @@
 function onInit()
 	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
 	onWildcardChanged()
-	type.getDatabaseNode().onUpdate = onTypeChanged
+	kind.getDatabaseNode().onUpdate = onTypeChanged
 	onTypeChanged()
 	updateDisplay()
 
@@ -69,7 +69,7 @@ function onIDChanged()
 end
 
 function updateDisplay()
-	if type.isNot("pc") then
+	if kind.isNot("pc") then
 		name.setFrame("textline",0,0,0,0)
 	end
 end

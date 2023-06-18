@@ -94,6 +94,7 @@
     <script file="MassBattles/scripts/mb_champion.lua" />
     <sheetdata>
       <ct_type name="type" />
+      <ct_ctentry_kind name="kind" />
       <hn name="wildcard" />
       <hs name="tokenrefid" />
       <hs name="tokenrefnode" />
@@ -112,12 +113,22 @@
         <script file="MassBattles/scripts/mb_token.lua" />
       </tokenfield>
 
-      <ct_inc_indicator name="inc">
-        <anchored width="25" height="25">
+
+      <windowreferencefield name="link">
+        <anchored width="20" height="20">
           <top offset="7" />
-          <right offset="-52" />
+          <right offset="-6" />
         </anchored>
-      </ct_inc_indicator>
+        <icon normal="button_link" />
+        <noreset />
+        <script file="ct/scripts/ct_link.lua"/>
+      </windowreferencefield>
+      <ct_damage_incapacitated name="inc">
+        <anchored width="25" height="25" to="link">
+          <top offset="7" />
+          <right offset="-52" parent="link"/>
+        </anchored>
+      </ct_damage_incapacitated>
 
       <ct_damagetypes name="damages">
         <anchored width="0">
@@ -147,7 +158,7 @@
         <script>
           function updateMenuOptions()
           resetMenuItems()
-          if window.type.isNot("pc") then
+          if window.kind.isNot("pc") then
           registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
           end
           end
@@ -156,28 +167,18 @@
           end
         </script>
       </genericcontrol>
-      <ct_name_host name="name">
+      <ct_name name="name">
         <anchored>
           <right parent="damages"/>
         </anchored>
-      </ct_name_host>
+      </ct_name>
 
-      <windowreferencefield name="link">
-        <anchored width="20" height="20">
-          <top offset="7" />
-          <right offset="-6" />
-        </anchored>
-        <icon normal="button_link" />
-        <noreset />
-        <script file="ct/scripts/ct_link.lua"/>
-      </windowreferencefield>
-
-      <minibennyfield name="bennies">
+      <ct_benny name="bennies">
         <anchored width="20" height="21">
           <top parent="link" />
           <right parent="link" anchor="left" offset="-5" />
         </anchored>
-      </minibennyfield>
+      </ct_benny>
       <label name="mb_participation_label">
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
@@ -270,6 +271,7 @@
     <script file="MassBattles/scripts/mb_champion_cl.lua" />
     <sheetdata>
       <ct_type name="type" />
+      <ct_ctentry_kind name="kind" />
       <hn name="wildcard" />
       <hs name="tokenrefid" />
       <hs name="tokenrefnode" />
@@ -322,11 +324,11 @@
         <bounds>105,8,25,25</bounds>
         <icon>wildcard</icon>
       </genericcontrol>
-      <ct_name_client name="name">
+      <client_ct_name name="name">
         <anchored>
           <right parent="damages"/>
         </anchored>
-      </ct_name_client>
+      </client_ct_name>
 
       <windowreferencefield name="link">
         <anchored width="20" height="20">
@@ -819,6 +821,7 @@
     <script file="MassBattles/scripts/leaderdisplay_client.lua"/>
     <sheetdata>
       <ct_type name="type" />
+      <ct_ctentry_kind name="kind" />
       <hn name="wildcard" />
       <hn name="inc" />
       <hs name="tokenrefid" />
@@ -872,7 +875,7 @@
         <script>
           function updateMenuOptions()
           resetMenuItems()
-          if window.type.isNot("pc") then
+          if window.kind.isNot("pc") then
           registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
           end
           end
@@ -881,11 +884,11 @@
           end
         </script>
       </genericcontrol>
-      <ct_name_host name="name">
+      <client_ct_name name="name">
         <anchored>
           <right parent="damages"/>
         </anchored>
-      </ct_name_host>
+      </client_ct_name>
       
       <windowreferencefield name="link">
         <anchored width="20" height="20">
@@ -979,6 +982,7 @@
     </anchored>
     <sheetdata>
       <ct_type name="type" />
+      <ct_ctentry_kind name="kind" />
       <hn name="wildcard" />
       <hs name="tokenrefid" />
       <hs name="tokenrefnode" />
@@ -1003,12 +1007,23 @@
         <script file="MassBattles/scripts/mb_token.lua" />
       </tokenfield>
       
-      <ct_inc_indicator name="inc">
+      
+      <windowreferencefield name="link">
+        <anchored width="20" height="20">
+          <top offset="7" />
+          <right offset="-6" />
+        </anchored>
+        <icon normal="button_link" />
+        <noreset />
+        <script file="ct/scripts/ct_link.lua"/>
+      </windowreferencefield>
+      
+      <ct_damage_incapacitated name="inc">
         <anchored width="25" height="25">
           <top offset="7" />
-          <right offset="-52" />
+          <right offset="-52"  parent="link"/>
         </anchored>
-      </ct_inc_indicator>
+      </ct_damage_incapacitated>
       
       <ct_damagetypes name="damages">
         <anchored width="0">
@@ -1038,7 +1053,7 @@
         <script>
           function updateMenuOptions()
           resetMenuItems()
-          if window.type.isNot("pc") then
+          if window.kind.isNot("pc") then
           registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
           end
           end
@@ -1047,28 +1062,17 @@
           end
         </script>
       </genericcontrol>
-      <ct_name_host name="name">
+      <ct_name name="name">
         <anchored>
           <right parent="damages"/>
         </anchored>
-      </ct_name_host>
-      
-      <windowreferencefield name="link">
-        <anchored width="20" height="20">
-          <top offset="7" />
-          <right offset="-6" />
-        </anchored>
-        <icon normal="button_link" />
-        <noreset />
-        <script file="ct/scripts/ct_link.lua"/>
-      </windowreferencefield>
-      
-      <minibennyfield name="bennies">
+      </ct_name>
+      <ct_benny name="bennies">
         <anchored width="20" height="21">
           <top parent="link" />
           <right parent="link" anchor="left" offset="-5" />
         </anchored>
-      </minibennyfield>
+      </ct_benny>
       
       
       

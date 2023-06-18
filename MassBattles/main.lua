@@ -275,7 +275,6 @@ function makeBattleTableRoll(participant, participationResultNode, cause)
 	rRoll.mb_entry = participant.getPath()
     rRoll.participationResultNode = participationResultNode.getPath()
     rRoll.cause = cause
-	TableManager.prepareTableDice(rRoll)
 	--bHost = User.isHost() or User.isLocal()
 	--if bHost then
 		--rRoll.sOutput = DB.getValue(nodeTable, "output", "");

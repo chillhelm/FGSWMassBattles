@@ -12,7 +12,7 @@
 		<nodelete />
     <script file="MassBattles/scripts/MassBattleWindow_host.lua"/>
       <sheetdata>
-        <label_ct_host_rounds name="round_label"/>
+        <label_ct_host_rounds name="label_round"/>
         <number_ct_host_rounds name="round"/>
         <resize_ctbox />
         <helper_ct >
@@ -76,7 +76,7 @@
         <mbFactionSectionA name="ArmyA">
           <anchored>
             <top parent="mb_left_anchor" anchor="bottom" relation="relative" offset="45"/>
-            <bottom parent="round_label" anchor="top" offset="-180"/>
+            <bottom parent="label_round" anchor="top" offset="-180"/>
             <left parent="mb_left_anchor" anchor="left"/>
             <right parent="mb_center_anchor" anchor="left" offset="-10"/>
           </anchored>
@@ -89,7 +89,7 @@
           <anchored height="140">
             <left parent="ArmyA" anchor="left"/>
             <right parent="ArmyA" anchor="right"/>
-            <bottom parent="round_label" anchor="top" offset="-20"/>
+            <bottom parent="label_round" anchor="top" offset="-20"/>
           </anchored>
         </mbLeaderASlot>
         <mbFactionSectionB name="ArmyB">
@@ -108,7 +108,7 @@
           <anchored height="140">
             <left parent="ArmyB" anchor="left"/>
             <right parent="ArmyB" anchor="right"/>
-            <bottom parent="round_label" anchor="top" offset="-20"/>
+            <bottom parent="label_round" anchor="top" offset="-20"/>
           </anchored>
         </mbLeaderBSlot>
         <subwindow name="resolutionbox">
@@ -118,7 +118,7 @@
           <anchored height="80">
             <left parent="mb_center_anchor" anchor="left" offset="-100" />
             <right parent="mb_center_anchor" anchor="right" offset="100" />
-            <bottom parent="round_label" anchor="top" offset="-10" />
+            <bottom parent="label_round" anchor="top" offset="-10" />
           </anchored>
         </subwindow>
         <button_text name="new_round_button">
@@ -144,7 +144,7 @@
 	  <anchored height="80">
             <left parent="mb_center_anchor" anchor="left" offset="-100" />
             <right parent="mb_center_anchor" anchor="right" offset="100" />
-            <bottom parent="round_label" anchor="top" offset="-10" />
+            <bottom parent="label_round" anchor="top" offset="-10" />
 	    </anchored>
         </subwindow>
         <mbLabel name="FtgLabelA">
