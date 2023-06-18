@@ -88,6 +88,10 @@ function addNpc(source, win, draginfo, vData)
 	super.addNpc(source, win, draginfo, vData)
 end
 
+function addPc(source, win, draginfo, vData)
+    super.addPc(source, win, draginfo, vData)
+end
+
 -- 
 -- Pending results
 --

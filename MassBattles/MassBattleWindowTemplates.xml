@@ -125,8 +125,8 @@
       </windowreferencefield>
       <ct_damage_incapacitated name="inc">
         <anchored width="25" height="25" to="link">
-          <top offset="7" />
-          <right offset="-52" parent="link"/>
+          <top offset="0" parent="link"/>
+          <right offset="-25" parent="link"/>
         </anchored>
       </ct_damage_incapacitated>
 
@@ -167,18 +167,18 @@
           end
         </script>
       </genericcontrol>
+      <ct_benny name="bennies">
+        <anchored width="20" height="21">
+          <top parent="damages" />
+          <right parent="damages" anchor="left" offset="-5" />
+        </anchored>
+      </ct_benny>
       <ct_name name="name">
         <anchored>
-          <right parent="damages"/>
+          <right parent="bennies"/>
         </anchored>
       </ct_name>
 
-      <ct_benny name="bennies">
-        <anchored width="20" height="21">
-          <top parent="link" />
-          <right parent="link" anchor="left" offset="-5" />
-        </anchored>
-      </ct_benny>
       <label name="mb_participation_label">
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
@@ -213,7 +213,10 @@
             end
           end
         </script>
-        <anchored to="participation_skill" position="right" offset="10" width="80"/>
+        <anchored width="80">
+            <left anchor="right" parent="participation_skill" offset="10" />
+            <top parent="participation_skill" />
+        </anchored>
 	<state>
 		<textres>mb_participate_button_label</textres>
 	</state>
@@ -380,7 +383,10 @@
             end
           end
         </script>
-        <anchored to="participation_skill" position="right" offset="10" width="80"/>
+        <anchored width="80">
+            <left anchor="right" parent="participation_skill" offset="10" />
+            <top parent="participation_skill" />
+        </anchored>
 	<state>
 		<textres>mb_participate_button_label</textres>
 	</state>
@@ -834,7 +840,21 @@
           end
         </script>
       </hn>
-      
+      <ct_link name="link">
+        <anchored width="20" height="20">
+          <top offset="7" />
+          <right offset="-6" />
+        </anchored>
+        <icon normal="button_link" />
+        <noreset />
+        <invisible/>
+      </ct_link>
+      <ct_client_damagetypes name="damages">
+        <anchored width="0">
+          <top offset="2" />
+          <right offset="-77" />
+        </anchored>
+      </ct_client_damagetypes>
       <tokenfield name="token">
         <bounds>74,6,25,25</bounds>
         <empty>indicator_emptytoken</empty>
@@ -847,28 +867,6 @@
           <right offset="-52" />
         </anchored>
       </client_mb_state>
-      <ct_client_damagetypes name="damages">
-        <anchored width="0">
-          <top offset="2" />
-          <right offset="-77" />
-        </anchored>
-      </ct_client_damagetypes>
-      <button_idelete>
-        <anchored width="20" height="20">
-          <top offset="8" />
-          <right parent="damages" anchor="left" offset="-2" relation="relative" />
-        </anchored>
-        <script>
-          function onInit()
-          DB.getChild(window.getDatabaseNode(), "inc").onUpdate = onUpdate
-          onUpdate()
-          end
-          function onUpdate()
-          setValue(0)
-          setVisible(DB.getValue(window.getDatabaseNode(), "inc", 0) == 1)
-          end
-        </script>
-      </button_idelete>
       <genericcontrol name="wildcard_icon">
         <bounds>106,8,25,25</bounds>
         <icon>wildcard</icon>
@@ -890,16 +888,6 @@
         </anchored>
       </client_ct_name>
       
-      <windowreferencefield name="link">
-        <anchored width="20" height="20">
-          <top offset="7" />
-          <right offset="-6" />
-        </anchored>
-        <icon normal="button_link" />
-        <noreset />
-        <script file="ct/scripts/ct_link.lua"/>
-        <invisible/>
-      </windowreferencefield>
       <label name="mb_command_label">
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
@@ -935,7 +923,10 @@
           end
         </script>
         
-        <anchored to="command_skill" position="right" offset="10" width="80"/>
+        <anchored width="80">
+            <left anchor="right" parent="command_skill" offset="10" />
+            <top parent="command_skill" />
+        </anchored>
 	<state>
 		<textres>mb_command_button_label</textres>
 	</state>
@@ -1008,20 +999,19 @@
       </tokenfield>
       
       
-      <windowreferencefield name="link">
+      <ct_link name="link">
         <anchored width="20" height="20">
           <top offset="7" />
           <right offset="-6" />
         </anchored>
         <icon normal="button_link" />
         <noreset />
-        <script file="ct/scripts/ct_link.lua"/>
-      </windowreferencefield>
+      </ct_link>
       
       <ct_damage_incapacitated name="inc">
         <anchored width="25" height="25">
-          <top offset="7" />
-          <right offset="-52"  parent="link"/>
+          <top offset="0" parent="link"/>
+          <right offset="-25" parent="link"/>
         </anchored>
       </ct_damage_incapacitated>
       
@@ -1062,17 +1052,17 @@
           end
         </script>
       </genericcontrol>
-      <ct_name name="name">
-        <anchored>
-          <right parent="damages"/>
-        </anchored>
-      </ct_name>
       <ct_benny name="bennies">
         <anchored width="20" height="21">
-          <top parent="link" />
-          <right parent="link" anchor="left" offset="-5" />
+          <top parent="damages" />
+          <right parent="damages" anchor="left" />
         </anchored>
       </ct_benny>
+      <ct_name name="name">
+        <anchored>
+          <right parent="bennies"/>
+        </anchored>
+      </ct_name>
       
       
       
@@ -1114,7 +1104,10 @@
            end
           end
         </script>
-        <anchored to="command_skill" position="right" offset="10" width="80"/>
+        <anchored width="80">
+            <left anchor="right" parent="command_skill" offset="10" />
+            <top parent="command_skill" />
+        </anchored>
 	<state>
 		<textres>mb_command_button_label</textres>
 	</state>

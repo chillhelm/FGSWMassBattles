@@ -6,7 +6,7 @@
 function onInit()
 	wildcard.getDatabaseNode().onUpdate = onWildcardChanged
 	onWildcardChanged()
-	kind.getDatabaseNode().onUpdate = onTypeChanged
+	DB.addHandler(DB.getPath(kind.getDatabaseNode()), "onUpdate", onTypeChanged);
 	onTypeChanged()
 	updateDisplay()
 

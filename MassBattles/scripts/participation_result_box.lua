@@ -1,6 +1,7 @@
 local bSuccess, bFail, bCritFail, bRaise;
 function onInit()
 	DB.addHandler(getDatabaseNode().getPath(),"onUpdate",update)
+	DB.addHandler(getDatabaseNode().getPath(),"onChildUpdate",update)
     DB.addHandler(getDatabaseNode().getChild("soak").getPath(),"onUpdate", update)
     DB.addHandler(getDatabaseNode().getChild("total").getPath(),"onUpdate", update)
     local sRaiseChoiceEffect = DB.getValue(node, "raise_choice_battleeffect")
@@ -48,12 +49,9 @@ function update()
 	local bRaise = node.getChild("raise") and node.getChild("raise").getValue()==1
 
 	local nSoak = DB.getValue(getDatabaseNode(), "soak",0)
-    if User.isHost() or User.isLocal() then
-        DB.setValue(getDatabaseNode(), "soakcount", "number", math.max(math.ceil((nSoak-3)/4),0))
-    end
-    local nSoakResult = DB.getValue(getDatabaseNode(),"soakcount")
+    local nSoakedWounds = math.max(math.ceil((nSoak-3)/4),0)
 	local nSoakCount = DB.getValue(getDatabaseNode(), "soakcount",0)
-    local bShowSoakResult = (nSoakResult ~= nil) and (bFail or bCritFail)
+    local bShowSoakResult = (nSoakCount ~= 0) and (bFail or bCritFail)
     participation_result_soak_label.setVisible(bShowSoakResult)
     soak.setVisible(bShowSoakResult)
     if bShowSoakResult then
@@ -112,7 +110,7 @@ function update()
 	local nPendingWounds = DB.getValue(getDatabaseNode(), "pending_wounds",0)
 	local nPendingFatigues = DB.getValue(getDatabaseNode(), "pending_fatigues",0)
     if User.isLocal() or User.isHost() then
-        DB.setValue(getDatabaseNode(), "result_wounds", "number", math.max(nPendingWounds - nSoakCount,0))
+        DB.setValue(getDatabaseNode(), "result_wounds", "number", math.max(nPendingWounds - nSoakedWounds,0))
     end
 	if nPendingWounds > 0 and not alreadyApplied then
 		part_wounds.setVisible(true)
@@ -178,19 +176,18 @@ end
 function onDrop(x,y,dragdata)
     if dragdata.getType() == "benny" then
       if (DB.getValue(getDatabaseNode(), "pending_wounds", 0) > 0) then
-          local sBennySource = dragdata.getStringData()
-          local bennySource = DB.findNode(sBennySource)
+          local sBennySource_ = dragdata.getStringData()
           local actor = dragdata.getDescription()
-          rActor={}
-          if actor == "GM" then
+          --[[if actor == "GM" then
             rActor["recordname"]="GM"
           else
             local sLinkClass, sLinkRecord = DB.getValue(getDatabaseNode().getParent().getParent(),"link")
             rActor["recordname"]=sLinkRecord
           end
-          rActor["class"] = "mb"
-          local rUserData = {nodePendingEntry = getDatabaseNode().getNodeName()}
-          BennyManager.consumeBennyToSoak(rActor, {nodeBenny = bennySource,sConsumerName=dragdata.getDescription()},rUserData)
+          rActor["class"] = "mb"]]--
+          local rActor = CharacterManager.getActorShortcut("ct", windowlist.window)
+          local rUserData = {sPendingEntryNodeName = getDatabaseNode().getNodeName()}
+          BennyManager.consumeBennyToSoak(rActor, {sBennySource = sBennySource_,sConsumerName=dragdata.getDescription()},rUserData)
       end
     end
 end

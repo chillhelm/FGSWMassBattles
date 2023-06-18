@@ -207,3 +207,59 @@ function updateOwnership()
 	end
 end
 
+function loadPC(nodeSource)
+	kind.setValue("pc")
+	-- Link
+	link.setValue("charsheet", nodeSource.getNodeName())
+	participation_skill.update()
+
+	linkPcFields(nodeSource) -- this will have been skipped during onInit, as type / link were not set
+
+	wildcard.setValue(1)
+
+	-- Token
+	local tokenData = CharacterManager.getTokenPrototype(nodeSource)
+	if tokenData then
+		token.setPrototype(tokenData)
+	end
+
+end
+
+function loadNPC(class, nodeSource)
+	local sClass = class
+	link.setValue(sClass, nodeSource.getNodeName())
+	participation_skill.update()
+
+	initializeNpc(nodeSource)
+
+	linkNpcFields()
+end
+
+function initializeNpc(nodeSource, vData)
+	local sBaseName = DB.getValue(nodeSource, "name")
+	kind.setValue("npc")
+
+	initializeChampion(nodeSource, sBaseName, vData)
+
+	if CharacterManager.isWildCard(nodeSource) then
+		DB.setValue(getDatabaseNode(), "bennies", "number", BennyManager.getMaxNPCBennies(nodeSource))
+	end
+
+	local sGear = DB.getValue(nodeSource, "gear", "")
+	if StringManager.isNotBlank(sGear) then
+		local rActor = ActorManager.resolveActor(getDatabaseNode())
+		if rActor then
+			local sGearRe = "%[[^%]]+%]"
+			while sGear:find(sGearRe) do
+				local nStart, nEnd = sGear:find(sGearRe)
+				local sEffect = StringManager.trim(sGear:sub(nStart, nEnd))
+				local sItem = StringManager.trim(sGear:sub(0, nStart-1):match("([^%.,;]+)$"))
+				if StringManager.isNotBlank(sItem) then
+					local rEffect = ActionEffect.createStateEffect(sItem .. " " .. sEffect)
+					ActionEffect.applyEffect(rActor, rActor, rEffect)
+				end
+				sGear = sGear:sub(nEnd+1)
+			end
+		end
+	end
+end

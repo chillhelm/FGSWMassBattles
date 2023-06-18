@@ -81,6 +81,8 @@ end
 function addPc(nodeSource, win, draginfo, vData)
 	if not moveEntry(nodeSource, win, draginfo) then
 		local tokenData = draginfo.getTokenData()
+		win.link.setValue("charsheet", nodeSource.getPath())
+        win.kind.setValue("pc")
 		win.type.setValue("pc")
 
 		win.wildcard.setValue(1)
@@ -91,7 +93,6 @@ function addPc(nodeSource, win, draginfo, vData)
 		end
 
 		-- Link
-		win.link.setValue("charsheet", nodeSource.getPath())
 	end
 
 	win.linkPcFields(nodeSource) -- this will have been skipped during onInit, as type / link were not set
