@@ -2,8 +2,10 @@ function update()
 
 	local bMoraleCheckRequiredA = DB.getValue(getDatabaseNode(), "requireMoraleCheckA",0)==1
 	local bMoraleCheckRequiredB = DB.getValue(getDatabaseNode(), "requireMoraleCheckB",0)==1
-	local bIsCommanderA = DB.findNode("massbattle.leaderadetails").isOwner()
-	local bIsCommanderB = DB.findNode("massbattle.leaderbdetails").isOwner()
+    local nodeCommanderA = DB.findNode("massbattle.leaderadetails")
+	local bIsCommanderA = nodeCommanderA and nodeCommanderA.isOwner() or false
+    local nodeCommanderB = DB.findNode("massbattle.leaderbdetails")
+	local bIsCommanderB = nodeCommanderB and nodeCommanderB.isOwner() or false
 	armyAMoraleButton.setVisible(bMoraleCheckRequiredA)
 	armyBMoraleButton.setVisible(bMoraleCheckRequiredB)
 	armyAMoraleButton.setEnabled(bMoraleCheckRequiredA and bIsCommanderA)
@@ -35,7 +37,7 @@ function makeMoraleRoll(armyID, bReroll)
 		CustomData.mb_entry = MassBattles.getLeaderADetails().getPath()
 	end
 	if bReroll then
-		ModifierManager.applyTraitModifiers(sActorType, nodeActor, "reroll")
+		ModifierManagerSW.applyTraitModifiers(sActorType, nodeActor, "reroll")
 	end
 	TraitManager.rollPreDefinedRoll(sActorType, nodeActor, nodeAttribute, sDescPrefix, "battlemorale",CustomData)
 end
