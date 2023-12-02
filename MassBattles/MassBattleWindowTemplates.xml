@@ -494,7 +494,7 @@
       <number name="total">
         <anchored to="mb_participation_result_label" position="right" offset="15"/>
         <frame>
-          <name>bonus</name>
+          <name>fielddark</name>
           <offset>10,5,10,5</offset>
         </frame>
         <readonly/>
@@ -522,7 +522,6 @@
         <anchored >
           <right offset="-25" parent="clear_result_button"/>
           <top parent="mb_participation_result_label"/>
-          <bottom parent="mb_participation_result_label"/>
           <left parent="total" anchor="right" offset="20"/>
         </anchored>
 	<state>
@@ -552,7 +551,7 @@
         <number name="total">
           <anchored to="mb_participation_result_label" position="right" offset="15"/>
           <frame>
-            <name>bonus</name>
+            <name>fielddark</name>
             <offset>10,5,10,5</offset>
           </frame>
         </number>
@@ -566,7 +565,7 @@
         <number name="soak">
           <anchored to="participation_result_soak_label" position="right" offset="15"/>
           <frame>
-            <name>bonus</name>
+            <name>fielddark</name>
             <offset>10,5,10,5</offset>
           </frame>
         </number>
@@ -649,7 +648,6 @@
           <anchored width="50" >
             <right offset="-25" parent="clear_result_button"/>
             <top parent="mb_participation_result_label"/>
-            <bottom parent="mb_participation_result_label"/>
           </anchored>
 	  <state>
 		  <textres>mb_apply_part_result</textres>
@@ -1154,7 +1152,7 @@
       <number name="armyacommandresult">
         <anchored to="forceALabel" position="right" offset="10"/>
         <frame>
-          <name>bonus</name>
+          <name>fielddark</name>
           <offset>10,5,10,5</offset>
         </frame>
       </number>
@@ -1165,7 +1163,7 @@
           <right offset="-15"/>
         </anchored>
         <frame>
-          <name>bonus</name>
+          <name>fielddark</name>
           <offset>10,5,10,5</offset>
         </frame>
       </number>

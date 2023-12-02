@@ -63,7 +63,7 @@
             <top parent="ForceTokensLabel" anchor="top" offset="-10"/>
             <right parent="ForceTokensLabel" anchor="left" relation="absolute" offset="-5"/>
           </anchored>
-          <frame>bonus</frame>
+          <frame>fielddark</frame>
           <font>force_token_font</font>
         </number>
         <number name="ForceTokensB">
@@ -73,7 +73,7 @@
             <left parent="ForceTokensLabel" anchor="right" relation="absolute" offset="5"/>
           </anchored>
           <font>force_token_font</font>
-          <frame>bonus</frame>
+          <frame>fielddark</frame>
         </number>
         <mbFactionSectionA_cl name="ArmyA">
           <anchored>

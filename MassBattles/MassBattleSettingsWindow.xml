@@ -36,7 +36,7 @@
         </anchored>
       </label>
       <stringfield name="ArmyAName">
-        <frame offset="8,4,8,4">bonus</frame>
+        <frame offset="8,4,8,4">fielddark</frame>
         <anchored>
           <left anchor="right" parent="army_name_label" offset="10"/>
           <top parent="army_name_label"/>
@@ -50,7 +50,7 @@
         </anchored>
       </label>
       <numberfield name="StartForceTokensA">
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left anchor="right" parent="start_force_tokens_label" offset="10"/>
           <top parent="start_force_tokens_label"/>
@@ -69,7 +69,7 @@
       </label>
       <numberfield name="tacticalAdvantageA">
         <displaysign/>
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left  anchor="right" parent="tactical_advantage_label" offset="10"/>
           <top parent="tactical_advantage_label"/>
@@ -87,7 +87,7 @@
       </label>
       <numberfield name="battlePlanA">
         <displaysign/>
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left  anchor="right" parent="battle_plan_label" offset="10"/>
           <top parent="battle_plan_label"/>
@@ -105,7 +105,7 @@
       </label>
       <numberfield name="moraleBonusA">
         <displaysign/>
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left  anchor="right" parent="morale_bonus_label" offset="10"/>
           <top parent="morale_bonus_label"/>
@@ -153,7 +153,7 @@
         </anchored>
       </label>
       <stringfield name="ArmyBName">
-        <frame offset="8,4,10,4">bonus</frame>
+        <frame offset="8,4,10,4">fielddark</frame>
         <anchored>
           <left anchor="right" parent="army_name_label" offset="10"/>
           <top parent="army_name_label"/>
@@ -167,7 +167,7 @@
         </anchored>
       </label>
       <numberfield name="StartForceTokensB">
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left anchor="right" parent="start_force_tokens_label" offset="10"/>
           <top parent="start_force_tokens_label"/>
@@ -186,7 +186,7 @@
       </label>
       <numberfield name="tacticalAdvantageB">
         <displaysign/>
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left  anchor="right" parent="tactical_advantage_label" offset="10"/>
           <top parent="tactical_advantage_label"/>
@@ -204,7 +204,7 @@
       </label>
       <numberfield name="battlePlanB">
         <displaysign/>
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left  anchor="right" parent="battle_plan_label" offset="10"/>
           <top parent="battle_plan_label"/>
@@ -222,7 +222,7 @@
       </label>
       <numberfield name="moraleBonusB">
         <displaysign/>
-        <frame>bonus</frame>
+        <frame>fielddark</frame>
         <anchored width="30">
           <left  anchor="right" parent="morale_bonus_label" offset="10"/>
           <top parent="morale_bonus_label"/>
