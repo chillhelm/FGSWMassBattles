@@ -24,11 +24,11 @@ function onInit()
     RollsManager.registerTraitRollModHandler(applyCommandBonus)
     RollsManager.registerTraitRollModHandler(applyMoraleBonus)
     OOBManager.registerOOBMsgHandler("MassBattleWindowUpdate", onOOBMBWUpdate)
-    if User.isHost() or User.isLocal() then
+    if Session.IsHost or Session.IsLocal then
 		OOBManager.registerOOBMsgHandler("MassBattleApplyCommandResult", onOOBMBApplyCommandResult)
     end
     ChatManager.registerRollHandler("massbattleCritFailInjury", processMassbattleCritFailInjury)
-    if User.isHost() or User.isLocal() then
+    if Session.IsHost or Session.IsLocal then
 		local mbNode = DB.createNode("massbattle")
         mbNode.setPublic(true);
         armyaNode = mbNode.createChild("ArmyA")
@@ -45,7 +45,7 @@ function onInit()
     else
         DesktopManager.registerSidebarToolButton(aMassBattleShortcutClient)
     end
-    if(User.isHost() or User.isLocal()) then
+    if(Session.IsHost or Session.IsLocal) then
 		Module.setModulePermissions("SWADE Player Guide", true, true)
     else
         Module.activate("SWADE Player Guide")
@@ -217,7 +217,7 @@ function getMassbattleFromParticipant(participant)
 
     local active_massbattle = getMassbattleFromParticipant(mb_entry)
     local massbattle_window = nil
-    if User.isHost() or User.isLocal() then
+    if Session.IsHost or Session.IsLocal then
 		massbattle_window = Interface.findWindow("massbattle_host", active_massbattle)
 	else
 		massbattle_window = Interface.findWindow("massbattle_client", active_massbattle)
@@ -275,7 +275,7 @@ function makeBattleTableRoll(participant, participationResultNode, cause)
 	rRoll.mb_entry = participant.getPath()
     rRoll.participationResultNode = participationResultNode.getPath()
     rRoll.cause = cause
-	--bHost = User.isHost() or User.isLocal()
+	--bHost = Session.IsHost or Session.IsLocal
 	--if bHost then
 		--rRoll.sOutput = DB.getValue(nodeTable, "output", "");
 	--end
@@ -524,7 +524,7 @@ end
 
 
 function getMassbattleWindow()
-    if User.isHost() or User.isLocal() then
+    if Session.IsHost or Session.IsLocal then
 		massbattle_window = Interface.findWindow("massbattle_host", "massbattle")
 	else
 		massbattle_window = Interface.findWindow("massbattle_client", "massbattle")

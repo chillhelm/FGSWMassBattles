@@ -96,6 +96,13 @@
       <ct_type name="type" />
       <ct_ctentry_kind name="kind" />
       <hn name="wildcard" />
+      <hnx name="bennies">
+          <script>
+              function update()
+                window.benniesview.update();
+              end
+          </script>
+      </hnx>
       <hs name="tokenrefid" />
       <hs name="tokenrefnode" />
       <hn name="tokenscale">
@@ -109,20 +116,13 @@
 
       <tokenfield name="token">
         <bounds>74,6,25,25</bounds>
-        <empty>indicator_emptytoken</empty>
+        <empty>token_empty</empty>
         <script file="MassBattles/scripts/mb_token.lua" />
       </tokenfield>
 
 
-      <windowreferencefield name="link">
-        <anchored width="20" height="20">
-          <top offset="7" />
-          <right offset="-6" />
-        </anchored>
-        <icon normal="button_link" />
-        <noreset />
-        <script file="ct/scripts/ct_link.lua"/>
-      </windowreferencefield>
+      <ct_link name="link" />
+
       <ct_damage_incapacitated name="inc">
         <anchored width="25" height="25" to="link">
           <top offset="0" parent="link"/>
@@ -167,7 +167,7 @@
           end
         </script>
       </genericcontrol>
-      <ct_benny name="bennies">
+      <ct_benny name="benniesview">
         <anchored width="20" height="21">
           <top parent="damages" />
           <right parent="damages" anchor="left" offset="-5" />
@@ -175,7 +175,7 @@
       </ct_benny>
       <ct_name name="name">
         <anchored>
-          <right parent="bennies"/>
+          <right parent="benniesview"/>
         </anchored>
       </ct_name>
 
@@ -290,7 +290,7 @@
 
       <tokenfield name="token">
         <bounds>74,6,25,25</bounds>
-        <empty>indicator_emptytoken</empty>
+        <empty>token_empty</empty>
         <script file="MassBattles/scripts/mb_token.lua" />
       </tokenfield>
       
@@ -333,22 +333,12 @@
         </anchored>
       </client_ct_name>
 
-      <windowreferencefield name="link">
+      <ct_link name="link">
         <anchored width="20" height="20">
           <top offset="7" />
           <right offset="-6" />
         </anchored>
-        <icon normal="button_link" />
-        <noreset />
-        <invisible/>
-        <script file="ct/scripts/ct_link.lua"/>
-      </windowreferencefield>
-
-      
-
-      
-
-      
+      </ct_link>
       <label name="mb_participation_label">
         <anchored>
           <top parent="damages" anchor="bottom" relation="relative" offset="5"/>
@@ -855,7 +845,7 @@
       </ct_client_damagetypes>
       <tokenfield name="token">
         <bounds>74,6,25,25</bounds>
-        <empty>indicator_emptytoken</empty>
+        <empty>token_empty</empty>
         <script file="MassBattles/scripts/mb_token.lua" />
       </tokenfield>
       
@@ -983,6 +973,13 @@
           end
         </script>
       </hn>
+      <hnx name="bennies">
+          <script>
+              function update()
+                window.benniesview.update()
+              end
+          </script>
+      </hnx>
       <genericcontrol name="unitynecessarystretcher">
           <anchored>
               <left />
@@ -992,7 +989,7 @@
       
       <tokenfield name="token">
         <bounds>74,6,25,25</bounds>
-        <empty>indicator_emptytoken</empty>
+        <empty>token_empty</empty>
         <script file="MassBattles/scripts/mb_token.lua" />
       </tokenfield>
       
@@ -1050,7 +1047,7 @@
           end
         </script>
       </genericcontrol>
-      <ct_benny name="bennies">
+      <ct_benny name="benniesview">
         <anchored width="20" height="21">
           <top parent="damages" />
           <right parent="damages" anchor="left" />
@@ -1058,7 +1055,7 @@
       </ct_benny>
       <ct_name name="name">
         <anchored>
-          <right parent="bennies"/>
+          <right parent="benniesview"/>
         </anchored>
       </ct_name>
       

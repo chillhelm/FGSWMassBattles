@@ -127,12 +127,12 @@
             <right parent="mb_center_anchor" anchor="right" offset="50"/>
             <bottom offset="-20"/>
           </anchored>
-	  <state>
-		  <textres>mb_new_round_label</textres>
-	  </state>
+          <state>
+              <textres>mb_new_round_label</textres>
+          </state>
           <script>
             function onButtonPress()
-            MassBattles.startNextRound()
+                MassBattles.startNextRound()
             end
           </script>
         </button_text>

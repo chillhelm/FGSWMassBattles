@@ -30,7 +30,7 @@ end
 
 function updateMenuOptions()
 	resetMenuItems()
-	if User.isHost() then
+	if Session.IsHost then
 		registerMenuItem(Interface.getString("ct_menu_delete_combatants"), "delete", 6)
 		registerMenuItem(Interface.getString("ct_menu_delete_combatants_confirm"), "delete", 6, 7)
 	end
@@ -309,7 +309,7 @@ function makeCommandRoll(bReroll)
 end
 
 function updateOwnership()
-	if (User.isHost() or User.isLocal()) then
+	if (Session.IsHost or Session.IsLocal) then
 		if(link.getTargetDatabaseNode()) then
 			local sNodeOwner = link.getTargetDatabaseNode().getOwner()
 			if sNodeOwner and sNodeOwner ~= "" then

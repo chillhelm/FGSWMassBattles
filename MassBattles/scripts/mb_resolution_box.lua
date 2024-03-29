@@ -10,7 +10,7 @@ function onInit()
 end
 
 function update()
-	if not (User.isHost() or User.isLocal()) then
+	if not (Session.IsHost or Session.IsLocal) then
 		accept_round_results.setVisible(false)
 		accept_round_results.setEnabled(false)
 	else
