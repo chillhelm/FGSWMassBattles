@@ -59,7 +59,7 @@ function resolveBattleMoraleRoll(rRoll, rRollResult, rSource, vTargets, rContext
     local armyid = getArmyIDFromCommanderNode(participant)
     nodeMassbattle = DB.findNode("massbattle")
     local armyName = DB.getValue(nodeMassbattle, "Army"..string.upper(armyid).."Name","")
-    
+
     local bCritFail = rRollResult.bCriticalFailure or false
     local bRaise=false
     local bSuccess=false
@@ -69,7 +69,7 @@ function resolveBattleMoraleRoll(rRoll, rRollResult, rSource, vTargets, rContext
         bSuccess = true
 		if(total_score>=8) then
 			bRaise = true
-		end 
+		end
     end
     bFail = bCritFail or total_score<4
 
@@ -104,7 +104,7 @@ function resetParticipationResult(participant)
     DB.setValue(nodeParticipationResult,"pending_wounds","number",0)
     DB.setValue(nodeParticipationResult,"pending_fatigues","number",0)
     DB.setValue(nodeParticipationResult,"pending_bouns","number",0)
-    
+
     updateClientsMassBattleWindows()
 end
 
@@ -116,7 +116,7 @@ function updateParticipationResultData(participant, total_score, bCritFail)
         bSuccess = true
 		if(total_score>=8) then
 			bRaise = true
-		end 
+		end
     end
     bFail = bCriticalFailure or total_score<4
     local participation_results_node = DB.createChild(participant,"participation_results")
@@ -226,7 +226,7 @@ function getMassbattleFromParticipant(participant)
         massbattle_window.update()
     end
     --get participation result window
-    
+
     updateClientsMassBattleWindows()
  end
 
@@ -283,7 +283,7 @@ function makeBattleTableRoll(participant, participationResultNode, cause)
 
 end
 
- function deleteBEChildNodes(node) 
+ function deleteBEChildNodes(node)
      if node.getChild("participation_result.raise_choice_battleeffect") then
         node.getChild("participation_result.raise_choice_battleeffect").setValue("")
 	end
@@ -297,8 +297,6 @@ end
     updateClientsMassBattleWindows()
  end
 
- 
- 
 function applyWounds(sTargetType, nodeTarget, nWounds)
 	if nodeTarget and DB.isOwner(nodeTarget) then
 		local rActor = CharacterManager.getActorShortcut(sTargetType, nodeTarget)
@@ -323,6 +321,7 @@ function applyWounds(sTargetType, nodeTarget, nWounds)
 		end
 	end
 end
+
 function applyFatigue(sTargetType, nodeTarget, nFatigues, bNonLethal)
 	if nodeTarget and DB.isOwner(nodeTarget) then
 		local rActor = CharacterManager.getActorShortcut(sTargetType, nodeTarget)
@@ -375,7 +374,7 @@ function applyMoraleBonus(rActor, sTrait, nodeTrait, sTraitType, vAttack)
 			ModifierStack.addOrUpdateSlot("Army Losses", nArmyALossesPenalty)
         end
         armyA = true
-	elseif(leaderBcl == rActor.class and leaderBrec == rActor.recordname) then 
+	elseif(leaderBcl == rActor.class and leaderBrec == rActor.recordname) then
         nodeArmy = nodeMassbattle.getChild("ArmyB")
         nodeOtherArmy = nodeMassbattle.getChild("ArmyA")
         if nArmyBLossesPenalty<0 then
@@ -423,7 +422,7 @@ function applyCommandBonus(rActor, sTrait, nodeTrait, sTraitType, vAttack)
 			ModifierStack.addOrUpdateSlot("Force Advantage", forceBonusA)
         end
         armyA = true
-	elseif(leaderBcl == rActor.class and leaderBrec == rActor.recordname) then 
+	elseif(leaderBcl == rActor.class and leaderBrec == rActor.recordname) then
         nodeArmy = nodeMassbattle.getChild("ArmyB")
         nodeOtherArmy = nodeMassbattle.getChild("ArmyA")
         if forceBonusB>0 then
@@ -440,7 +439,7 @@ function applyCommandBonus(rActor, sTrait, nodeTrait, sTraitType, vAttack)
         if nBattlePlan > 0 then
             ModifierStack.addOrUpdateSlot("Battle Plan", nBattlePlan)
 		end
-	else 
+	else
         local nTacticalAdvantage = DB.getValue(nodeMassbattle,"tacticalAdvantageB",0)
         if nTacticalAdvantage > 0 then
             ModifierStack.addOrUpdateSlot("Tactical Advantage", nTacticalAdvantage)
@@ -602,7 +601,7 @@ function processMassbattleCritFailInjury(draginfo)
     local nodeParticipationResult = DB.findNode(sParticipationResultNodePath)
     local nodeParticipant = nodeParticipationResult.getParent().getParent()
     local sName = DB.getValue(nodeParticipant,"name")
-    nodeParticipationResult.createChild("pending_wounds","number").setValue(nWounds)
+    setPendingWoundsParticipant(nodeParticipationResult, nWounds)
     sChatMessageText = string.format(Interface.getString("mb_wound_notification_string"),sName,nWounds)
     chat_message = {text = sChatMessageText, dice=draginfo.getDieList(),secret=false,icon="indicator_wounds",diemodifier=1, dicedisplay=1}
     Comm.addChatMessage(chat_message)
@@ -617,6 +616,7 @@ function setPendingFatigue(participationResultNode, nFatigues)
 end
 
 function setPendingWoundsParticipant(participationResultNode, nWounds)
+    Debug.chat("Pending Wounds are set to ", nWounds, " on ", participationResultNode)
 	participationResultNode.createChild("pending_wounds","number").setValue(nWounds)
 end
 
@@ -635,7 +635,7 @@ function activatePendingEffects(participationResultNode)
         local bFail = DB.getValue(participationResultNode, "fail", 0) == 1
         local bSuccess = DB.getValue(participationResultNode, "success", 0) == 1
         local bRaise = DB.getValue(participationResultNode, "raise", 0) == 1
-        
+
         local sCritFailEffect = (participationResultNode.getChild("critfail_battleeffect") and participationResultNode.getChild("critfail_battleeffect").getValue())
         local sRaiseEffect = (participationResultNode.getChild("battle_impact_effect") and participationResultNode.getChild("battle_impact_effect").getValue())
         local sBattleEffect = (bCritFail and sCritFailEffect) or (bRaise and sRaiseEffect) or ""

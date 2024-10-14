@@ -552,13 +552,13 @@
                 </anchored>
                 <static textres="mb_participation_result_soak_label" />
             </label>
-            <number name="soak">
+            <numbercontrol name="soak">
                 <anchored to="participation_result_soak_label" position="right" offset="15" />
                 <frame>
                     <name>fielddark</name>
                     <offset>10,5,10,5</offset>
                 </frame>
-            </number>
+            </numbercontrol>
             <genericcontrol name="success_indicator">
                 <icon>adjust1</icon>
                 <anchored to="total" position="right" offset="15" width="15" />
@@ -645,21 +645,24 @@
             </button_text>
             <label name="part_wounds">
                 <anchored>
-                    <right parent="apply_result_button" anchor="left" relation="relative"
-                        offset="-10" />
+                    <right parent="apply_result_button" anchor="left" relation="relative" offset="-10" />
                     <top parent="apply_result_button" anchor="top" />
                 </anchored>
                 <static textres="mb_part_wounds_label" />
             </label>
             <hn name="pending_wounds" />
-            <number name="result_wounds">
-                <anchored>
-                    <right parent="apply_result_button" anchor="left" relation="relative"
-                        offset="-5" />
-                    <top parent="part_wounds" anchor="top" />
-                    <bottom parent="part_wounds" />
+            <numbercontrol name="result_wounds">
+                <script>
+                    function onInit()
+                        Debug.chat(self);
+                    end
+                    function onValueChanged()
+                        Debug.chat(self);
+                    end
+                </script>
+                <anchored to="part_wounds" position="left" offset="5" width="20">
                 </anchored>
-            </number>
+            </numbercontrol>
             <stringfield name="critfail_battleeffect">
                 <anchored to="pending_wounds" position="left" offset="10">
                     <right parent="apply_result_button" anchor="left" relation="relative" />

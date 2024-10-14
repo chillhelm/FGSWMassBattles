@@ -1,11 +1,17 @@
 local bSuccess, bFail, bCritFail, bRaise;
 function onInit()
 	DB.addHandler(getDatabaseNode().getPath(),"onUpdate",update)
-	DB.addHandler(getDatabaseNode().getPath(),"onChildUpdate",update)
+	--DB.addHandler(getDatabaseNode().getPath(),"onChildUpdate",update)
+    if(not getDatabaseNode().getChild("soak")) then
+        DB.createChild(getDatabaseNode(),"soak", "number")
+    end
     DB.addHandler(getDatabaseNode().getChild("soak").getPath(),"onUpdate", update)
+    if(not getDatabaseNode().getChild("total")) then
+        DB.createChild(getDatabaseNode(),"total", "number")
+    end
     DB.addHandler(getDatabaseNode().getChild("total").getPath(),"onUpdate", update)
     local sRaiseChoiceEffect = DB.getValue(node, "raise_choice_battleeffect")
-    if Session.isHost or Session.isLocal then
+    if Session.IsHost or Session.IsLocal then
         if sRaiseChoiceEffect == nil then
             DB.setValue(getDatabaseNode(),"raise_choice_battleeffect","string","")
         end
@@ -23,7 +29,7 @@ function update()
 
 	local bCritFail = node.getChild("critfail") and node.getChild("critfail").getValue()==1
     local nTotal = DB.getValue(node, "total", 0)
-    if Session.isLocal or Session.isHost then
+    if Session.IsLocal or Session.IsHost then
         if nTotal >= 8 and not bCritFail then
             DB.setValue(node, "raise", "number", 1)
             DB.setValue(node, "success", "number", 1)
@@ -109,15 +115,17 @@ function update()
 
 	local nPendingWounds = DB.getValue(getDatabaseNode(), "pending_wounds",0)
 	local nPendingFatigues = DB.getValue(getDatabaseNode(), "pending_fatigues",0)
-    if Session.isLocal or Session.isHost then
+    if Session.IsLocal or Session.IsHost then
+        Debug.chat("nResultWounds: ", math.max(nPendingWounds - nSoakedWounds,0))
         DB.setValue(getDatabaseNode(), "result_wounds", "number", math.max(nPendingWounds - nSoakedWounds,0))
+        Debug.chat("result wounds in db: ", DB.getValue(getDatabaseNode(),"result_wounds"))
     end
 	if nPendingWounds > 0 and not alreadyApplied then
 		part_wounds.setVisible(true)
-		pending_wounds.setVisible(true)
+		result_wounds.setVisible(true)
 	else
 		part_wounds.setVisible(false)
-		pending_wounds.setVisible(false)
+		result_wounds.setVisible(true)
 	end
 	if nPendingFatigues > 0  and not alreadyApplied then
 		part_fatigues.setVisible(true)
@@ -127,7 +135,7 @@ function update()
 		pending_fatigues.setVisible(false)
 	end
 
-    if not (Session.isHost or Session.isLocal) then
+    if not (Session.IsHost or Session.IsLocal) then
         total.setReadOnly(true)
         soak.setReadOnly(true)
     end
