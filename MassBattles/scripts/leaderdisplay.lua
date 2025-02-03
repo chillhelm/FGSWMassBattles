@@ -64,30 +64,28 @@ function onWildcardChanged()
 end
 
 function onTypeChanged()
-	if kind.is("pc") then
+    local sType = kind.getValue()
+	if StringManager.isNotBlank(sType) and sType == "pc" then
 		self.linkPcFields()
-	elseif kind.is("npc") then
+	elseif sType == "npc" then
 		self.linkNpcFields()
 	end
 	wildcard_icon.updateMenuOptions()
 end
 
 function onIDChanged()
-	local sType = type.getValue()
+	local sType = kind.getValue()
 	if StringManager.isNotBlank(sType) and sType ~= "pc" then
 		local bID = LibraryData.getIDState(sType, getDatabaseNode(), true)
 		name.setVisible(bID)
-		nonid_name.setVisible(not bID)
-		isidentified.setVisible(true)
 	else
 		name.setVisible(true)
-		nonid_name.setVisible(false)
-		isidentified.setVisible(false)
 	end
 end
 
 function updateDisplay()
-	if kind.isNot("pc") then
+    local sType = kind.getValue()
+	if StringManager.isNotBlank(sType) and sType ~= "pc" then
 		name.setFrame("textline",0,0,0,0)
 	end
 end
@@ -122,6 +120,7 @@ function linkPcFields()
 	local nodeSource = link.getTargetDatabaseNode()
 	if nodeSource then
 		name.setLink(nodeSource.getChild("name"))
+        token.setLink(DB.getChild(nodeSource, "token"))
 		for _,w in pairs(damages.getDamageTypeControls()) do
 			w.setLink(nodeSource.getChild(w.getName()))
 		end
@@ -188,7 +187,7 @@ end
 
 function setPC(nodeSource, draginfo, vData)
 	local tokenData = draginfo.getTokenData()
-	type.setValue("pc")
+	kind.setValue("pc")
 
 	wildcard.setValue(1)
 
@@ -216,7 +215,7 @@ end
 
 function initializeNpc(nodeSource, vData)
 	local sBaseName = DB.getValue(nodeSource, "name")
-	type.setValue("npc")
+	kind.setValue("npc")
 
 	initializeChampion(nodeSource, sBaseName, vData)
 
@@ -246,7 +245,6 @@ end
 function initializeChampion(nodeSource, sBaseName, vData)
 	local rData = (vData and MassBattles.typeOf(vData) == "table") and vData
 	local nodeCT = getDatabaseNode()
-	local sType = type.getValue()
 
 	-- Name
 	local sName = (rData and rData.name) or sBaseName
@@ -268,7 +266,7 @@ end
 
 
 function loadPC(nodeSource)
-	type.setValue("pc")
+	kind.setValue("pc")
 	-- Link
 	link.setValue("charsheet", nodeSource.getNodeName())
 	command_skill.update()
@@ -319,3 +317,15 @@ function updateOwnership()
 	end
 end
 
+function isPC()
+    local sType = kind.getValue()
+    return StringManager.isNotBlank(sType) and sType == "pc"
+end
+
+function onLinkChanged()
+    if self.isPC() then
+        linkPcFields()
+    end
+    self.onIDChanged()
+    self.updateDisplay()
+end

@@ -93,8 +93,7 @@
         </sizelimits>
         <script file="MassBattles/scripts/mb_champion.lua" />
         <sheetdata>
-            <ct_type name="type" />
-            <ct_ctentry_kind name="kind" />
+            <hs name="kind" />
             <hn name="wildcard" />
             <hnx name="bennies">
                 <script>
@@ -113,29 +112,32 @@
                     end
                 </script>
             </hn>
+            <spacer_ctentry_active_top name="active_spacer_top" />
+            <anchor_ct_entry_left name="leftanchor" />
+            <anchor_ct_entry_right name="rightanchor" />
 
-            <tokenfield name="token">
+            <token_ctentry_sw name="token">
                 <bounds>74,6,25,25</bounds>
                 <empty>token_empty</empty>
                 <script file="MassBattles/scripts/mb_token.lua" />
-            </tokenfield>
+            </token_ctentry_sw>
 
 
-            <ct_link name="link" />
+            <link_ct_entry name="link" />
 
             <ct_damage_incapacitated name="inc">
                 <anchored width="25" height="25" to="link">
-                    <top offset="0" parent="link" />
+                    <top offset="0" parent="token" />
                     <right offset="-25" parent="link" />
                 </anchored>
             </ct_damage_incapacitated>
 
-            <ct_damagetypes name="damages">
+            <ct_damage_fields name="damages">
                 <anchored width="0">
                     <top offset="2" />
                     <right parent="inc" anchor="left" offset="-2" />
                 </anchored>
-            </ct_damagetypes>
+            </ct_damage_fields>
             <button_idelete>
                 <anchored width="20" height="20">
                     <top offset="8" />
@@ -157,10 +159,11 @@
                 <icon>wildcard</icon>
                 <script>
                     function updateMenuOptions()
-                    resetMenuItems()
-                    if window.kind.isNot("pc") then
-                    registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
-                    end
+                        resetMenuItems()
+                        local sType = window.kind.getValue()
+                        if StringManager.isNotBlank(sType) and sType~="pc" then
+                            registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
+                        end
                     end
                     function onMenuSelection(...)
                     return window.name.onMenuSelection(...)
@@ -173,11 +176,12 @@
                     <right parent="damages" anchor="left" offset="-5" />
                 </anchored>
             </ct_benny>
-            <ct_name name="name">
+            <string_ct_entry_name_sw name="name">
                 <anchored>
                     <right parent="benniesview" />
+                    <left parent="wildcard_icon" />
                 </anchored>
-            </ct_name>
+            </string_ct_entry_name_sw>
 
             <label name="mb_participation_label">
                 <anchored>
@@ -273,8 +277,7 @@
         </sizelimits>
         <script file="MassBattles/scripts/mb_champion_cl.lua" />
         <sheetdata>
-            <ct_type name="type" />
-            <ct_ctentry_kind name="kind" />
+            <hs name="kind" />
             <hn name="wildcard" />
             <hs name="tokenrefid" />
             <hs name="tokenrefnode" />
@@ -287,12 +290,15 @@
                     end
                 </script>
             </hn>
+            <spacer_ctentry_active_top name="active_spacer_top" />
+            <anchor_ct_entry_left name="leftanchor" />
+            <anchor_ct_entry_right name="rightanchor" />
 
-            <tokenfield name="token">
+            <token_clientct_sw name="token">
                 <bounds>74,6,25,25</bounds>
                 <empty>token_empty</empty>
                 <script file="MassBattles/scripts/mb_token.lua" />
-            </tokenfield>
+            </token_clientct_sw>
 
             <client_mb_state name="state">
                 <anchored width="25" height="25">
@@ -301,12 +307,12 @@
                 </anchored>
             </client_mb_state>
 
-            <ct_client_damagetypes name="damages">
+            <client_ct_damage name="damages">
                 <anchored width="0">
                     <top offset="2" />
                     <right offset="-77" />
                 </anchored>
-            </ct_client_damagetypes>
+            </client_ct_damage>
             <button_idelete>
                 <anchored width="20" height="20">
                     <top offset="8" />
@@ -327,18 +333,19 @@
                 <bounds>105,8,25,25</bounds>
                 <icon>wildcard</icon>
             </genericcontrol>
-            <client_ct_name name="name">
+            <string_clientct_name_sw name="name">
                 <anchored>
                     <right parent="damages" />
+                    <left parent="wildcard_icon" />
                 </anchored>
-            </client_ct_name>
+            </string_clientct_name_sw >
 
-            <ct_link name="link">
+            <hlink name="link">
                 <anchored width="20" height="20">
                     <top offset="7" />
                     <right offset="-6" />
                 </anchored>
-            </ct_link>
+            </hlink>
             <label name="mb_participation_label">
                 <anchored>
                     <top parent="damages" anchor="bottom" relation="relative" offset="5" />
@@ -652,14 +659,6 @@
             </label>
             <hn name="pending_wounds" />
             <numbercontrol name="result_wounds">
-                <script>
-                    function onInit()
-                        Debug.chat(self);
-                    end
-                    function onValueChanged()
-                        Debug.chat(self);
-                    end
-                </script>
                 <anchored to="part_wounds" position="left" offset="5" width="20">
                 </anchored>
             </numbercontrol>
@@ -819,8 +818,7 @@
         <frame name="groupbox" />
         <script file="MassBattles/scripts/leaderdisplay_client.lua" />
         <sheetdata>
-            <ct_type name="type" />
-            <ct_ctentry_kind name="kind" />
+            <hs name="kind" />
             <hn name="wildcard" />
             <hn name="inc" />
             <hs name="tokenrefid" />
@@ -833,7 +831,11 @@
                     end
                 </script>
             </hn>
-            <ct_link name="link">
+            <spacer_ctentry_active_top name="active_spacer_top" />
+            <anchor_ct_entry_left name="leftanchor" />
+            <anchor_ct_entry_right name="rightanchor" />
+
+            <hlink name="link">
                 <anchored width="20" height="20">
                     <top offset="7" />
                     <right offset="-6" />
@@ -841,18 +843,18 @@
                 <icon normal="button_link" />
                 <noreset />
                 <invisible />
-            </ct_link>
-            <ct_client_damagetypes name="damages">
+            </hlink>
+            <client_ct_damage name="damages">
                 <anchored width="0">
                     <top offset="2" />
                     <right offset="-77" />
                 </anchored>
-            </ct_client_damagetypes>
-            <tokenfield name="token">
+            </client_ct_damage>
+            <token_clientct_sw name="token">
                 <bounds>74,6,25,25</bounds>
                 <empty>token_empty</empty>
                 <script file="MassBattles/scripts/mb_token.lua" />
-            </tokenfield>
+            </token_clientct_sw>
 
             <client_mb_state name="state">
                 <anchored width="25" height="25">
@@ -865,21 +867,23 @@
                 <icon>wildcard</icon>
                 <script>
                     function updateMenuOptions()
-                    resetMenuItems()
-                    if window.kind.isNot("pc") then
-                    registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
-                    end
+                        resetMenuItems()
+                        local sType = window.kind.getValue()
+                        if StringManager.isNotBlank(sType) and sType~="pc" then
+                            registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
+                        end
                     end
                     function onMenuSelection(...)
                     return window.name.onMenuSelection(...)
                     end
                 </script>
             </genericcontrol>
-            <client_ct_name name="name">
+            <string_clientct_name_sw name="name">
                 <anchored>
                     <right parent="damages" />
+                    <left parent="wildcard_icon" />
                 </anchored>
-            </client_ct_name>
+            </string_clientct_name_sw>
 
             <label name="mb_command_label">
                 <anchored>
@@ -965,8 +969,7 @@
             </sizelimits>
         </anchored>
         <sheetdata>
-            <ct_type name="type" />
-            <ct_ctentry_kind name="kind" />
+            <hs name="kind" />
             <hn name="wildcard" />
             <hs name="tokenrefid" />
             <hs name="tokenrefnode" />
@@ -991,36 +994,39 @@
                     <top offset="140" />
                 </anchored>
             </genericcontrol>
+            <spacer_ctentry_active_top name="active_spacer_top" />
+            <anchor_ct_entry_left name="leftanchor" />
+            <anchor_ct_entry_right name="rightanchor" />
 
-            <tokenfield name="token">
+            <token_ctentry_sw name="token">
                 <bounds>74,6,25,25</bounds>
                 <empty>token_empty</empty>
                 <script file="MassBattles/scripts/mb_token.lua" />
-            </tokenfield>
+            </token_ctentry_sw>
 
 
-            <ct_link name="link">
+            <link_ct_entry name="link">
                 <anchored width="20" height="20">
                     <top offset="7" />
                     <right offset="-6" />
                 </anchored>
                 <icon normal="button_link" />
                 <noreset />
-            </ct_link>
+            </link_ct_entry>
 
             <ct_damage_incapacitated name="inc">
                 <anchored width="25" height="25">
-                    <top offset="0" parent="link" />
+                    <top offset="0" parent="token" />
                     <right offset="-25" parent="link" />
                 </anchored>
             </ct_damage_incapacitated>
 
-            <ct_damagetypes name="damages">
+            <ct_damage_fields name="damages">
                 <anchored width="0">
                     <top offset="2" />
                     <right parent="inc" anchor="left" offset="-2" />
                 </anchored>
-            </ct_damagetypes>
+            </ct_damage_fields>
             <button_idelete>
                 <anchored width="20" height="20">
                     <top offset="8" />
@@ -1042,10 +1048,11 @@
                 <icon>wildcard</icon>
                 <script>
                     function updateMenuOptions()
-                    resetMenuItems()
-                    if window.kind.isNot("pc") then
-                    registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
-                    end
+                        resetMenuItems()
+                        local sType = window.kind.getValue()
+                        if StringManager.isNotBlank(sType) and sType~="pc" then
+                            registerMenuItem(Interface.getString("wildcard_menu_toggle"), "shuffle", 7)
+                        end
                     end
                     function onMenuSelection(...)
                     return window.name.onMenuSelection(...)
@@ -1058,11 +1065,12 @@
                     <right parent="damages" anchor="left" />
                 </anchored>
             </ct_benny>
-            <ct_name name="name">
+            <string_ct_entry_name_sw name="name">
                 <anchored>
                     <right parent="benniesview" />
+                    <left parent="wildcard_icon" />
                 </anchored>
-            </ct_name>
+            </string_ct_entry_name_sw>
 
 
             <label name="mb_command_label">

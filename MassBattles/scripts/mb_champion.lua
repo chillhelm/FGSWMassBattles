@@ -65,30 +65,28 @@ function onWildcardChanged()
 end
 
 function onTypeChanged()
-	if kind.is("pc") then
+    local sType = kind.getValue()
+	if StringManager.isNotBlank(sType) and sType == "pc" then
 		self.linkPcFields()
-	elseif kind.is("npc") then
+	elseif sType == "npc" then
 		self.linkNpcFields()
 	end
 	wildcard_icon.updateMenuOptions()
 end
 
 function onIDChanged()
-	local sType = type.getValue()
+	local sType = kind.getValue()
 	if StringManager.isNotBlank(sType) and sType ~= "pc" then
 		local bID = LibraryData.getIDState(sType, getDatabaseNode(), true)
 		name.setVisible(bID)
-		nonid_name.setVisible(not bID)
-		isidentified.setVisible(true)
 	else
 		name.setVisible(true)
-		nonid_name.setVisible(false)
-		isidentified.setVisible(false)
 	end
 end
 
 function updateDisplay()
-	if kind.isNot("pc") then
+    local sType = kind.getValue()
+	if StringManager.isNotBlank(sType) and sType ~= "pc" then
 		name.setFrame("textline",0,0,0,0)
 	end
 end
@@ -101,6 +99,7 @@ function linkPcFields()
 	local nodeSource = link.getTargetDatabaseNode()
 	if nodeSource then
 		name.setLink(nodeSource.getChild("name"))
+        token.setLink(DB.getChild(nodeSource, "token"))
 		for _,w in pairs(damages.getDamageTypeControls()) do
 			w.setLink(nodeSource.getChild(w.getName()))
 		end
@@ -262,4 +261,17 @@ function initializeNpc(nodeSource, vData)
 			end
 		end
 	end
+end
+
+function isPC()
+    local sType = kind.getValue()
+    return StringManager.isNotBlank(sType) and sType == "pc"
+end
+
+function onLinkChanged()
+    if self.isPC() then
+        linkPcFields()
+    end
+    self.onIDChanged()
+    self.updateDisplay()
 end

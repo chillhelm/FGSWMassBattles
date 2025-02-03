@@ -12,6 +12,10 @@
 		<nodelete />
     <script file="MassBattles/scripts/MassBattleWindow_host.lua"/>
       <sheetdata>
+        <windowtitlebar name="title">
+          <resource>massbattle_window_title</resource>
+        </windowtitlebar>
+        <anchor_title_ctbox name="contentanchor" />
         <label_ct_host_rounds name="label_round"/>
         <number_ct_host_rounds name="round"/>
         <resize_ctbox />
@@ -39,10 +43,6 @@
           <bounds>0,0,0,0</bounds>
           <invisible />
         </windowreferencefield>
-        <windowtitlebar name="title">
-          <resource>massbattle_window_title</resource>
-        </windowtitlebar>
-        <anchor_title_ctbox name="contentanchor" />
 
         <anchor_ctbox_host_header />
         <massbattle_left_anchor name="mb_left_anchor"/>
@@ -203,7 +203,7 @@
             <left parent="ArmyB" anchor="left" offset="25"/>
           </anchored>
         </mbLabel>
-        
+
         <stringfield name="ArmyAName">
           <anchored>
             <top offset="25"/>

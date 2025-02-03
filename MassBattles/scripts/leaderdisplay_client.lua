@@ -55,21 +55,18 @@ function onTypeChanged()
 end
 
 function onIDChanged()
-	local sType = type.getValue()
+	local sType = kind.getValue()
 	if StringManager.isNotBlank(sType) and sType ~= "pc" then
 		local bID = LibraryData.getIDState(sType, getDatabaseNode(), true)
 		name.setVisible(bID)
-		nonid_name.setVisible(not bID)
-		isidentified.setVisible(true)
 	else
 		name.setVisible(true)
-		nonid_name.setVisible(false)
-		isidentified.setVisible(false)
 	end
 end
 
 function updateDisplay()
-	if kind.isNot("pc") then
+    local sType = kind.getValue()
+	if StringManager.isNotBlank(sType) and sType ~= "pc" then
 		name.setFrame("textline",0,0,0,0)
 	end
 end

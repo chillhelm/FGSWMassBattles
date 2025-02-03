@@ -616,7 +616,6 @@ function setPendingFatigue(participationResultNode, nFatigues)
 end
 
 function setPendingWoundsParticipant(participationResultNode, nWounds)
-    Debug.chat("Pending Wounds are set to ", nWounds, " on ", participationResultNode)
 	participationResultNode.createChild("pending_wounds","number").setValue(nWounds)
 end
 

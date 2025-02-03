@@ -116,9 +116,7 @@ function update()
 	local nPendingWounds = DB.getValue(getDatabaseNode(), "pending_wounds",0)
 	local nPendingFatigues = DB.getValue(getDatabaseNode(), "pending_fatigues",0)
     if Session.IsLocal or Session.IsHost then
-        Debug.chat("nResultWounds: ", math.max(nPendingWounds - nSoakedWounds,0))
         DB.setValue(getDatabaseNode(), "result_wounds", "number", math.max(nPendingWounds - nSoakedWounds,0))
-        Debug.chat("result wounds in db: ", DB.getValue(getDatabaseNode(),"result_wounds"))
     end
 	if nPendingWounds > 0 and not alreadyApplied then
 		part_wounds.setVisible(true)

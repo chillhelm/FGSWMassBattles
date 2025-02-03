@@ -12,7 +12,7 @@ end
 function initializeChampion(nodeSource, win, sBaseName, vData)
 	local rData = (vData and type(vData) == "table") and vData
 	local nodeCT = win.getDatabaseNode()
-	local sType = win.type.getValue()
+	local sType = win.kind.getValue()
 
 	-- Name
 	local sName = (rData and rData.name) or sBaseName
@@ -48,7 +48,7 @@ end
 function initializeNpc(nodeSource, win, vData)
 	local sBaseName = DB.getValue(nodeSource, "name")
 
-	win.type.setValue("npc")
+	win.kind.setValue("npc")
 
 	initializeChampion(nodeSource, win, sBaseName, vData)
 
@@ -83,7 +83,6 @@ function addPc(nodeSource, win, draginfo, vData)
 		local tokenData = draginfo.getTokenData()
 		win.link.setValue("charsheet", nodeSource.getPath())
         win.kind.setValue("pc")
-		win.type.setValue("pc")
 
 		win.wildcard.setValue(1)
 
